@@ -1,0 +1,38 @@
+{
+  "name": "erp-miniproject",
+  "version": "1.0.0",
+  "description": "ERP Mini Project - Node.js, MongoDB, AngularJS Monorepo",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "concurrently \"bun run --filter @erp/api dev\" \"bun run --filter @erp/frontend dev\"",
+    "dev:api": "bun run --filter @erp/api dev",
+    "dev:frontend": "bun run --filter @erp/frontend dev",
+    "build": "bun run --filter '*' build",
+    "build:api": "bun run --filter @erp/api build",
+    "build:frontend": "bun run --filter @erp/frontend build",
+    "docker:up": "docker-compose up -d",
+    "docker:down": "docker-compose down",
+    "docker:logs": "docker-compose logs -f",
+    "lint": "eslint . --ext .js,.ts",
+    "format": "prettier --write \"**/*.{js,ts,json,md}\"",
+    "clean": "rm -rf node_modules apps/*/node_modules packages/*/node_modules",
+    "postinstall": "bun run --filter @erp/shared build"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2",
+    "eslint": "^8.57.0",
+    "prettier": "^3.2.5",
+    "typescript": "^5.3.3"
+  },
+  "engines": {
+    "bun": ">=1.0.0"
+  },
+  "trustedDependencies": [
+    "esbuild",
+    "typescript"
+  ]
+}

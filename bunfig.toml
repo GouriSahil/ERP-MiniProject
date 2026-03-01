@@ -1,0 +1,29 @@
+# Bun Configuration for ERP Mini Project
+
+[install]
+# Automatically install peer dependencies
+auto = true
+cache = true
+lockfile = true
+lockfileSave = true
+
+[install.scopes]
+# "@erp" = "https://registry.npmjs.org"
+
+[run]
+# Use system shell
+shell = "system"
+
+[test]
+testMatch = [
+  "**/__tests__/**/*.test.{js,ts}",
+  "**/*.{spec,test}.{js,ts}"
+]
+coverage = true
+
+[debug]
+sourceMaps = true
+
+[build]
+target = "node"
+publicPackages = ["@erp/*"]
