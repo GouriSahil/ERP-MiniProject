@@ -1,34 +1,44 @@
 import mongoose from 'mongoose';
 
-const connectDatabase = async (): Promise<void> => {
+export const connectDatabase = async (): Promise<void> => {
   try {
-    const mongoUri = process.env.MONGODB_URI || 'mongodb://erp_user:erp_password@localhost:27017/erp_db?authSource=erp_db';
-
+    const mongoUri = process.env.MONGODB_URI || 'mongodb://localhost:27017/erp-miniproject';
+    
     const options = {
-      autoIndex: true,
       maxPoolSize: 10,
-      serverSelectionTimeoutMS: 5000,
+      minPoolSize: 5,
       socketTimeoutMS: 45000,
+      serverSelectionTimeoutMS: 5000,
     };
 
     await mongoose.connect(mongoUri, options);
 
-    mongoose.connection.on('connected', () => {
-      console.log('✅ MongoDB connected successfully');
-    });
+    console.log(`✅ MongoDB connected successfully to ${mongoUri}`);
 
+    // Handle connection events
     mongoose.connection.on('error', (err) => {
       console.error('❌ MongoDB connection error:', err);
     });
 
     mongoose.connection.on('disconnected', () => {
-      console.log('⚠️  MongoDB disconnected');
+      console.warn('⚠️  MongoDB disconnected. Attempting to reconnect...');
+    });
+
+    mongoose.connection.on('reconnected', () => {
+      console.log('✅ MongoDB reconnected');
     });
 
   } catch (error) {
-    console.error('MongoDB connection failed:', error);
-    throw error;
+    console.error('❌ Failed to connect to MongoDB:', error);
+    process.exit(1);
   }
 };
 
-export { connectDatabase };
+export const disconnectDatabase = async (): Promise<void> => {
+  try {
+    await mongoose.connection.close();
+    console.log('✅ MongoDB connection closed');
+  } catch (error) {
+    console.error('❌ Error closing MongoDB connection:', error);
+  }
+};

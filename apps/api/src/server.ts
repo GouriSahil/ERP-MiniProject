@@ -4,51 +4,108 @@ import helmet from 'helmet';
 import morgan from 'morgan';
 import dotenv from 'dotenv';
 import { connectDatabase } from './config/database';
-import { errorHandler } from './middleware/errorHandler';
-import { notFound } from './middleware/notFound';
-import apiRoutes from './routes';
+import passport from './config/passport';
+import routes from './routes';
+import { errorHandler, notFoundHandler } from './middleware/error';
 
 // Load environment variables
 dotenv.config();
 
 // Create Express app
 const app: Application = express();
+
+// Configuration
 const PORT = process.env.PORT || 3000;
+const CORS_ORIGIN = process.env.CORS_ORIGIN || 'http://localhost:4200';
 
 // Middleware
-app.use(helmet());
-app.use(cors());
-app.use(morgan('dev'));
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(helmet()); // Security headers
+app.use(cors({
+  origin: CORS_ORIGIN,
+  credentials: true
+}));
+app.use(morgan('dev')); // HTTP request logger
+app.use(express.json()); // Parse JSON bodies
+app.use(express.urlencoded({ extended: true })); // Parse URL-encoded bodies
 
-// Health check
-app.get('/health', (req, res) => {
-  res.status(200).json({ status: 'ok', message: 'ERP API is running' });
-});
+// Initialize Passport
+app.use(passport.initialize());
 
 // API Routes
-app.use('/api', apiRoutes);
+app.use('/api', routes);
 
-// Error handling
-app.use(notFound);
+// Root route
+app.get('/', (req, res) => {
+  res.status(200).json({
+    success: true,
+    message: 'ERP Mini Project API',
+    version: '1.0.0',
+    endpoints: {
+      health: '/api/health',
+      auth: '/api/auth/*'
+    }
+  });
+});
+
+// 404 handler - must be after all routes
+app.use(notFoundHandler);
+
+// Error handler - must be last
 app.use(errorHandler);
 
 // Start server
 const startServer = async () => {
   try {
+    // Connect to database
     await connectDatabase();
+
+    // Start listening
     app.listen(PORT, () => {
-      console.log(`🚀 Server running on port ${PORT}`);
-      console.log(`📝 Environment: ${process.env.NODE_ENV || 'development'}`);
-      console.log(`🔗 Health check: http://localhost:${PORT}/health`);
+      console.log(`
+╔═══════════════════════════════════════════════════════════╗
+║                                                           ║
+║   🚀 ERP API Server Running                               ║
+║                                                           ║
+║   📍 Port: ${PORT}                                      ║
+║   🔗 Environment: ${process.env.NODE_ENV || 'development'}                          ║
+║   🌐 CORS: ${CORS_ORIGIN}                 ║
+║                                                           ║
+║   Available endpoints:                                    ║
+║   - GET  /api/health                                      ║
+║   - POST /api/auth/register                               ║
+║   - POST /api/auth/login                                  ║
+║   - POST /api/auth/refresh                                ║
+║   - POST /api/auth/logout                                 ║
+║   - GET  /api/auth/me                                     ║
+║                                                           ║
+╚═══════════════════════════════════════════════════════════╝
+      `);
     });
   } catch (error) {
-    console.error('Failed to start server:', error);
+    console.error('❌ Failed to start server:', error);
     process.exit(1);
   }
 };
 
+// Handle unhandled promise rejections
+process.on('unhandledRejection', (err: any) => {
+  console.error('❌ Unhandled Rejection:', err.message);
+  process.exit(1);
+});
+
+// Handle uncaught exceptions
+process.on('uncaughtException', (err: Error) => {
+  console.error('❌ Uncaught Exception:', err.message);
+  process.exit(1);
+});
+
+// Handle SIGTERM
+process.on('SIGTERM', () => {
+  console.log('⚠️  SIGTERM received, shutting down gracefully...');
+  process.exit(0);
+});
+
+// Start the server
 startServer();
 
 export default app;
