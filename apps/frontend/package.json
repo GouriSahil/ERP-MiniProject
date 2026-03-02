@@ -1,23 +1,14 @@
 {
-  "name": "@erp/frontend",
+  "name": "erp-frontend",
   "version": "1.0.0",
-  "description": "ERP Frontend - AngularJS",
+  "description": "ERP Mini Project - AngularJS Frontend",
+  "main": "index.html",
   "scripts": {
-    "dev": "http-server ./app -p 4200 -c-1 --cors",
-    "build": "echo 'AngularJS build - copy files to dist folder'",
-    "lint": "eslint app --ext .js",
-    "test": "bun test"
+    "dev": "npx http-server . -p 4200 -c-1 --cors",
+    "start": "npx http-server . -p 4200"
   },
   "dependencies": {
-    "@erp/shared": "*",
-    "angular": "^1.8.3",
-    "angular-route": "^1.8.3",
-    "angular-resource": "^1.8.3",
-    "angular-ui-router": "^1.0.30",
-    "bootstrap": "^5.3.2"
+    "http-server": "^14.1.1"
   },
-  "devDependencies": {
-    "http-server": "^14.1.1",
-    "eslint": "^8.57.0"
-  }
+  "devDependencies": {}
 }
