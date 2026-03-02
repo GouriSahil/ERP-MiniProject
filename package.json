@@ -8,19 +8,18 @@
     "packages/*"
   ],
   "scripts": {
-    "dev": "concurrently \"bun run --filter @erp/api dev\" \"bun run --filter @erp/frontend dev\"",
-    "dev:api": "bun run --filter @erp/api dev",
-    "dev:frontend": "bun run --filter @erp/frontend dev",
-    "build": "bun run --filter '*' build",
-    "build:api": "bun run --filter @erp/api build",
-    "build:frontend": "bun run --filter @erp/frontend build",
+    "dev": "concurrently \"bun run dev:api\" \"bun run dev:frontend\"",
+    "dev:api": "cd apps/api && bun run dev",
+    "dev:frontend": "cd apps/frontend && bun run dev",
+    "build": "bun run build:api && bun run build:frontend",
+    "build:api": "cd apps/api && bun run build",
+    "build:frontend": "cd apps/frontend && bun run build",
     "docker:up": "docker-compose up -d",
     "docker:down": "docker-compose down",
     "docker:logs": "docker-compose logs -f",
     "lint": "eslint . --ext .js,.ts",
     "format": "prettier --write \"**/*.{js,ts,json,md}\"",
-    "clean": "rm -rf node_modules apps/*/node_modules packages/*/node_modules",
-    "postinstall": "bun run --filter @erp/shared build"
+    "clean": "rm -rf node_modules apps/*/node_modules packages/*/node_modules"
   },
   "devDependencies": {
     "concurrently": "^8.2.2",
