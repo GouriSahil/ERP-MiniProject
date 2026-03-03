@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="erpApp">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>College ERP System</title>
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        primary: {
+                            50: '#eff6ff',
+                            100: '#dbeafe',
+                            200: '#bfdbfe',
+                            300: '#93c5fd',
+                            400: '#60a5fa',
+                            500: '#3b82f6',
+                            600: '#2563eb',
+                            700: '#1d4ed8',
+                            800: '#1e40af',
+                            900: '#1e3a8a',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        /* Custom gradient text */
+        .gradient-text {
+            background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        /* Smooth transitions */
+        .transition-all-300 {
+            transition: all 0.3s ease;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-900 font-sans antialiased" ng-controller="MainController as main">
+    
+    <!-- Navigation -->
+    <nav class="bg-gradient-to-r from-primary-600 to-primary-800 shadow-lg sticky top-0 z-50" ng-if="!main.isAuthPage()">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <!-- Logo -->
+                <div class="flex-shrink-0">
+                    <a href="#!/" class="flex items-center gap-2 text-white font-bold text-xl hover:scale-105 transition-transform">
+                        <i class="fas fa-graduation-cap text-2xl"></i>
+                        <span>College ERP</span>
+                    </a>
+                </div>
+                
+                <!-- Desktop Menu -->
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-center space-x-4">
+                        <a class="text-white hover:bg-white/10 px-3 py-2 rounded-md text-sm font-medium transition-all-300" 
+                           href="#!/dashboard" 
+                           ng-if="main.isAuthenticated() && main.getCurrentUser()">
+                            Dashboard
+                        </a>
+                        <a class="text-white hover:bg-white/10 px-3 py-2 rounded-md text-sm font-medium transition-all-300" 
+                           href="#!/login" 
+                           ng-if="!main.isAuthenticated()">
+                            Login
+                        </a>
+                        <a class="bg-white text-primary-600 hover:bg-gray-100 px-4 py-2 rounded-md text-sm font-semibold transition-all-300" 
+                           href="#!/register" 
+                           ng-if="!main.isAuthenticated()">
+                            Register
+                        </a>
+                        
+                        <!-- User Dropdown -->
+                        <div class="relative" ng-if="main.isAuthenticated() && main.getCurrentUser()">
+                            <button class="flex items-center gap-2 text-white hover:bg-white/10 px-3 py-2 rounded-md text-sm font-medium transition-all-300">
+                                <i class="fas fa-user-circle text-lg"></i>
+                                <span>{{ main.getCurrentUser().name || 'User' }}</span>
+                                <i class="fas fa-chevron-down text-xs"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Mobile menu button -->
+                <div class="md:hidden">
+                    <button type="button" class="text-white hover:bg-white/10 p-2 rounded-md">
+                        <i class="fas fa-bars text-xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Angular Views -->
+    <div ng-view class="min-h-screen"></div>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white mt-16" ng-if="!main.isAuthPage()">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- About -->
+                <div>
+                    <h5 class="text-lg font-bold mb-4">About College ERP</h5>
+                    <p class="text-gray-400 text-sm">
+                        A comprehensive Enterprise Resource Planning system for educational institutions.
+                    </p>
+                </div>
+                
+                <!-- Quick Links -->
+                <div>
+                    <h5 class="text-lg font-bold mb-4">Quick Links</h5>
+                    <div class="space-y-2">
+                        <a href="#!/" class="block text-gray-400 hover:text-white transition-all-300">Home</a>
+                        <a href="#!/features" class="block text-gray-400 hover:text-white transition-all-300">Features</a>
+                        <a href="#!/contact" class="block text-gray-400 hover:text-white transition-all-300">Contact</a>
+                    </div>
+                </div>
+                
+                <!-- Contact Info -->
+                <div>
+                    <h5 class="text-lg font-bold mb-4">Contact Info</h5>
+                    <div class="text-gray-400 text-sm space-y-2">
+                        <p><i class="fas fa-envelope mr-2"></i>support@collegeerp.edu</p>
+                        <p><i class="fas fa-phone mr-2"></i>+1 (555) 123-4567</p>
+                    </div>
+                </div>
+            </div>
+            
+            <hr class="border-gray-800 my-8">
+            
+            <div class="text-center text-gray-400 text-sm">
+                <p>&copy; 2026 College ERP System. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.3/angular.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.3/angular-route.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.3/angular-cookies.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios@1.6.7/dist/axios.min.js"></script>
+
+    <!-- App Scripts -->
+    <script src="src/app/app.module.js"></script>
+    <script src="src/app/app.config.js"></script>
+    <script src="src/app/controllers/main.controller.js"></script>
+    <script src="src/app/controllers/auth.controller.js"></script>
+    <script src="src/app/controllers/landing.controller.js"></script>
+    <script src="src/app/controllers/dashboard.controller.js"></script>
+    <script src="src/app/services/auth.service.js"></script>
+    <script src="src/app/services/user.service.js"></script>
+</body>
+</html>

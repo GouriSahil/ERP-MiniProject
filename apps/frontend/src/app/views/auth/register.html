@@ -1,0 +1,146 @@
+<div class="min-h-screen bg-gradient-to-br from-primary-600 via-primary-700 to-primary-800 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-md w-full">
+        <!-- Logo/Brand -->
+        <div class="text-center mb-8">
+            <i class="fas fa-user-plus text-6xl text-white mb-4 opacity-90"></i>
+            <h2 class="text-3xl font-bold text-white mb-2">Create Account</h2>
+            <p class="text-blue-100">Join College ERP today</p>
+        </div>
+
+        <!-- Register Card -->
+        <div class="bg-white rounded-2xl shadow-2xl overflow-hidden">
+            <div class="p-8">
+                <!-- Error Alert -->
+                <div class="mb-6 p-4 rounded-lg bg-red-50 border-l-4 border-red-500" ng-if="auth.registerError">
+                    <div class="flex">
+                        <i class="fas fa-exclamation-circle text-red-500 mt-0.5 mr-3"></i>
+                        <div>
+                            <p class="text-sm font-medium text-red-800">Registration Failed</p>
+                            <p class="text-sm text-red-700 mt-1">{{ auth.registerError }}</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Success Alert -->
+                <div class="mb-6 p-4 rounded-lg bg-green-50 border-l-4 border-green-500" ng-if="auth.registerSuccessMessage">
+                    <div class="flex">
+                        <i class="fas fa-check-circle text-green-500 mt-0.5 mr-3"></i>
+                        <p class="text-sm text-green-700">{{ auth.registerSuccessMessage }}</p>
+                    </div>
+                </div>
+
+                <!-- Registration Form -->
+                <form ng-submit="auth.register()">
+                    <div class="mb-4">
+                        <label class="block text-sm font-semibold text-gray-700 mb-2" for="name">
+                            <i class="fas fa-user mr-1 text-primary-600"></i> Full Name
+                        </label>
+                        <input type="text"
+                               class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all"
+                               id="name"
+                               ng-model="auth.registerData.name"
+                               placeholder="Enter your full name"
+                               required
+                               autofocus
+                               ng-disabled="auth.isLoading">
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="block text-sm font-semibold text-gray-700 mb-2" for="reg-email">
+                            <i class="fas fa-envelope mr-1 text-primary-600"></i> Email Address
+                        </label>
+                        <input type="email"
+                               class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all"
+                               id="reg-email"
+                               ng-model="auth.registerData.email"
+                               placeholder="Enter your email"
+                               required
+                               ng-disabled="auth.isLoading">
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="block text-sm font-semibold text-gray-700 mb-2" for="role">
+                            <i class="fas fa-user-tag mr-1 text-primary-600"></i> I am a...
+                        </label>
+                        <select class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all"
+                                id="role"
+                                ng-model="auth.registerData.role"
+                                required
+                                ng-disabled="auth.isLoading">
+                            <option value="">Select your role</option>
+                            <option ng-repeat="role in auth.roles" value="{{ role.value }}">
+                                {{ role.label }}
+                            </option>
+                        </select>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="block text-sm font-semibold text-gray-700 mb-2" for="reg-password">
+                            <i class="fas fa-lock mr-1 text-primary-600"></i> Password
+                        </label>
+                        <input type="password"
+                               class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all"
+                               id="reg-password"
+                               ng-model="auth.registerData.password"
+                               placeholder="Create a password (min 8 characters)"
+                               required
+                               ng-disabled="auth.isLoading">
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="block text-sm font-semibold text-gray-700 mb-2" for="confirm-password">
+                            <i class="fas fa-lock mr-1 text-primary-600"></i> Confirm Password
+                        </label>
+                        <input type="password"
+                               class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all"
+                               id="confirm-password"
+                               ng-model="auth.registerData.confirmPassword"
+                               placeholder="Re-enter your password"
+                               required
+                               ng-disabled="auth.isLoading">
+                    </div>
+
+                    <div class="mb-6 bg-blue-50 border-l-4 border-primary-500 p-4 rounded">
+                        <div class="flex">
+                            <i class="fas fa-info-circle text-primary-600 mt-0.5 mr-3"></i>
+                            <div class="text-sm text-gray-700">
+                                <p class="font-semibold mb-1">Password requirements:</p>
+                                <ul class="list-disc list-inside space-y-1 text-xs">
+                                    <li>At least 8 characters long</li>
+                                    <li>Contains letters and numbers</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button type="submit"
+                            class="w-full bg-gradient-to-r from-primary-600 to-primary-700 text-white py-3 rounded-lg font-semibold hover:from-primary-700 hover:to-primary-800 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-all transform hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+                            ng-disabled="auth.isLoading">
+                        <span ng-if="!auth.isLoading">
+                            <i class="fas fa-user-plus mr-2"></i>Create Account
+                        </span>
+                        <span ng-if="auth.isLoading">
+                            <i class="fas fa-circle-notch fa-spin mr-2"></i>Creating Account...
+                        </span>
+                    </button>
+                </form>
+
+                <div class="my-6 border-t border-gray-200"></div>
+
+                <div class="text-center">
+                    <p class="text-gray-600 mb-3">Already have an account?</p>
+                    <a href="#!/login" 
+                       class="inline-block border-2 border-primary-600 text-primary-600 hover:bg-primary-50 px-6 py-2 rounded-lg font-semibold transition-all">
+                        <i class="fas fa-sign-in-alt mr-1"></i> Sign In
+                    </a>
+                </div>
+
+                <div class="mt-4 text-center">
+                    <a href="#!/" class="text-gray-500 hover:text-gray-700 text-sm transition-colors">
+                        <i class="fas fa-arrow-left mr-1"></i> Back to Home
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
