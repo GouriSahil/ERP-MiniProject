@@ -7,9 +7,9 @@
         <div class="blob blob-3"></div>
     </div>
 
-    <div class="container hero-content-modern">
-        <div class="row align-items-center">
-            <div class="col-lg-6">
+    <div class="container mx-auto px-4 hero-content-modern">
+        <div class="flex flex-col lg:flex-row items-center gap-12">
+            <div class="w-full lg:w-1/2">
                 <!-- Badge -->
                 <div class="hero-badge mb-4">
                     <span class="badge-dot"></span>
@@ -58,7 +58,7 @@
             </div>
 
             <!-- Hero Visual -->
-            <div class="col-lg-6 hero-visual-section">
+            <div class="w-full lg:w-1/2 hero-visual-section mt-12 lg:mt-0">
                 <div class="hero-dashboard-preview">
                     <!-- Floating Card 1 -->
                     <div class="float-card float-card-1">
@@ -146,9 +146,9 @@
 
 <!-- Stats Section -->
 <section class="stats-section-modern">
-    <div class="container">
-        <div class="row">
-            <div class="col-lg-3 col-md-6" ng-repeat="stat in landing.stats">
+    <div class="container mx-auto px-4">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div ng-repeat="stat in landing.stats">
                 <div class="stat-card-modern">
                     <div class="stat-header">
                         <div class="stat-icon-wrapper">
@@ -168,7 +168,7 @@
 
 <!-- Features Section -->
 <section class="features-section-modern" id="features">
-    <div class="container">
+    <div class="container mx-auto px-4">
         <div class="text-center section-header-modern">
             <div class="section-badge">
                 <i class="fas fa-sparkles mr-2"></i>Features
@@ -181,8 +181,8 @@
             </p>
         </div>
 
-        <div class="row">
-            <div class="col-lg-4 col-md-6" ng-repeat="feature in landing.features">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div ng-repeat="feature in landing.features">
                 <div class="feature-card-modern">
                     <div class="feature-icon-wrapper-modern">
                         <i class="{{ feature.icon }}"></i>
@@ -201,7 +201,7 @@
 
 <!-- How It Works Section -->
 <section class="how-it-works-section" id="how-it-works">
-    <div class="container">
+    <div class="container mx-auto px-4">
         <div class="text-center section-header-modern">
             <div class="section-badge section-badge-blue">
                 <i class="fas fa-rocket mr-2"></i>Quick Start
@@ -214,8 +214,8 @@
             </p>
         </div>
 
-        <div class="row">
-            <div class="col-md-4">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div>
                 <div class="step-card">
                     <div class="step-number step-number-1">
                         <span>1</span>
@@ -224,7 +224,7 @@
                     <p class="step-description">Sign up with your institution email and verify your identity</p>
                 </div>
             </div>
-            <div class="col-md-4">
+            <div>
                 <div class="step-card">
                     <div class="step-number step-number-2">
                         <span>2</span>
@@ -233,7 +233,7 @@
                     <p class="step-description">Complete your profile with role and department information</p>
                 </div>
             </div>
-            <div class="col-md-4">
+            <div>
                 <div class="step-card">
                     <div class="step-number step-number-3">
                         <span>3</span>
@@ -248,7 +248,7 @@
 
 <!-- CTA Section -->
 <section class="cta-section-modern">
-    <div class="container">
+    <div class="container mx-auto px-4">
         <div class="cta-card-modern">
             <div class="cta-icon-wrapper">
                 <i class="fas fa-graduation-cap"></i>
@@ -513,16 +513,18 @@
     }
 
     .float-card-1 {
-        top: 0;
-        left: 0;
-        width: 200px;
+        top: -20px;
+        left: 20px;
+        width: 180px;
+        z-index: 10;
     }
 
     .float-card-2 {
         bottom: 20px;
-        right: -20px;
-        width: 240px;
+        right: 20px;
+        width: 200px;
         animation-delay: 2s;
+        z-index: 10;
     }
 
     .float-card-content {
@@ -597,8 +599,10 @@
         position: absolute;
         top: 50%;
         left: 50%;
-        transform: translate(-50%, -50%);
-        width: 90%;
+        transform: translate(-45%, -50%);
+        width: 95%;
+        max-width: 500px;
+        z-index: 5;
     }
 
     .dashboard-dots {

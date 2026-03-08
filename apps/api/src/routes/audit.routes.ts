@@ -11,7 +11,7 @@ router.use(authenticate);
 
 // All audit routes require view permission (except create)
 router.get(
-  '*',
+  '{/*path}',
   checkPermission('audit', 'view')
 );
 
