@@ -1,0 +1,1140 @@
+<!-- Modern Hero Section with Gradient Background -->
+<div class="hero-section-modern">
+    <!-- Animated Background Elements -->
+    <div class="hero-bg-animation">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+        <div class="blob blob-3"></div>
+    </div>
+
+    <div class="container mx-auto px-4 hero-content-modern">
+        <div class="flex flex-col lg:flex-row items-center gap-12">
+            <div class="w-full lg:w-1/2">
+                <!-- Badge -->
+                <div class="hero-badge mb-4">
+                    <span class="badge-dot"></span>
+                    <span>Trusted by 1000+ institutions</span>
+                </div>
+
+                <h1 class="hero-title-modern">
+                    Transform Your
+                    <span class="text-gradient">Institution</span>
+                    with Modern ERP
+                </h1>
+
+                <p class="hero-subtitle-modern">
+                    Streamline academic operations, enhance student experience, and empower faculty with our next-generation College ERP System.
+                </p>
+
+                <div class="hero-buttons-modern">
+                    <button ng-click="landing.goToRegister()" class="btn btn-hero-primary">
+                        <i class="fas fa-rocket mr-2"></i>Start Free Trial
+                        <i class="fas fa-arrow-right ml-2 arrow-icon"></i>
+                    </button>
+                    <button class="btn btn-hero-secondary">
+                        <i class="fas fa-play-circle mr-2"></i>Watch Demo
+                    </button>
+                </div>
+
+                <!-- Social Proof -->
+                <div class="hero-social-proof">
+                    <div class="user-avatars">
+                        <div class="avatar avatar-1"></div>
+                        <div class="avatar avatar-2"></div>
+                        <div class="avatar avatar-3"></div>
+                        <div class="avatar avatar-4"></div>
+                    </div>
+                    <div class="ratings">
+                        <div class="stars">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                        </div>
+                        <p class="rating-text">4.9/5 from 500+ reviews</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Hero Visual -->
+            <div class="w-full lg:w-1/2 hero-visual-section mt-12 lg:mt-0">
+                <div class="hero-dashboard-preview">
+                    <!-- Floating Card 1 -->
+                    <div class="float-card float-card-1">
+                        <div class="float-card-content">
+                            <div class="float-icon float-icon-success">
+                                <i class="fas fa-check"></i>
+                            </div>
+                            <div>
+                                <p class="float-card-title">Attendance</p>
+                                <p class="float-card-value">98% Today</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Floating Card 2 -->
+                    <div class="float-card float-card-2">
+                        <div class="float-card-header">
+                            <p class="float-card-title">Students</p>
+                            <span class="badge badge-success float-badge">+12%</span>
+                        </div>
+                        <div class="chart-bars">
+                            <div class="chart-bar" style="height: 60%"></div>
+                            <div class="chart-bar" style="height: 80%"></div>
+                            <div class="chart-bar" style="height: 45%"></div>
+                            <div class="chart-bar" style="height: 90%"></div>
+                            <div class="chart-bar" style="height: 70%"></div>
+                            <div class="chart-bar chart-bar-active" style="height: 100%"></div>
+                        </div>
+                    </div>
+
+                    <!-- Main Dashboard -->
+                    <div class="dashboard-card">
+                        <div class="dashboard-dots">
+                            <span class="dot dot-red"></span>
+                            <span class="dot dot-yellow"></span>
+                            <span class="dot dot-green"></span>
+                        </div>
+
+                        <div class="dashboard-stats">
+                            <div class="dash-stat dash-stat-purple">
+                                <i class="fas fa-users"></i>
+                                <p class="dash-stat-value">2.5K</p>
+                                <p class="dash-stat-label">Students</p>
+                            </div>
+                            <div class="dash-stat dash-stat-blue">
+                                <i class="fas fa-chalkboard-teacher"></i>
+                                <p class="dash-stat-value">150</p>
+                                <p class="dash-stat-label">Faculty</p>
+                            </div>
+                            <div class="dash-stat dash-stat-pink">
+                                <i class="fas fa-book"></i>
+                                <p class="dash-stat-value">85</p>
+                                <p class="dash-stat-label">Courses</p>
+                            </div>
+                        </div>
+
+                        <div class="dashboard-activity">
+                            <div class="activity-header">
+                                <span>Recent Activity</span>
+                                <span class="activity-link">View All</span>
+                            </div>
+                            <div class="activity-list">
+                                <div class="activity-item">
+                                    <div class="activity-icon activity-icon-green">
+                                        <i class="fas fa-user-plus"></i>
+                                    </div>
+                                    <p class="activity-text">New student enrolled</p>
+                                    <span class="activity-time">2m ago</span>
+                                </div>
+                                <div class="activity-item">
+                                    <div class="activity-icon activity-icon-blue">
+                                        <i class="fas fa-file-alt"></i>
+                                    </div>
+                                    <p class="activity-text">Assignment submitted</p>
+                                    <span class="activity-time">5m ago</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Stats Section -->
+<section class="stats-section-modern">
+    <div class="container mx-auto px-4">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div ng-repeat="stat in landing.stats">
+                <div class="stat-card-modern">
+                    <div class="stat-header">
+                        <div class="stat-icon-wrapper">
+                            <i class="{{ stat.icon }} stat-icon-modern"></i>
+                        </div>
+                        <div class="stat-trend">
+                            <i class="fas fa-arrow-up"></i>
+                        </div>
+                    </div>
+                    <p class="stat-value-modern">{{ stat.value }}</p>
+                    <p class="stat-label-modern">{{ stat.label }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section class="features-section-modern" id="features">
+    <div class="container mx-auto px-4">
+        <div class="text-center section-header-modern">
+            <div class="section-badge">
+                <i class="fas fa-sparkles mr-2"></i>Features
+            </div>
+            <h2 class="section-title-modern">
+                Everything You Need to <span class="text-gradient">Succeed</span>
+            </h2>
+            <p class="section-subtitle-modern">
+                Powerful tools designed specifically for modern educational institutions
+            </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div ng-repeat="feature in landing.features">
+                <div class="feature-card-modern">
+                    <div class="feature-icon-wrapper-modern">
+                        <i class="{{ feature.icon }}"></i>
+                    </div>
+                    <h3 class="feature-title-modern">{{ feature.title }}</h3>
+                    <p class="feature-description-modern">{{ feature.description }}</p>
+                    <div class="feature-link">
+                        <span>Learn more</span>
+                        <i class="fas fa-arrow-right ml-2"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- How It Works Section -->
+<section class="how-it-works-section" id="how-it-works">
+    <div class="container mx-auto px-4">
+        <div class="text-center section-header-modern">
+            <div class="section-badge section-badge-blue">
+                <i class="fas fa-rocket mr-2"></i>Quick Start
+            </div>
+            <h2 class="section-title-modern">
+                Get Started in <span class="text-gradient-blue">Minutes</span>
+            </h2>
+            <p class="section-subtitle-modern">
+                Simple onboarding process to get your institution up and running
+            </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div>
+                <div class="step-card">
+                    <div class="step-number step-number-1">
+                        <span>1</span>
+                    </div>
+                    <h4 class="step-title">Create Account</h4>
+                    <p class="step-description">Sign up with your institution email and verify your identity</p>
+                </div>
+            </div>
+            <div>
+                <div class="step-card">
+                    <div class="step-number step-number-2">
+                        <span>2</span>
+                    </div>
+                    <h4 class="step-title">Setup Profile</h4>
+                    <p class="step-description">Complete your profile with role and department information</p>
+                </div>
+            </div>
+            <div>
+                <div class="step-card">
+                    <div class="step-number step-number-3">
+                        <span>3</span>
+                    </div>
+                    <h4 class="step-title">Start Exploring</h4>
+                    <p class="step-description">Access all features and manage your academic activities</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="cta-section-modern">
+    <div class="container mx-auto px-4">
+        <div class="cta-card-modern">
+            <div class="cta-icon-wrapper">
+                <i class="fas fa-graduation-cap"></i>
+            </div>
+            <h2 class="cta-title">Ready to Transform Your Institution?</h2>
+            <p class="cta-subtitle">
+                Join thousands of educational institutions already using our ERP system to streamline their operations
+            </p>
+            <div class="cta-buttons">
+                <button ng-click="landing.goToRegister()" class="btn btn-cta-primary">
+                    Start Your Free Trial
+                    <i class="fas fa-arrow-right ml-2"></i>
+                </button>
+                <button class="btn btn-cta-secondary">Schedule a Demo</button>
+            </div>
+            <p class="cta-trust">
+                <i class="fas fa-check-circle text-success mr-2"></i>
+                No credit card required • 14-day free trial • Cancel anytime
+            </p>
+        </div>
+    </div>
+</section>
+
+<style>
+    /* ===== Hero Section ===== */
+    .hero-section-modern {
+        position: relative;
+        min-height: calc(100vh - 200px);
+        background: linear-gradient(135deg, #0f172a 0%, #581c87 50%, #0f172a 100%);
+        overflow: hidden;
+        padding: 4rem 0 3rem;
+        color: white;
+    }
+
+    .hero-bg-animation {
+        position: absolute;
+        inset: 0;
+        overflow: hidden;
+    }
+
+    .blob {
+        position: absolute;
+        border-radius: 50%;
+        filter: blur(80px);
+        opacity: 0.2;
+        mix-blend-mode: multiply;
+        animation: blob 7s infinite;
+    }
+
+    .blob-1 {
+        top: 10%;
+        left: -10%;
+        width: 400px;
+        height: 400px;
+        background: #a855f7;
+    }
+
+    .blob-2 {
+        top: 10%;
+        right: -10%;
+        width: 400px;
+        height: 400px;
+        background: #3b82f6;
+        animation-delay: 2s;
+    }
+
+    .blob-3 {
+        bottom: -10%;
+        left: 20%;
+        width: 400px;
+        height: 400px;
+        background: #ec4899;
+        animation-delay: 4s;
+    }
+
+    @keyframes blob {
+        0%, 100% { transform: translate(0, 0) scale(1); }
+        25% { transform: translate(20px, -50px) scale(1.1); }
+        50% { transform: translate(-20px, 20px) scale(0.9); }
+        75% { transform: translate(50px, 50px) scale(1.05); }
+    }
+
+    .hero-content-modern {
+        position: relative;
+        z-index: 1;
+    }
+
+    .hero-badge {
+        display: inline-flex;
+        align-items: center;
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 50px;
+        padding: 0.5rem 1rem;
+        font-size: 0.875rem;
+        color: rgba(255, 255, 255, 0.9);
+    }
+
+    .badge-dot {
+        width: 8px;
+        height: 8px;
+        background: #22c55e;
+        border-radius: 50%;
+        margin-right: 0.5rem;
+        animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.5; }
+    }
+
+    .hero-title-modern {
+        font-size: 2.5rem;
+        font-weight: 800;
+        margin-bottom: 1.5rem;
+        line-height: 1.2;
+    }
+
+    .text-gradient {
+        background: linear-gradient(135deg, #a855f7 0%, #3b82f6 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    .hero-subtitle-modern {
+        font-size: 1.125rem;
+        color: rgba(255, 255, 255, 0.8);
+        margin-bottom: 2rem;
+        max-width: 500px;
+    }
+
+    .hero-buttons-modern {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+        margin-bottom: 2rem;
+    }
+
+    .btn-hero-primary {
+        background: linear-gradient(135deg, #a855f7 0%, #3b82f6 100%);
+        border: none;
+        color: white;
+        padding: 0.875rem 2rem;
+        border-radius: 12px;
+        font-weight: 600;
+        box-shadow: 0 10px 30px rgba(168, 85, 247, 0.3);
+        transition: all 0.3s ease;
+    }
+
+    .btn-hero-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 15px 40px rgba(168, 85, 247, 0.4);
+        color: white;
+    }
+
+    .btn-hero-primary .arrow-icon {
+        transition: transform 0.3s ease;
+    }
+
+    .btn-hero-primary:hover .arrow-icon {
+        transform: translateX(5px);
+    }
+
+    .btn-hero-secondary {
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        color: white;
+        padding: 0.875rem 2rem;
+        border-radius: 12px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+
+    .btn-hero-secondary:hover {
+        background: rgba(255, 255, 255, 0.2);
+        color: white;
+    }
+
+    .hero-social-proof {
+        display: flex;
+        align-items: center;
+        gap: 1.5rem;
+    }
+
+    .user-avatars {
+        display: flex;
+        position: relative;
+    }
+
+    .avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        border: 3px solid #0f172a;
+        margin-left: -12px;
+    }
+
+    .avatar:first-child {
+        margin-left: 0;
+    }
+
+    .avatar-1 {
+        background: linear-gradient(135deg, #a855f7, #ec4899);
+    }
+
+    .avatar-2 {
+        background: linear-gradient(135deg, #3b82f6, #06b6d4);
+    }
+
+    .avatar-3 {
+        background: linear-gradient(135deg, #22c55e, #14b8a6);
+    }
+
+    .avatar-4 {
+        background: linear-gradient(135deg, #f97316, #ef4444);
+    }
+
+    .stars {
+        color: #fbbf24;
+        font-size: 0.875rem;
+    }
+
+    .rating-text {
+        color: rgba(255, 255, 255, 0.7);
+        font-size: 0.875rem;
+        margin: 0;
+    }
+
+    /* ===== Hero Visual ===== */
+    .hero-visual-section {
+        display: none;
+    }
+
+    @media (min-width: 992px) {
+        .hero-visual-section {
+            display: block;
+        }
+    }
+
+    .hero-dashboard-preview {
+        position: relative;
+        height: 450px;
+    }
+
+    .float-card {
+        position: absolute;
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 16px;
+        padding: 1rem;
+        animation: float 6s ease-in-out infinite;
+    }
+
+    @keyframes float {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-20px); }
+    }
+
+    .float-card-1 {
+        top: -20px;
+        left: 20px;
+        width: 180px;
+        z-index: 10;
+    }
+
+    .float-card-2 {
+        bottom: 20px;
+        right: 20px;
+        width: 200px;
+        animation-delay: 2s;
+        z-index: 10;
+    }
+
+    .float-card-content {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+    .float-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+    }
+
+    .float-icon-success {
+        background: linear-gradient(135deg, #22c55e, #10b981);
+    }
+
+    .float-card-title {
+        color: white;
+        font-weight: 600;
+        margin: 0;
+        font-size: 0.9rem;
+    }
+
+    .float-card-value {
+        color: #22c55e;
+        font-size: 0.875rem;
+        margin: 0;
+    }
+
+    .float-card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 0.75rem;
+    }
+
+    .float-badge {
+        font-size: 0.75rem;
+    }
+
+    .chart-bars {
+        display: flex;
+        align-items: end;
+        gap: 4px;
+        height: 60px;
+    }
+
+    .chart-bar {
+        flex: 1;
+        background: linear-gradient(to top, #a855f7, #a855f7);
+        border-radius: 4px 4px 0 0;
+        opacity: 0.7;
+    }
+
+    .chart-bar-active {
+        background: linear-gradient(to top, #3b82f6, #3b82f6);
+        opacity: 1;
+    }
+
+    .dashboard-card {
+        background: rgba(255, 255, 255, 0.05);
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 20px;
+        padding: 1.5rem;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-45%, -50%);
+        width: 95%;
+        max-width: 500px;
+        z-index: 5;
+    }
+
+    .dashboard-dots {
+        display: flex;
+        gap: 6px;
+        margin-bottom: 1.5rem;
+    }
+
+    .dot {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+    }
+
+    .dot-red { background: #f87171; }
+    .dot-yellow { background: #fbbf24; }
+    .dot-green { background: #22c55e; }
+
+    .dashboard-stats {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .dash-stat {
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 12px;
+        padding: 1rem;
+        text-align: center;
+    }
+
+    .dash-stat-purple { border: 1px solid rgba(168, 85, 247, 0.3); }
+    .dash-stat-blue { border: 1px solid rgba(59, 130, 246, 0.3); }
+    .dash-stat-pink { border: 1px solid rgba(236, 72, 153, 0.3); }
+
+    .dash-stat i {
+        font-size: 1.5rem;
+        margin-bottom: 0.5rem;
+        display: block;
+    }
+
+    .dash-stat-purple i { color: #a855f7; }
+    .dash-stat-blue i { color: #3b82f6; }
+    .dash-stat-pink i { color: #ec4899; }
+
+    .dash-stat-value {
+        color: white;
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin: 0;
+    }
+
+    .dash-stat-label {
+        color: rgba(255, 255, 255, 0.6);
+        font-size: 0.75rem;
+        margin: 0;
+    }
+
+    .dashboard-activity {
+        background: rgba(255, 255, 255, 0.03);
+        border-radius: 12px;
+        padding: 1rem;
+    }
+
+    .activity-header {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 0.75rem;
+        font-size: 0.9rem;
+    }
+
+    .activity-link {
+        color: #a855f7;
+        cursor: pointer;
+    }
+
+    .activity-list {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+
+    .activity-item {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+    .activity-icon {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.75rem;
+        color: white;
+    }
+
+    .activity-icon-green {
+        background: rgba(34, 197, 94, 0.2);
+    }
+
+    .activity-icon-blue {
+        background: rgba(59, 130, 246, 0.2);
+    }
+
+    .activity-text {
+        color: rgba(255, 255, 255, 0.8);
+        font-size: 0.875rem;
+        flex: 1;
+        margin: 0;
+    }
+
+    .activity-time {
+        color: rgba(255, 255, 255, 0.4);
+        font-size: 0.75rem;
+    }
+
+    /* ===== Stats Section ===== */
+    .stats-section-modern {
+        background: #0f172a;
+        padding: 4rem 0;
+        position: relative;
+    }
+
+    .stats-section-modern::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(to bottom, rgba(168, 85, 247, 0.1), transparent);
+    }
+
+    .stat-card-modern {
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 16px;
+        padding: 1.5rem;
+        transition: all 0.3s ease;
+        height: 100%;
+    }
+
+    .stat-card-modern:hover {
+        transform: translateY(-5px);
+        border-color: rgba(168, 85, 247, 0.3);
+    }
+
+    .stat-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1rem;
+    }
+
+    .stat-icon-wrapper {
+        width: 50px;
+        height: 50px;
+        background: linear-gradient(135deg, rgba(168, 85, 247, 0.2), rgba(59, 130, 246, 0.2));
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .stat-icon-modern {
+        color: #a855f7;
+        font-size: 1.25rem;
+    }
+
+    .stat-trend {
+        width: 36px;
+        height: 36px;
+        background: rgba(34, 197, 94, 0.2);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #22c55e;
+    }
+
+    .stat-value-modern {
+        color: white;
+        font-size: 2rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+    }
+
+    .stat-label-modern {
+        color: rgba(255, 255, 255, 0.7);
+        margin: 0;
+    }
+
+    /* ===== Features Section ===== */
+    .features-section-modern {
+        background: #020617;
+        padding: 5rem 0;
+    }
+
+    .section-header-modern {
+        margin-bottom: 3rem;
+    }
+
+    .section-badge {
+        display: inline-flex;
+        align-items: center;
+        background: rgba(168, 85, 247, 0.1);
+        border: 1px solid rgba(168, 85, 247, 0.2);
+        border-radius: 50px;
+        padding: 0.5rem 1rem;
+        color: #a855f7;
+        font-size: 0.875rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .section-badge-blue {
+        background: rgba(59, 130, 246, 0.1);
+        border-color: rgba(59, 130, 246, 0.2);
+        color: #3b82f6;
+    }
+
+    .section-title-modern {
+        color: white;
+        font-size: 2.25rem;
+        font-weight: 700;
+        margin-bottom: 1rem;
+    }
+
+    .section-subtitle-modern {
+        color: rgba(255, 255, 255, 0.6);
+        font-size: 1.125rem;
+        max-width: 600px;
+        margin: 0 auto;
+    }
+
+    .feature-card-modern {
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 20px;
+        padding: 2rem;
+        text-align: center;
+        transition: all 0.5s ease;
+        height: 100%;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .feature-card-modern::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(135deg, rgba(168, 85, 247, 0), rgba(59, 130, 246, 0));
+        transition: all 0.5s ease;
+        z-index: 0;
+    }
+
+    .feature-card-modern:hover::before {
+        background: linear-gradient(135deg, rgba(168, 85, 247, 0.1), rgba(59, 130, 246, 0.1));
+    }
+
+    .feature-card-modern:hover {
+        transform: translateY(-10px);
+        border-color: rgba(168, 85, 247, 0.3);
+    }
+
+    .feature-card-modern > * {
+        position: relative;
+        z-index: 1;
+    }
+
+    .feature-icon-wrapper-modern {
+        width: 60px;
+        height: 60px;
+        background: linear-gradient(135deg, #a855f7, #3b82f6);
+        border-radius: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1.5rem;
+        transition: all 0.5s ease;
+        box-shadow: 0 10px 30px rgba(168, 85, 247, 0.3);
+    }
+
+    .feature-card-modern:hover .feature-icon-wrapper-modern {
+        transform: scale(1.1) rotate(3deg);
+    }
+
+    .feature-icon-wrapper-modern i {
+        color: white;
+        font-size: 1.5rem;
+    }
+
+    .feature-title-modern {
+        color: white;
+        font-size: 1.25rem;
+        font-weight: 700;
+        margin-bottom: 1rem;
+    }
+
+    .feature-description-modern {
+        color: rgba(255, 255, 255, 0.6);
+        font-size: 0.9rem;
+        line-height: 1.6;
+        margin-bottom: 1.5rem;
+    }
+
+    .feature-link {
+        color: #a855f7;
+        font-weight: 600;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+    }
+
+    .feature-card-modern:hover .feature-link {
+        opacity: 1;
+    }
+
+    .feature-link i {
+        transition: transform 0.3s ease;
+    }
+
+    .feature-card-modern:hover .feature-link i {
+        transform: translateX(5px);
+    }
+
+    /* ===== How It Works Section ===== */
+    .how-it-works-section {
+        background: #0f172a;
+        padding: 5rem 0;
+    }
+
+    .step-card {
+        text-align: center;
+        position: relative;
+    }
+
+    .step-number {
+        width: 70px;
+        height: 70px;
+        border-radius: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1.5rem;
+        font-size: 1.75rem;
+        font-weight: 700;
+        color: white;
+        transition: transform 0.3s ease;
+    }
+
+    .step-number:hover {
+        transform: scale(1.1);
+    }
+
+    .step-number-1 {
+        background: linear-gradient(135deg, #a855f7, #7c3aed);
+        box-shadow: 0 10px 30px rgba(168, 85, 247, 0.3);
+    }
+
+    .step-number-2 {
+        background: linear-gradient(135deg, #3b82f6, #2563eb);
+        box-shadow: 0 10px 30px rgba(59, 130, 246, 0.3);
+    }
+
+    .step-number-3 {
+        background: linear-gradient(135deg, #06b6d4, #0891b2);
+        box-shadow: 0 10px 30px rgba(6, 182, 212, 0.3);
+    }
+
+    .step-title {
+        color: white;
+        font-size: 1.25rem;
+        font-weight: 700;
+        margin-bottom: 0.75rem;
+    }
+
+    .step-description {
+        color: rgba(255, 255, 255, 0.6);
+        font-size: 0.95rem;
+    }
+
+    /* ===== CTA Section ===== */
+    .cta-section-modern {
+        background: #020617;
+        padding: 5rem 0;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .cta-section-modern::before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 800px;
+        height: 800px;
+        background: radial-gradient(circle, rgba(168, 85, 247, 0.15), rgba(59, 130, 246, 0.15));
+        border-radius: 50%;
+        filter: blur(80px);
+    }
+
+    .cta-card-modern {
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 24px;
+        padding: 3rem 2rem;
+        text-align: center;
+        position: relative;
+        z-index: 1;
+    }
+
+    .cta-icon-wrapper {
+        width: 70px;
+        height: 70px;
+        background: linear-gradient(135deg, #a855f7, #3b82f6);
+        border-radius: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 2rem;
+        box-shadow: 0 10px 40px rgba(168, 85, 247, 0.3);
+    }
+
+    .cta-icon-wrapper i {
+        color: white;
+        font-size: 2rem;
+    }
+
+    .cta-title {
+        color: white;
+        font-size: 2rem;
+        font-weight: 700;
+        margin-bottom: 1rem;
+    }
+
+    .cta-subtitle {
+        color: rgba(255, 255, 255, 0.7);
+        font-size: 1.125rem;
+        max-width: 600px;
+        margin: 0 auto 2rem;
+    }
+
+    .cta-buttons {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 1rem;
+        margin-bottom: 2rem;
+    }
+
+    .btn-cta-primary {
+        background: linear-gradient(135deg, #a855f7, #3b82f6);
+        border: none;
+        color: white;
+        padding: 1rem 2.5rem;
+        border-radius: 12px;
+        font-weight: 600;
+        font-size: 1.125rem;
+        box-shadow: 0 10px 30px rgba(168, 85, 247, 0.3);
+        transition: all 0.3s ease;
+    }
+
+    .btn-cta-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 15px 40px rgba(168, 85, 247, 0.4);
+        color: white;
+    }
+
+    .btn-cta-secondary {
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        color: white;
+        padding: 1rem 2.5rem;
+        border-radius: 12px;
+        font-weight: 600;
+        font-size: 1.125rem;
+        transition: all 0.3s ease;
+    }
+
+    .btn-cta-secondary:hover {
+        background: rgba(255, 255, 255, 0.2);
+        color: white;
+    }
+
+    .cta-trust {
+        color: rgba(255, 255, 255, 0.5);
+        font-size: 0.875rem;
+        margin: 0;
+    }
+
+    /* ===== Responsive ===== */
+    @media (max-width: 768px) {
+        .hero-title-modern {
+            font-size: 2rem;
+        }
+
+        .section-title-modern {
+            font-size: 1.75rem;
+        }
+
+        .cta-title {
+            font-size: 1.5rem;
+        }
+
+        .dashboard-stats {
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.5rem;
+        }
+
+        .dash-stat {
+            padding: 0.5rem;
+        }
+
+        .dash-stat-value {
+            font-size: 1rem;
+        }
+
+        .dash-stat-label {
+            font-size: 0.65rem;
+        }
+
+        .dashboard-card {
+            padding: 1rem;
+        }
+    }
+</style>

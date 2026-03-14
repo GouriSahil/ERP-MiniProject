@@ -1,0 +1,596 @@
+<!-- Modern Glassmorphic Dashboard with Dark Theme -->
+<style>
+    /* ===== CSS Variables ===== */
+    :root {
+        --accent-color: #6366f1;
+        --accent-hover: #4f46e5;
+        --bg-dark: #0a0a0a;
+        --bg-card: #141414;
+        --bg-card-hover: #1a1a1a;
+        --border-color: #262626;
+        --text-primary: #fafafa;
+        --text-secondary: #a3a3a3;
+        --text-muted: #737373;
+        --success-color: #22c55e;
+        --warning-color: #eab308;
+        --danger-color: #ef4444;
+        --info-color: #3b82f6;
+    }
+
+    /* ===== Dashboard Container ===== */
+    .dashboard-glass-container {
+        position: relative;
+        min-height: 100vh;
+        background: var(--bg-dark);
+        overflow-x: hidden;
+    }
+
+    /* ===== Background Animation Blobs ===== */
+    .dashboard-bg-animation {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        z-index: 0;
+        pointer-events: none;
+        display: none;
+    }
+
+    /* ===== Glass Navigation ===== */
+    .dashboard-glass-nav {
+        background: rgba(255, 255, 255, 0.05);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        position: sticky;
+        top: 0;
+        z-index: 50;
+    }
+
+    /* ===== Standard Glass Card ===== */
+    .glass-card {
+        background: linear-gradient(135deg, 
+            rgba(255, 255, 255, 0.1), 
+            rgba(255, 255, 255, 0.05)
+        );
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 16px;
+        padding: 1.5rem;
+        transition: all 0.3s ease;
+    }
+
+    .glass-card:hover {
+        background: linear-gradient(135deg, 
+            rgba(255, 255, 255, 0.15), 
+            rgba(255, 255, 255, 0.08)
+        );
+        border-color: rgba(255, 255, 255, 0.2);
+        transform: translateY(-4px);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+    }
+
+    /* ===== Glass Stat Card ===== */
+    .glass-stat-card {
+        background: linear-gradient(135deg, 
+            rgba(255, 255, 255, 0.1), 
+            rgba(255, 255, 255, 0.05)
+        );
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 16px;
+        padding: 1.5rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        transition: all 0.3s ease;
+        border-left: 4px solid var(--purple-primary);
+    }
+
+    .glass-stat-card:hover {
+        background: linear-gradient(135deg, 
+            rgba(255, 255, 255, 0.15), 
+            rgba(255, 255, 255, 0.08)
+        );
+        transform: translateY(-4px);
+        box-shadow: 0 20px 40px rgba(168, 85, 247, 0.2);
+        border-left-color: var(--blue-primary);
+    }
+
+    .stat-value-glass {
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: rgba(255, 255, 255, 0.9);
+        line-height: 1;
+    }
+
+    .stat-label-glass {
+        font-size: 0.875rem;
+        font-weight: 500;
+        color: rgba(255, 255, 255, 0.6);
+        margin-top: 0.5rem;
+    }
+
+    .stat-icon-glass {
+        width: 56px;
+        height: 56px;
+        background: rgba(168, 85, 247, 0.2);
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--purple-primary);
+        font-size: 1.5rem;
+        transition: all 0.3s ease;
+    }
+
+    .glass-stat-card:hover .stat-icon-glass {
+        background: rgba(59, 130, 246, 0.2);
+        color: var(--blue-primary);
+    }
+
+    /* ===== Glass Section Card ===== */
+    .glass-section-card {
+        background: rgba(255, 255, 255, 0.05);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 20px;
+        overflow: hidden;
+        transition: all 0.3s ease;
+    }
+
+    .glass-section-card:hover {
+        background: rgba(255, 255, 255, 0.08);
+        border-color: rgba(255, 255, 255, 0.15);
+    }
+
+    .glass-section-header {
+        background: linear-gradient(135deg, var(--purple-primary), var(--blue-primary));
+        padding: 1rem 1.5rem;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .glass-section-body {
+        padding: 1.5rem;
+    }
+
+    /* ===== Glass Activity Item ===== */
+    .glass-activity-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 0.75rem;
+        padding: 0.75rem;
+        border-radius: 12px;
+        transition: all 0.3s ease;
+    }
+
+    .glass-activity-item:hover {
+        background: rgba(255, 255, 255, 0.05);
+    }
+
+    .glass-activity-icon {
+        width: 40px;
+        height: 40px;
+        background: rgba(168, 85, 247, 0.15);
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        color: var(--purple-primary);
+        font-size: 1rem;
+    }
+
+    .glass-activity-text {
+        color: rgba(255, 255, 255, 0.9);
+        font-weight: 600;
+        font-size: 0.95rem;
+        margin-bottom: 0.25rem;
+    }
+
+    .glass-activity-time {
+        color: rgba(255, 255, 255, 0.4);
+        font-size: 0.75rem;
+    }
+
+    /* ===== Glass Table ===== */
+    .glass-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    .glass-table tbody tr {
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        transition: all 0.3s ease;
+    }
+
+    .glass-table tbody tr:hover {
+        background: rgba(255, 255, 255, 0.03);
+    }
+
+    .glass-table tbody tr:last-child {
+        border-bottom: none;
+    }
+
+    .glass-table td {
+        padding: 0.75rem 0;
+        color: rgba(255, 255, 255, 0.9);
+    }
+
+    .glass-table td:first-child {
+        font-weight: 600;
+        color: rgba(255, 255, 255, 0.7);
+        width: 120px;
+    }
+
+    /* ===== Glass Badge ===== */
+    .glass-badge {
+        display: inline-block;
+        padding: 0.25rem 0.75rem;
+        border-radius: 20px;
+        font-size: 0.75rem;
+        font-weight: 600;
+    }
+
+    .glass-badge-purple {
+        background: rgba(168, 85, 247, 0.2);
+        color: var(--purple-primary);
+    }
+
+    .glass-badge-green {
+        background: rgba(34, 197, 94, 0.2);
+        color: #22c55e;
+    }
+
+    .glass-badge-blue {
+        background: rgba(59, 130, 246, 0.2);
+        color: var(--blue-primary);
+    }
+
+    /* ===== Glass Button ===== */
+    .glass-btn {
+        background: linear-gradient(135deg, var(--purple-primary), var(--blue-primary));
+        border: none;
+        border-radius: 10px;
+        padding: 0.75rem 1.25rem;
+        color: white;
+        font-weight: 600;
+        font-size: 0.875rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        box-shadow: 0 4px 15px rgba(168, 85, 247, 0.3);
+    }
+
+    .glass-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(168, 85, 247, 0.4);
+    }
+
+    /* ===== Glass Info Alert ===== */
+    .glass-info-alert {
+        background: rgba(59, 130, 246, 0.1);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(59, 130, 246, 0.3);
+        border-radius: 16px;
+        padding: 1.25rem 1.5rem;
+        display: flex;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+
+    .glass-info-alert i {
+        color: var(--blue-primary);
+        font-size: 1.25rem;
+        margin-top: 0.15rem;
+    }
+
+    .glass-info-alert h4 {
+        color: rgba(255, 255, 255, 0.9);
+        font-weight: 700;
+        margin: 0 0 0.25rem 0;
+        font-size: 1rem;
+    }
+
+    .glass-info-alert p {
+        color: rgba(255, 255, 255, 0.7);
+        margin: 0;
+        font-size: 0.875rem;
+    }
+
+    /* ===== Welcome Card ===== */
+    .glass-welcome-card {
+        background: linear-gradient(135deg, 
+            rgba(168, 85, 247, 0.2), 
+            rgba(59, 130, 246, 0.1)
+        );
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        border-radius: 20px;
+        padding: 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 1.5rem;
+    }
+
+    .glass-welcome-icon {
+        width: 64px;
+        height: 64px;
+        background: linear-gradient(135deg, var(--purple-primary), var(--blue-primary));
+        border-radius: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 1.75rem;
+        box-shadow: 0 10px 30px rgba(168, 85, 247, 0.3);
+    }
+
+    .glass-welcome-title {
+        font-size: 1.75rem;
+        font-weight: 700;
+        color: rgba(255, 255, 255, 0.9);
+        margin: 0 0 0.25rem 0;
+    }
+
+    .glass-welcome-subtitle {
+        color: rgba(255, 255, 255, 0.6);
+        font-size: 0.95rem;
+    }
+
+    /* ===== Empty State ===== */
+    .glass-empty-state {
+        text-align: center;
+        padding: 2rem;
+        color: rgba(255, 255, 255, 0.4);
+    }
+
+    .glass-empty-state i {
+        font-size: 3rem;
+        margin-bottom: 0.75rem;
+    }
+
+    .glass-empty-state p {
+        margin: 0;
+        font-size: 0.875rem;
+    }
+
+    /* ===== Link Styles ===== */
+    .glass-link {
+        color: var(--purple-primary);
+        text-decoration: none;
+        transition: all 0.3s ease;
+    }
+
+    .glass-link:hover {
+        color: var(--pink-accent);
+    }
+
+    /* ===== Content Wrapper ===== */
+    .dashboard-content-wrapper {
+        position: relative;
+        z-index: 1;
+    }
+
+    /* ===== Loading State ===== */
+    .glass-loading {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 5rem 0;
+        color: rgba(255, 255, 255, 0.6);
+    }
+
+    .glass-spinner {
+        width: 64px;
+        height: 64px;
+        border: 3px solid rgba(255, 255, 255, 0.1);
+        border-top-color: var(--purple-primary);
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+        to { transform: rotate(360deg); }
+    }
+
+    /* ===== Responsive ===== */
+    @media (max-width: 768px) {
+        .glass-welcome-card {
+            flex-direction: column;
+            text-align: center;
+        }
+
+        .glass-welcome-icon {
+            width: 56px;
+            height: 56px;
+            font-size: 1.5rem;
+        }
+
+        .glass-welcome-title {
+            font-size: 1.5rem;
+        }
+    }
+</style>
+
+<div class="dashboard-glass-container">
+    <!-- Animated Background Elements -->
+    <div class="dashboard-bg-animation">
+        <div class="dashboard-blob dashboard-blob-1"></div>
+        <div class="dashboard-blob dashboard-blob-2"></div>
+        <div class="dashboard-blob dashboard-blob-3"></div>
+    </div>
+
+    <!-- Glassmorphic Navigation -->
+    <nav class="dashboard-glass-nav">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <a href="#!/" class="flex items-center gap-2 text-white font-bold text-xl">
+                        <i class="fas fa-graduation-cap" style="color: var(--purple-primary);"></i>
+                        <span>College ERP</span>
+                    </a>
+                </div>
+                <div class="flex items-center gap-4">
+                    <a href="" ng-click="dashboard.navigateTo('/profile')" class="glass-link" style="display: flex; align-items: center; gap: 0.5rem; color: rgba(255, 255, 255, 0.9); cursor: pointer; padding: 0.5rem 1rem; background: rgba(168, 85, 247, 0.2); border-radius: 8px; transition: all 0.3s ease;" onmouseover="this.style.background='rgba(168, 85, 247, 0.3)'" onmouseout="this.style.background='rgba(168, 85, 247, 0.2)'">
+                        <i class="fas fa-user-circle text-lg"></i>
+                        <span>{{ dashboard.currentUser.name }}</span>
+                    </a>
+                    <a href="" ng-click="dashboard.logout()" class="glass-link" style="cursor: pointer; padding: 0.5rem; color: rgba(255, 255, 255, 0.7);">
+                        <i class="fas fa-sign-out-alt text-xl"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Dashboard Content -->
+    <div class="dashboard-content-wrapper">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            
+            <!-- Welcome Section -->
+            <div class="glass-welcome-card mb-8">
+                <div class="glass-welcome-icon">
+                    <i class="fas fa-user"></i>
+                </div>
+                <div>
+                    <h2 class="glass-welcome-title">{{ dashboard.getGreeting() }}, {{ dashboard.currentUser.name }}!</h2>
+                    <p class="glass-welcome-subtitle">
+                        <span class="glass-badge glass-badge-purple">{{ dashboard.currentUser.role | uppercase }}</span>
+                        <span style="margin-left: 0.5rem; color: rgba(255, 255, 255, 0.6);">Welcome to your dashboard</span>
+                    </p>
+                </div>
+            </div>
+
+            <!-- Loading State -->
+            <div ng-if="dashboard.isLoading" class="glass-loading">
+                <div class="glass-spinner"></div>
+                <p style="margin-top: 1rem;">Loading your dashboard...</p>
+            </div>
+
+            <!-- Dashboard Content -->
+            <div ng-if="!dashboard.isLoading">
+                
+                <!-- Stats Cards -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                    <div class="glass-stat-card" ng-repeat="stat in dashboard.dashboardStats">
+                        <div>
+                            <div class="stat-value-glass">{{ stat.value }}</div>
+                            <div class="stat-label-glass">{{ stat.label }}</div>
+                        </div>
+                        <div class="stat-icon-glass">
+                            <i class="{{ stat.icon }}"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="glass-section-card mb-8">
+                    <div class="glass-section-header">
+                        <h5 style="color: white; font-weight: 700; margin: 0; font-size: 1.125rem;">
+                            <i class="fas fa-bolt mr-2"></i>Quick Actions
+                        </h5>
+                    </div>
+                    <div class="glass-section-body">
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                            <button class="glass-btn">
+                                <i class="fas fa-user-edit"></i>
+                                <span>Update Profile</span>
+                            </button>
+                            <button class="glass-btn">
+                                <i class="fas fa-lock"></i>
+                                <span>Change Password</span>
+                            </button>
+                            <button class="glass-btn" ng-show="dashboard.currentUser.role === 'student'">
+                                <i class="fas fa-book"></i>
+                                <span>View Courses</span>
+                            </button>
+                            <button class="glass-btn" ng-show="dashboard.currentUser.role === 'faculty'">
+                                <i class="fas fa-calendar-check"></i>
+                                <span>My Schedule</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Two Column Layout -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+                    
+                    <!-- Recent Activity -->
+                    <div class="glass-section-card">
+                        <div class="glass-section-header">
+                            <h5 style="color: white; font-weight: 700; margin: 0; font-size: 1.125rem;">
+                                <i class="fas fa-history mr-2"></i>Recent Activity
+                            </h5>
+                        </div>
+                        <div class="glass-section-body">
+                            <div ng-if="dashboard.recentActivities.length > 0">
+                                <div class="glass-activity-item" ng-repeat="activity in dashboard.recentActivities">
+                                    <div class="glass-activity-icon">
+                                        <i class="{{ activity.icon }}"></i>
+                                    </div>
+                                    <div class="flex-1">
+                                        <div class="glass-activity-text">{{ activity.text }}</div>
+                                        <div class="glass-activity-time">{{ activity.time }}</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="glass-empty-state" ng-if="dashboard.recentActivities.length === 0">
+                                <i class="fas fa-inbox"></i>
+                                <p>No recent activity</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Account Info -->
+                    <div class="glass-section-card">
+                        <div class="glass-section-header">
+                            <h5 style="color: white; font-weight: 700; margin: 0; font-size: 1.125rem;">
+                                <i class="fas fa-user-circle mr-2"></i>Account Information
+                            </h5>
+                        </div>
+                        <div class="glass-section-body">
+                            <table class="glass-table">
+                                <tbody>
+                                    <tr>
+                                        <td>Name:</td>
+                                        <td>{{ dashboard.currentUser.name }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Email:</td>
+                                        <td>{{ dashboard.currentUser.email }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Role:</td>
+                                        <td><span class="glass-badge glass-badge-purple">{{ dashboard.currentUser.role | uppercase }}</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Status:</td>
+                                        <td><span class="glass-badge glass-badge-green">Active</span></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Info Banner -->
+                <div class="glass-info-alert">
+                    <i class="fas fa-info-circle"></i>
+                    <div>
+                        <h4>More features coming soon!</h4>
+                        <p>This dashboard will be expanded with role-specific modules for Students, Faculty, and Administrators.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

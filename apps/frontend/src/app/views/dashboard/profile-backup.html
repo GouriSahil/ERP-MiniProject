@@ -1,0 +1,562 @@
+<!-- Modern Glassmorphic Profile Page with Dark Theme -->
+<style>
+    /* ===== CSS Variables ===== */
+    :root {
+        --purple-primary: #a855f7;
+        --blue-primary: #3b82f6;
+        --pink-accent: #ec4899;
+        --bg-dark: #0f172a;
+        --bg-darker: #020617;
+    }
+
+    /* ===== Profile Container ===== */
+    .profile-glass-container {
+        position: relative;
+        min-height: 100vh;
+        background: linear-gradient(135deg, #0f172a 0%, #581c87 50%, #0f172a 100%);
+        overflow-x: hidden;
+    }
+
+    /* ===== Background Animation Blobs ===== */
+    .profile-bg-animation {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        z-index: 0;
+        pointer-events: none;
+    }
+
+    .profile-blob {
+        position: absolute;
+        border-radius: 50%;
+        filter: blur(80px);
+        opacity: 0.15;
+    }
+
+    .profile-blob-1 {
+        width: 400px;
+        height: 400px;
+        background: var(--purple-primary);
+        top: -100px;
+        right: -100px;
+        animation: blobFloat 7s infinite;
+    }
+
+    .profile-blob-2 {
+        width: 500px;
+        height: 500px;
+        background: var(--blue-primary);
+        bottom: -150px;
+        left: -150px;
+        animation: blobFloat 7s infinite 2s;
+    }
+
+    .profile-blob-3 {
+        width: 350px;
+        height: 350px;
+        background: var(--pink-accent);
+        top: 50%;
+        left: 50%;
+        animation: blobFloat 7s infinite 4s;
+    }
+
+    @keyframes blobFloat {
+        0%, 100% { transform: translate(0, 0) scale(1); }
+        33% { transform: translate(30px, -50px) scale(1.1); }
+        66% { transform: translate(-20px, 20px) scale(0.9); }
+    }
+
+    /* ===== Glass Navigation ===== */
+    .profile-glass-nav {
+        background: rgba(255, 255, 255, 0.05);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        position: sticky;
+        top: 0;
+        z-index: 50;
+    }
+
+    .profile-nav-link {
+        color: rgba(255, 255, 255, 0.8);
+        text-decoration: none;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .profile-nav-link:hover {
+        color: var(--purple-primary);
+    }
+
+    /* ===== Glass Card ===== */
+    .glass-card {
+        background: linear-gradient(135deg, 
+            rgba(255, 255, 255, 0.1), 
+            rgba(255, 255, 255, 0.05)
+        );
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 20px;
+        overflow: hidden;
+        transition: all 0.3s ease;
+    }
+
+    .glass-card:hover {
+        background: linear-gradient(135deg, 
+            rgba(255, 255, 255, 0.15), 
+            rgba(255, 255, 255, 0.08)
+        );
+        border-color: rgba(255, 255, 255, 0.2);
+    }
+
+    /* ===== Profile Header Card ===== */
+    .profile-header-card {
+        background: linear-gradient(135deg, 
+            rgba(168, 85, 247, 0.2), 
+            rgba(59, 130, 246, 0.1)
+        );
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        border-radius: 20px;
+        overflow: hidden;
+        transition: all 0.3s ease;
+    }
+
+    .profile-header-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 20px 40px rgba(168, 85, 247, 0.2);
+    }
+
+    .profile-header-gradient {
+        background: linear-gradient(135deg, var(--purple-primary), var(--blue-primary));
+        padding: 2.5rem;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .profile-header-gradient::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(circle, rgba(255, 255, 255, 0.1), transparent 70%);
+        animation: shimmer 10s infinite linear;
+    }
+
+    @keyframes shimmer {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+
+    .profile-avatar-container {
+        width: 128px;
+        height: 128px;
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1.5rem;
+        backdrop-filter: blur(10px);
+        border: 4px solid rgba(255, 255, 255, 0.3);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        position: relative;
+        z-index: 1;
+    }
+
+    .profile-avatar-icon {
+        color: white;
+        font-size: 3.5rem;
+    }
+
+    .profile-name {
+        color: white;
+        font-size: 2rem;
+        font-weight: 700;
+        margin: 0 0 0.5rem 0;
+        position: relative;
+        z-index: 1;
+    }
+
+    .profile-email {
+        color: rgba(255, 255, 255, 0.8);
+        font-size: 1rem;
+        margin: 0;
+        position: relative;
+        z-index: 1;
+    }
+
+    .profile-role-badge {
+        background: rgba(255, 255, 255, 0.2);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        color: white;
+        padding: 0.5rem 1.5rem;
+        border-radius: 50px;
+        font-weight: 600;
+        display: inline-block;
+        margin-top: 1rem;
+        position: relative;
+        z-index: 1;
+    }
+
+    .profile-body {
+        padding: 2rem;
+        text-align: center;
+    }
+
+    /* ===== Profile Details Card ===== */
+    .profile-details-card {
+        background: rgba(255, 255, 255, 0.05);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 20px;
+        overflow: hidden;
+        transition: all 0.3s ease;
+    }
+
+    .profile-details-card:hover {
+        background: rgba(255, 255, 255, 0.08);
+        border-color: rgba(255, 255, 255, 0.15);
+    }
+
+    .profile-details-header {
+        background: linear-gradient(135deg, var(--purple-primary), var(--blue-primary));
+        padding: 1.25rem 1.5rem;
+    }
+
+    .profile-details-title {
+        color: white;
+        font-weight: 700;
+        margin: 0;
+        font-size: 1.125rem;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+    .profile-details-body {
+        padding: 1.5rem;
+    }
+
+    /* ===== Glass Form ===== */
+    .glass-form-group {
+        margin-bottom: 1.5rem;
+    }
+
+    .glass-form-label {
+        display: block;
+        color: rgba(255, 255, 255, 0.8);
+        font-weight: 600;
+        font-size: 0.875rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .glass-form-input {
+        width: 100%;
+        padding: 0.875rem 1rem;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 12px;
+        color: rgba(255, 255, 255, 0.6);
+        font-size: 0.95rem;
+        transition: all 0.3s ease;
+    }
+
+    .glass-form-input:focus {
+        outline: none;
+        background: rgba(255, 255, 255, 0.08);
+        border-color: var(--purple-primary);
+        color: rgba(255, 255, 255, 0.8);
+    }
+
+    /* ===== Status Indicator ===== */
+    .status-indicator {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+    .status-dot {
+        width: 12px;
+        height: 12px;
+        background: #22c55e;
+        border-radius: 50%;
+        box-shadow: 0 0 10px rgba(34, 197, 94, 0.5);
+        animation: statusPulse 2s infinite;
+    }
+
+    @keyframes statusPulse {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.6; }
+    }
+
+    .status-text {
+        color: rgba(255, 255, 255, 0.9);
+        font-weight: 600;
+    }
+
+    .meta-label {
+        color: rgba(255, 255, 255, 0.6);
+        font-size: 0.875rem;
+    }
+
+    /* ===== Info Alert ===== */
+    .glass-info-alert {
+        background: rgba(59, 130, 246, 0.1);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(59, 130, 246, 0.3);
+        border-radius: 16px;
+        padding: 1.25rem 1.5rem;
+        display: flex;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+
+    .glass-info-alert i {
+        color: var(--blue-primary);
+        font-size: 1.25rem;
+        margin-top: 0.15rem;
+        flex-shrink: 0;
+    }
+
+    .glass-info-alert-content h4 {
+        color: rgba(255, 255, 255, 0.9);
+        font-weight: 700;
+        margin: 0 0 0.25rem 0;
+        font-size: 1rem;
+    }
+
+    .glass-info-alert-content p {
+        color: rgba(255, 255, 255, 0.7);
+        margin: 0;
+        font-size: 0.875rem;
+        line-height: 1.5;
+    }
+
+    /* ===== Glass Buttons ===== */
+    .glass-btn {
+        background: linear-gradient(135deg, var(--purple-primary), var(--blue-primary));
+        border: none;
+        border-radius: 12px;
+        padding: 1rem 1.5rem;
+        color: white;
+        font-weight: 600;
+        font-size: 0.95rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        box-shadow: 0 4px 15px rgba(168, 85, 247, 0.3);
+        width: 100%;
+    }
+
+    .glass-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(168, 85, 247, 0.4);
+    }
+
+    .glass-btn-secondary {
+        background: rgba(255, 255, 255, 0.05);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        box-shadow: none;
+    }
+
+    .glass-btn-secondary:hover {
+        background: rgba(255, 255, 255, 0.1);
+        border-color: var(--purple-primary);
+    }
+
+    /* ===== Content Wrapper ===== */
+    .profile-content-wrapper {
+        position: relative;
+        z-index: 1;
+    }
+
+    /* ===== Responsive ===== */
+    @media (max-width: 768px) {
+        .profile-header-gradient {
+            padding: 2rem 1.5rem;
+        }
+
+        .profile-avatar-container {
+            width: 100px;
+            height: 100px;
+        }
+
+        .profile-avatar-icon {
+            font-size: 2.5rem;
+        }
+
+        .profile-name {
+            font-size: 1.5rem;
+        }
+
+        .profile-details-body {
+            padding: 1rem;
+        }
+
+        .glass-form-group {
+            margin-bottom: 1rem;
+        }
+    }
+</style>
+
+<div class="profile-glass-container">
+    <!-- Animated Background Elements -->
+    <div class="profile-bg-animation">
+        <div class="profile-blob profile-blob-1"></div>
+        <div class="profile-blob profile-blob-2"></div>
+        <div class="profile-blob profile-blob-3"></div>
+    </div>
+
+    <!-- Glassmorphic Navigation -->
+    <nav class="profile-glass-nav">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <a href="#!/dashboard" class="profile-nav-link">
+                        <i class="fas fa-arrow-left"></i>
+                        <span>Back to Dashboard</span>
+                    </a>
+                </div>
+                <div class="flex items-center gap-4">
+                    <span style="color: rgba(255, 255, 255, 0.8);">{{ dashboard.currentUser.name }}</span>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Profile Content -->
+    <div class="profile-content-wrapper">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                
+                <!-- Profile Header Card -->
+                <div class="lg:col-span-1">
+                    <div class="profile-header-card">
+                        <div class="profile-header-gradient">
+                            <div class="profile-avatar-container">
+                                <i class="fas fa-user profile-avatar-icon"></i>
+                            </div>
+                            <h3 class="profile-name">{{ dashboard.currentUser.name }}</h3>
+                            <p class="profile-email">{{ dashboard.currentUser.email }}</p>
+                            <span class="profile-role-badge">
+                                {{ dashboard.currentUser.role | uppercase }}
+                            </span>
+                        </div>
+                        <div class="profile-body">
+                            <div style="display: flex; justify-content: center; gap: 2rem;">
+                                <div style="text-align: center;">
+                                    <div style="color: rgba(255, 255, 255, 0.9); font-size: 1.5rem; font-weight: 700;">{{ dashboard.currentUser.role === 'student' ? '12' : dashboard.currentUser.role === 'faculty' ? '8' : '15' }}</div>
+                                    <div style="color: rgba(255, 255, 255, 0.6); font-size: 0.75rem; margin-top: 0.25rem;">Courses</div>
+                                </div>
+                                <div style="text-align: center;">
+                                    <div style="color: rgba(255, 255, 255, 0.9); font-size: 1.5rem; font-weight: 700;">98%</div>
+                                    <div style="color: rgba(255, 255, 255, 0.6); font-size: 0.75rem; margin-top: 0.25rem;">Attendance</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Profile Details -->
+                <div class="lg:col-span-2">
+                    <div class="profile-details-card">
+                        <div class="profile-details-header">
+                            <h5 class="profile-details-title">
+                                <i class="fas fa-user-edit"></i>
+                                Profile Information
+                            </h5>
+                        </div>
+                        <div class="profile-details-body">
+                            <form>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <!-- Full Name -->
+                                    <div class="glass-form-group">
+                                        <label class="glass-form-label">Full Name</label>
+                                        <input type="text" 
+                                               class="glass-form-input"
+                                               value="{{ dashboard.currentUser.name }}" 
+                                               readonly>
+                                    </div>
+
+                                    <!-- Email Address -->
+                                    <div class="glass-form-group">
+                                        <label class="glass-form-label">Email Address</label>
+                                        <input type="email" 
+                                               class="glass-form-input"
+                                               value="{{ dashboard.currentUser.email }}" 
+                                               readonly>
+                                    </div>
+                                </div>
+
+                                <!-- Role -->
+                                <div class="glass-form-group">
+                                    <label class="glass-form-label">Role</label>
+                                    <input type="text" 
+                                           class="glass-form-input"
+                                           value="{{ dashboard.currentUser.role | uppercase }}" 
+                                           readonly>
+                                </div>
+
+                                <!-- Account Info -->
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div class="glass-form-group">
+                                        <label class="glass-form-label">Account Status</label>
+                                        <div class="status-indicator">
+                                            <span class="status-dot"></span>
+                                            <span class="status-text">Active</span>
+                                        </div>
+                                    </div>
+
+                                    <div class="glass-form-group">
+                                        <label class="glass-form-label">Member Since</label>
+                                        <div class="meta-text">
+                                            <span style="color: rgba(255, 255, 255, 0.9); font-weight: 600;">
+                                                {{ dashboard.currentUser.createdAt || 'January 2024' }}
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Info Alert -->
+                                <div class="glass-info-alert">
+                                    <i class="fas fa-info-circle"></i>
+                                    <div class="glass-info-alert-content">
+                                        <h4>Profile Editing Coming Soon</h4>
+                                        <p>You'll soon be able to update your personal information, change your password, and manage your account settings directly from here.</p>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- Quick Actions -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+                        <button class="glass-btn">
+                            <i class="fas fa-lock"></i>
+                            <span>Change Password</span>
+                        </button>
+                        <button class="glass-btn glass-btn-secondary">
+                            <i class="fas fa-download"></i>
+                            <span>Download My Data</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
