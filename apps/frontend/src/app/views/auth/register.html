@@ -1,146 +1,1087 @@
-<div class="min-h-screen bg-gradient-to-br from-primary-600 via-primary-700 to-primary-800 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
-    <div class="max-w-md w-full">
-        <!-- Logo/Brand -->
-        <div class="text-center mb-8">
-            <i class="fas fa-user-plus text-6xl text-white mb-4 opacity-90"></i>
-            <h2 class="text-3xl font-bold text-white mb-2">Create Account</h2>
-            <p class="text-blue-100">Join College ERP today</p>
+<div class="auth-container">
+    <div class="auth-content">
+        <!-- Left Panel - Branding -->
+        <div class="auth-branding">
+            <div class="branding-content">
+                <!-- Logo -->
+                <div class="brand-logo">
+                    <div class="brand-logo-icon">
+                        <i class="fas fa-graduation-cap"></i>
+                    </div>
+                    <div class="brand-logo-text">
+                        <h1 class="brand-logo-title">College ERP</h1>
+                        <p class="brand-logo-subtitle">Modern Education Management</p>
+                    </div>
+                </div>
+
+                <!-- Features -->
+                <div class="brand-features">
+                    <div class="brand-feature">
+                        <div class="brand-feature-icon brand-feature-purple">
+                            <i class="fas fa-user-graduate"></i>
+                        </div>
+                        <div class="brand-feature-text">
+                            <p class="brand-feature-title">Student Portal</p>
+                            <p class="brand-feature-desc">Access courses, assignments & grades</p>
+                        </div>
+                    </div>
+
+                    <div class="brand-feature">
+                        <div class="brand-feature-icon brand-feature-blue">
+                            <i class="fas fa-chalkboard-teacher"></i>
+                        </div>
+                        <div class="brand-feature-text">
+                            <p class="brand-feature-title">Faculty Dashboard</p>
+                            <p class="brand-feature-desc">Manage classes & track progress</p>
+                        </div>
+                    </div>
+
+                    <div class="brand-feature">
+                        <div class="brand-feature-icon brand-feature-pink">
+                            <i class="fas fa-cog"></i>
+                        </div>
+                        <div class="brand-feature-text">
+                            <p class="brand-feature-title">Admin Control</p>
+                            <p class="brand-feature-desc">Full system administration</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Stats Card -->
+                <div class="brand-stats">
+                    <div class="brand-stats-icon">
+                        <i class="fas fa-rocket"></i>
+                    </div>
+                    <h3 class="brand-stats-title">Start Your Journey</h3>
+                    <p class="brand-stats-desc">Join thousands of students and educators transforming their academic experience</p>
+                    <div class="brand-stats-grid">
+                        <div class="brand-stat">
+                            <span class="brand-stat-value">2.5K+</span>
+                            <span class="brand-stat-label">Students</span>
+                        </div>
+                        <div class="brand-stat">
+                            <span class="brand-stat-value">150+</span>
+                            <span class="brand-stat-label">Faculty</span>
+                        </div>
+                        <div class="brand-stat">
+                            <span class="brand-stat-value">85+</span>
+                            <span class="brand-stat-label">Courses</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
 
-        <!-- Register Card -->
-        <div class="bg-white rounded-2xl shadow-2xl overflow-hidden">
-            <div class="p-8">
+        <!-- Right Panel - Register Form -->
+        <div class="auth-form-panel">
+            <div class="auth-form-card">
+                <!-- Header -->
+                <div class="auth-header">
+                    <div class="auth-header-icon auth-header-icon-register">
+                        <i class="fas fa-user-plus"></i>
+                    </div>
+                    <h2 class="auth-title">Create Account</h2>
+                    <p class="auth-subtitle">Join College ERP today</p>
+                </div>
+
                 <!-- Error Alert -->
-                <div class="mb-6 p-4 rounded-lg bg-red-50 border-l-4 border-red-500" ng-if="auth.registerError">
-                    <div class="flex">
-                        <i class="fas fa-exclamation-circle text-red-500 mt-0.5 mr-3"></i>
-                        <div>
-                            <p class="text-sm font-medium text-red-800">Registration Failed</p>
-                            <p class="text-sm text-red-700 mt-1">{{ auth.registerError }}</p>
+                <div class="auth-alert auth-alert-error" ng-if="auth.registerError">
+                    <div class="auth-alert-icon">
+                        <i class="fas fa-exclamation-circle"></i>
+                    </div>
+                    <div class="auth-alert-content">
+                        <p class="auth-alert-title">Registration Failed</p>
+                        <p class="auth-alert-message">{{ auth.registerError }}</p>
+                    </div>
+                </div>
+
+                <!-- Register Form -->
+                <form class="auth-form" ng-submit="auth.register()">
+                    <!-- Role Selection -->
+                    <div class="auth-field">
+                        <label class="auth-label">
+                            <i class="fas fa-user-tag"></i> I am a
+                        </label>
+                        <div class="role-selection">
+                            <label class="role-option" ng-class="{'role-option-selected': auth.registerData.role === 'student'}">
+                                <input type="radio" name="role" value="student" ng-model="auth.registerData.role" required>
+                                <i class="fas fa-user-graduate"></i>
+                                <span>Student</span>
+                            </label>
+                            <label class="role-option" ng-class="{'role-option-selected': auth.registerData.role === 'faculty'}">
+                                <input type="radio" name="role" value="faculty" ng-model="auth.registerData.role">
+                                <i class="fas fa-chalkboard-teacher"></i>
+                                <span>Faculty</span>
+                            </label>
+                            <label class="role-option" ng-class="{'role-option-selected': auth.registerData.role === 'admin'}">
+                                <input type="radio" name="role" value="admin" ng-model="auth.registerData.role">
+                                <i class="fas fa-user-shield"></i>
+                                <span>Admin</span>
+                            </label>
                         </div>
                     </div>
-                </div>
 
-                <!-- Success Alert -->
-                <div class="mb-6 p-4 rounded-lg bg-green-50 border-l-4 border-green-500" ng-if="auth.registerSuccessMessage">
-                    <div class="flex">
-                        <i class="fas fa-check-circle text-green-500 mt-0.5 mr-3"></i>
-                        <p class="text-sm text-green-700">{{ auth.registerSuccessMessage }}</p>
-                    </div>
-                </div>
-
-                <!-- Registration Form -->
-                <form ng-submit="auth.register()">
-                    <div class="mb-4">
-                        <label class="block text-sm font-semibold text-gray-700 mb-2" for="name">
-                            <i class="fas fa-user mr-1 text-primary-600"></i> Full Name
+                    <!-- Full Name -->
+                    <div class="auth-field">
+                        <label class="auth-label" for="fullName">
+                            <i class="fas fa-user"></i> Full Name
                         </label>
-                        <input type="text"
-                               class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all"
-                               id="name"
-                               ng-model="auth.registerData.name"
-                               placeholder="Enter your full name"
-                               required
-                               autofocus
-                               ng-disabled="auth.isLoading">
+                        <div class="auth-input-group">
+                            <input type="text"
+                                   class="auth-input"
+                                   id="fullName"
+                                   ng-model="auth.registerData.fullName"
+                                   placeholder="Enter your full name"
+                                   required
+                                   ng-disabled="auth.isLoading">
+                            <span class="auth-input-icon">
+                                <i class="fas fa-user"></i>
+                            </span>
+                        </div>
                     </div>
 
-                    <div class="mb-4">
-                        <label class="block text-sm font-semibold text-gray-700 mb-2" for="reg-email">
-                            <i class="fas fa-envelope mr-1 text-primary-600"></i> Email Address
+                    <!-- Email -->
+                    <div class="auth-field">
+                        <label class="auth-label" for="email">
+                            <i class="fas fa-envelope"></i> Email Address
                         </label>
-                        <input type="email"
-                               class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all"
-                               id="reg-email"
-                               ng-model="auth.registerData.email"
-                               placeholder="Enter your email"
-                               required
-                               ng-disabled="auth.isLoading">
+                        <div class="auth-input-group">
+                            <input type="email"
+                                   class="auth-input"
+                                   id="email"
+                                   ng-model="auth.registerData.email"
+                                   placeholder="Enter your email"
+                                   required
+                                   ng-disabled="auth.isLoading">
+                            <span class="auth-input-icon">
+                                <i class="fas fa-envelope"></i>
+                            </span>
+                        </div>
                     </div>
 
-                    <div class="mb-4">
-                        <label class="block text-sm font-semibold text-gray-700 mb-2" for="role">
-                            <i class="fas fa-user-tag mr-1 text-primary-600"></i> I am a...
+                    <!-- Phone -->
+                    <div class="auth-field">
+                        <label class="auth-label" for="phone">
+                            <i class="fas fa-phone"></i> Phone Number
                         </label>
-                        <select class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all"
-                                id="role"
-                                ng-model="auth.registerData.role"
-                                required
-                                ng-disabled="auth.isLoading">
-                            <option value="">Select your role</option>
-                            <option ng-repeat="role in auth.roles" value="{{ role.value }}">
-                                {{ role.label }}
-                            </option>
-                        </select>
+                        <div class="auth-input-group">
+                            <input type="tel"
+                                   class="auth-input"
+                                   id="phone"
+                                   ng-model="auth.registerData.phone"
+                                   placeholder="Enter your phone number"
+                                   ng-disabled="auth.isLoading">
+                            <span class="auth-input-icon">
+                                <i class="fas fa-phone"></i>
+                            </span>
+                        </div>
                     </div>
 
-                    <div class="mb-4">
-                        <label class="block text-sm font-semibold text-gray-700 mb-2" for="reg-password">
-                            <i class="fas fa-lock mr-1 text-primary-600"></i> Password
+                    <!-- Password -->
+                    <div class="auth-field">
+                        <label class="auth-label" for="password">
+                            <i class="fas fa-lock"></i> Password
                         </label>
-                        <input type="password"
-                               class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all"
-                               id="reg-password"
-                               ng-model="auth.registerData.password"
-                               placeholder="Create a password (min 8 characters)"
-                               required
-                               ng-disabled="auth.isLoading">
-                    </div>
-
-                    <div class="mb-4">
-                        <label class="block text-sm font-semibold text-gray-700 mb-2" for="confirm-password">
-                            <i class="fas fa-lock mr-1 text-primary-600"></i> Confirm Password
-                        </label>
-                        <input type="password"
-                               class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all"
-                               id="confirm-password"
-                               ng-model="auth.registerData.confirmPassword"
-                               placeholder="Re-enter your password"
-                               required
-                               ng-disabled="auth.isLoading">
-                    </div>
-
-                    <div class="mb-6 bg-blue-50 border-l-4 border-primary-500 p-4 rounded">
-                        <div class="flex">
-                            <i class="fas fa-info-circle text-primary-600 mt-0.5 mr-3"></i>
-                            <div class="text-sm text-gray-700">
-                                <p class="font-semibold mb-1">Password requirements:</p>
-                                <ul class="list-disc list-inside space-y-1 text-xs">
-                                    <li>At least 8 characters long</li>
-                                    <li>Contains letters and numbers</li>
-                                </ul>
+                        <div class="auth-input-group">
+                            <input type="password"
+                                   class="auth-input"
+                                   id="password"
+                                   ng-model="auth.registerData.password"
+                                   placeholder="Create a strong password"
+                                   required
+                                   ng-disabled="auth.isLoading">
+                            <span class="auth-input-icon auth-input-icon-toggle" ng-click="auth.togglePasswordVisibility('register')">
+                                <i class="fas" ng-class="auth.showPassword.register ? 'fa-eye-slash' : 'fa-eye'"></i>
+                            </span>
+                        </div>
+                        <!-- Password Strength -->
+                        <div class="password-strength" ng-if="auth.registerData.password">
+                            <div class="strength-bar">
+                                <div class="strength-fill" ng-class="auth.passwordStrength.class" ng-style="{width: auth.passwordStrength.percent + '%'}"></div>
                             </div>
+                            <span class="strength-text" ng-class="auth.passwordStrength.class">{{ auth.passwordStrength.text }}</span>
                         </div>
                     </div>
 
-                    <button type="submit"
-                            class="w-full bg-gradient-to-r from-primary-600 to-primary-700 text-white py-3 rounded-lg font-semibold hover:from-primary-700 hover:to-primary-800 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-all transform hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
-                            ng-disabled="auth.isLoading">
+                    <!-- Confirm Password -->
+                    <div class="auth-field">
+                        <label class="auth-label" for="confirmPassword">
+                            <i class="fas fa-lock"></i> Confirm Password
+                        </label>
+                        <div class="auth-input-group">
+                            <input type="password"
+                                   class="auth-input"
+                                   id="confirmPassword"
+                                   ng-model="auth.registerData.confirmPassword"
+                                   placeholder="Confirm your password"
+                                   required
+                                   ng-disabled="auth.isLoading">
+                            <span class="auth-input-icon">
+                                <i class="fas fa-lock"></i>
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- Terms -->
+                    <div class="auth-field auth-field-checkbox">
+                        <label class="auth-checkbox">
+                            <input type="checkbox" ng-model="auth.registerData.agreeTerms" required>
+                            <span class="auth-checkbox-label">
+                                I agree to the Terms of Service and Privacy Policy
+                            </span>
+                        </label>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <button type="submit" class="auth-btn" ng-disabled="auth.isLoading || !auth.registerData.agreeTerms">
                         <span ng-if="!auth.isLoading">
-                            <i class="fas fa-user-plus mr-2"></i>Create Account
+                            <i class="fas fa-user-plus"></i> Create Account
                         </span>
                         <span ng-if="auth.isLoading">
-                            <i class="fas fa-circle-notch fa-spin mr-2"></i>Creating Account...
+                            <i class="fas fa-spinner fa-spin"></i> Creating Account...
                         </span>
                     </button>
                 </form>
 
-                <div class="my-6 border-t border-gray-200"></div>
+                <!-- Divider -->
+                <div class="auth-divider">
+                    <div class="auth-divider-line"></div>
+                    <span class="auth-divider-text">Or register with</span>
+                    <div class="auth-divider-line"></div>
+                </div>
 
-                <div class="text-center">
-                    <p class="text-gray-600 mb-3">Already have an account?</p>
-                    <a href="#!/login" 
-                       class="inline-block border-2 border-primary-600 text-primary-600 hover:bg-primary-50 px-6 py-2 rounded-lg font-semibold transition-all">
-                        <i class="fas fa-sign-in-alt mr-1"></i> Sign In
+                <!-- Social Login -->
+                <div class="auth-social">
+                    <button class="auth-social-btn" ng-click="auth.registerWithGoogle()">
+                        <i class="fab fa-google"></i>
+                    </button>
+                    <button class="auth-social-btn" ng-click="auth.registerWithMicrosoft()">
+                        <i class="fab fa-microsoft"></i>
+                    </button>
+                    <button class="auth-social-btn" ng-click="auth.registerWithApple()">
+                        <i class="fab fa-apple"></i>
+                    </button>
+                </div>
+
+                <!-- Footer -->
+                <div class="auth-footer">
+                    <p class="auth-footer-text">Already have an account?</p>
+                    <a class="auth-footer-link" href="#!/login">
+                        <i class="fas fa-sign-in-alt"></i> Sign In
+                        <i class="fas fa-arrow-right"></i>
                     </a>
                 </div>
 
-                <div class="mt-4 text-center">
-                    <a href="#!/" class="text-gray-500 hover:text-gray-700 text-sm transition-colors">
-                        <i class="fas fa-arrow-left mr-1"></i> Back to Home
+                <!-- Back to Home -->
+                <div class="auth-back">
+                    <a href="#!/">
+                        <i class="fas fa-arrow-left"></i> Back to Home
                     </a>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+<style>
+    /* ===== CSS Variables ===== */
+    :root {
+        --bg-dark: #0a0a0a;
+        --bg-card: #141414;
+        --bg-card-hover: #1a1a1a;
+        --border-color: rgba(255, 255, 255, 0.1);
+        --border-hover: rgba(99, 102, 241, 0.3);
+        --accent-color: #6366f1;
+        --accent-hover: #4f46e5;
+        --accent-light: rgba(99, 102, 241, 0.2);
+        --text-primary: #fafafa;
+        --text-secondary: #a3a3a3;
+        --text-muted: rgba(255, 255, 255, 0.7);
+        --success-color: #22c55e;
+        --error-color: #ef4444;
+        --warning-color: #fbbf24;
+    }
+
+    /* ===== Container ===== */
+    .auth-container {
+        min-height: 100vh;
+        background: var(--bg-dark);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 1rem;
+    }
+
+    .auth-content {
+        display: flex;
+        max-width: 1200px;
+        width: 100%;
+        min-height: 600px;
+        background: var(--bg-card);
+        border: 1px solid var(--border-color);
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    }
+
+    /* ===== Left Panel - Branding ===== */
+    .auth-branding {
+        flex: 1;
+        padding: 3rem;
+        background: linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(59, 130, 246, 0.05) 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .branding-content {
+        max-width: 400px;
+    }
+
+    .brand-logo {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        margin-bottom: 3rem;
+    }
+
+    .brand-logo-icon {
+        width: 60px;
+        height: 60px;
+        background: var(--accent-color);
+        border-radius: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 4px 12px rgba(99, 102, 241, 0.25);
+    }
+
+    .brand-logo-icon i {
+        font-size: 1.75rem;
+        color: var(--text-primary);
+    }
+
+    .brand-logo-title {
+        font-size: 1.75rem;
+        font-weight: 800;
+        margin: 0;
+        color: var(--text-primary);
+    }
+
+    .brand-logo-subtitle {
+        color: var(--text-secondary);
+        margin: 0;
+        font-size: 0.9rem;
+    }
+
+    .brand-features {
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+        margin-bottom: 3rem;
+    }
+
+    .brand-feature {
+        display: flex;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+
+    .brand-feature-icon {
+        width: 48px;
+        height: 48px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        transition: transform 0.3s ease;
+    }
+
+    .brand-feature:hover .brand-feature-icon {
+        transform: scale(1.1);
+    }
+
+    .brand-feature-purple {
+        background: var(--accent-light);
+    }
+
+    .brand-feature-purple i {
+        color: var(--accent-color);
+    }
+
+    .brand-feature-blue {
+        background: rgba(59, 130, 246, 0.2);
+    }
+
+    .brand-feature-blue i {
+        color: #3b82f6;
+    }
+
+    .brand-feature-pink {
+        background: rgba(236, 72, 153, 0.2);
+    }
+
+    .brand-feature-pink i {
+        color: #ec4899;
+    }
+
+    .brand-feature-icon i {
+        font-size: 1.25rem;
+    }
+
+    .brand-feature-title {
+        color: var(--text-primary);
+        font-weight: 600;
+        margin: 0 0 0.25rem 0;
+        font-size: 1rem;
+    }
+
+    .brand-feature-desc {
+        color: var(--text-secondary);
+        margin: 0;
+        font-size: 0.875rem;
+        line-height: 1.5;
+    }
+
+    .brand-stats {
+        padding: 1.5rem;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid var(--border-color);
+        border-radius: 12px;
+        backdrop-filter: blur(10px);
+        text-align: center;
+    }
+
+    .brand-stats-icon {
+        width: 50px;
+        height: 50px;
+        margin: 0 auto 1rem;
+        background: var(--accent-light);
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .brand-stats-icon i {
+        font-size: 1.5rem;
+        color: var(--accent-color);
+    }
+
+    .brand-stats-title {
+        color: var(--text-primary);
+        font-size: 1.25rem;
+        font-weight: 700;
+        margin: 0 0 0.5rem 0;
+    }
+
+    .brand-stats-desc {
+        color: var(--text-secondary);
+        font-size: 0.875rem;
+        margin: 0 0 1.5rem 0;
+        line-height: 1.5;
+    }
+
+    .brand-stats-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1rem;
+    }
+
+    .brand-stat {
+        display: flex;
+        flex-direction: column;
+        gap: 0.25rem;
+    }
+
+    .brand-stat-value {
+        color: var(--text-primary);
+        font-size: 1.5rem;
+        font-weight: 700;
+    }
+
+    .brand-stat-label {
+        color: var(--text-secondary);
+        font-size: 0.75rem;
+    }
+
+    /* ===== Right Panel - Form ===== */
+    .auth-form-panel {
+        flex: 1;
+        padding: 3rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .auth-form-card {
+        width: 100%;
+        max-width: 420px;
+    }
+
+    .auth-header {
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+
+    .auth-header-icon {
+        width: 70px;
+        height: 70px;
+        margin: 0 auto 1.5rem;
+        background: var(--accent-light);
+        border-radius: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .auth-header-icon i {
+        font-size: 1.75rem;
+        color: var(--accent-color);
+    }
+
+    .auth-header-icon-register {
+        background: rgba(34, 197, 94, 0.2);
+    }
+
+    .auth-header-icon-register i {
+        color: var(--success-color);
+    }
+
+    .auth-title {
+        font-size: 1.875rem;
+        font-weight: 700;
+        margin: 0 0 0.5rem 0;
+        color: var(--text-primary);
+    }
+
+    .auth-subtitle {
+        color: var(--text-secondary);
+        margin: 0;
+        font-size: 0.95rem;
+    }
+
+    /* ===== Alerts ===== */
+    .auth-alert {
+        display: flex;
+        gap: 0.75rem;
+        padding: 1rem 1.25rem;
+        border-radius: 12px;
+        margin-bottom: 1.5rem;
+        animation: slideDown 0.3s ease;
+    }
+
+    @keyframes slideDown {
+        from {
+            opacity: 0;
+            transform: translateY(-10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .auth-alert-error {
+        background: rgba(239, 68, 68, 0.1);
+        border: 1px solid rgba(239, 68, 68, 0.2);
+    }
+
+    .auth-alert-success {
+        background: rgba(34, 197, 94, 0.1);
+        border: 1px solid rgba(34, 197, 94, 0.2);
+    }
+
+    .auth-alert-icon {
+        flex-shrink: 0;
+    }
+
+    .auth-alert-error .auth-alert-icon i {
+        color: var(--error-color);
+    }
+
+    .auth-alert-success .auth-alert-icon i {
+        color: var(--success-color);
+    }
+
+    .auth-alert-content {
+        flex: 1;
+    }
+
+    .auth-alert-title {
+        font-weight: 600;
+        margin: 0 0 0.25rem 0;
+        font-size: 0.9rem;
+    }
+
+    .auth-alert-error .auth-alert-title {
+        color: var(--error-color);
+    }
+
+    .auth-alert-message {
+        font-size: 0.875rem;
+        margin: 0;
+        color: var(--text-secondary);
+    }
+
+    /* ===== Form Fields ===== */
+    .auth-field {
+        margin-bottom: 1.25rem;
+    }
+
+    .auth-field-checkbox {
+        margin-bottom: 1.5rem;
+    }
+
+    .auth-label {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-weight: 500;
+        margin-bottom: 0.5rem;
+        font-size: 0.9rem;
+        color: var(--text-primary);
+    }
+
+    .auth-label i {
+        color: var(--accent-color);
+        font-size: 0.875rem;
+    }
+
+    /* ===== Role Selection ===== */
+    .role-selection {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 0.75rem;
+    }
+
+    .role-option {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 1rem;
+        background: var(--bg-card-hover);
+        border: 1px solid var(--border-color);
+        border-radius: 10px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+
+    .role-option input {
+        position: absolute;
+        opacity: 0;
+        pointer-events: none;
+    }
+
+    .role-option i {
+        font-size: 1.5rem;
+        color: var(--text-secondary);
+        transition: color 0.2s ease;
+    }
+
+    .role-option span {
+        font-size: 0.75rem;
+        font-weight: 500;
+        color: var(--text-secondary);
+    }
+
+    .role-option:hover {
+        background: var(--bg-card);
+        border-color: var(--accent-color);
+    }
+
+    .role-option-selected {
+        background: var(--accent-light);
+        border-color: var(--accent-color);
+    }
+
+    .role-option-selected i,
+    .role-option-selected span {
+        color: var(--accent-color);
+    }
+
+    .auth-input-group {
+        position: relative;
+    }
+
+    .auth-input {
+        width: 100%;
+        padding: 0.875rem 3rem 0.875rem 1rem;
+        background: var(--bg-card-hover);
+        border: 1px solid var(--border-color);
+        border-radius: 10px;
+        color: var(--text-primary);
+        font-size: 0.95rem;
+        transition: all 0.2s ease;
+    }
+
+    .auth-input::placeholder {
+        color: var(--text-muted);
+    }
+
+    .auth-input:focus {
+        outline: none;
+        border-color: var(--accent-color);
+        box-shadow: 0 0 0 3px var(--accent-light);
+    }
+
+    .auth-input:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+
+    .auth-input-icon {
+        position: absolute;
+        right: 1rem;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--text-secondary);
+        font-size: 0.9rem;
+        pointer-events: none;
+    }
+
+    .auth-input-icon-toggle {
+        cursor: pointer;
+        pointer-events: auto;
+        transition: color 0.2s ease;
+    }
+
+    .auth-input-icon-toggle:hover {
+        color: var(--accent-color);
+    }
+
+    /* ===== Password Strength ===== */
+    .password-strength {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        margin-top: 0.75rem;
+    }
+
+    .strength-bar {
+        flex: 1;
+        height: 4px;
+        background: var(--bg-card-hover);
+        border-radius: 2px;
+        overflow: hidden;
+    }
+
+    .strength-fill {
+        height: 100%;
+        transition: all 0.3s ease;
+    }
+
+    .strength-fill.weak {
+        background: var(--error-color);
+        width: 33%;
+    }
+
+    .strength-fill.medium {
+        background: var(--warning-color);
+        width: 66%;
+    }
+
+    .strength-fill.strong {
+        background: var(--success-color);
+        width: 100%;
+    }
+
+    .strength-text {
+        font-size: 0.75rem;
+        font-weight: 500;
+        text-transform: uppercase;
+    }
+
+    .strength-text.weak {
+        color: var(--error-color);
+    }
+
+    .strength-text.medium {
+        color: var(--warning-color);
+    }
+
+    .strength-text.strong {
+        color: var(--success-color);
+    }
+
+    /* ===== Options ===== */
+    .auth-checkbox {
+        display: flex;
+        align-items: flex-start;
+        gap: 0.5rem;
+        cursor: pointer;
+        color: var(--text-secondary);
+        font-size: 0.875rem;
+    }
+
+    .auth-checkbox input {
+        width: 16px;
+        height: 16px;
+        accent-color: var(--accent-color);
+        cursor: pointer;
+        margin-top: 0.15rem;
+        flex-shrink: 0;
+    }
+
+    .auth-checkbox-label {
+        user-select: none;
+        line-height: 1.5;
+    }
+
+    .auth-link {
+        color: var(--accent-color);
+        text-decoration: none;
+        font-weight: 500;
+        transition: color 0.2s ease;
+    }
+
+    .auth-link:hover {
+        color: var(--accent-hover);
+        text-decoration: underline;
+    }
+
+    /* ===== Submit Button ===== */
+    .auth-btn {
+        width: 100%;
+        padding: 0.875rem 1.5rem;
+        background: var(--accent-color);
+        border: none;
+        border-radius: 10px;
+        color: var(--text-primary);
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+    }
+
+    .auth-btn:hover:not(:disabled) {
+        background: var(--accent-hover);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+    }
+
+    .auth-btn:active:not(:disabled) {
+        transform: translateY(0);
+    }
+
+    .auth-btn:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+
+    /* ===== Divider ===== */
+    .auth-divider {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        margin: 1.5rem 0;
+    }
+
+    .auth-divider-line {
+        flex: 1;
+        height: 1px;
+        background: var(--border-color);
+    }
+
+    .auth-divider-text {
+        color: var(--text-secondary);
+        font-size: 0.875rem;
+    }
+
+    /* ===== Social Login ===== */
+    .auth-social {
+        display: flex;
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .auth-social-btn {
+        flex: 1;
+        padding: 0.75rem;
+        background: var(--bg-card-hover);
+        border: 1px solid var(--border-color);
+        border-radius: 10px;
+        color: var(--text-primary);
+        font-size: 1.25rem;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .auth-social-btn:hover {
+        background: var(--bg-card);
+        border-color: var(--accent-color);
+        transform: translateY(-2px);
+    }
+
+    /* ===== Footer ===== */
+    .auth-footer {
+        text-align: center;
+        margin-bottom: 1rem;
+    }
+
+    .auth-footer-text {
+        color: var(--text-secondary);
+        margin: 0 0 0.75rem 0;
+        font-size: 0.9rem;
+    }
+
+    .auth-footer-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.75rem 1.5rem;
+        background: var(--accent-light);
+        border: 1px solid var(--accent-color);
+        border-radius: 10px;
+        color: var(--accent-color);
+        text-decoration: none;
+        font-weight: 600;
+        transition: all 0.2s ease;
+    }
+
+    .auth-footer-link:hover {
+        background: var(--accent-color);
+        color: var(--text-primary);
+        transform: translateY(-2px);
+    }
+
+    .auth-footer-link i:last-child {
+        transition: transform 0.2s ease;
+    }
+
+    .auth-footer-link:hover i:last-child {
+        transform: translateX(3px);
+    }
+
+    .auth-back {
+        text-align: center;
+    }
+
+    .auth-back a {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        color: var(--text-secondary);
+        text-decoration: none;
+        font-size: 0.875rem;
+        transition: color 0.2s ease;
+    }
+
+    .auth-back a:hover {
+        color: var(--text-primary);
+    }
+
+    .auth-back a i {
+        transition: transform 0.2s ease;
+    }
+
+    .auth-back a:hover i {
+        transform: translateX(-3px);
+    }
+
+    /* ===== Responsive ===== */
+    @media (max-width: 991px) {
+        .auth-content {
+            flex-direction: column;
+        }
+
+        .auth-branding {
+            padding: 2rem;
+        }
+
+        .brand-logo {
+            justify-content: center;
+            margin-bottom: 2rem;
+        }
+
+        .brand-features {
+            flex-direction: row;
+            flex-wrap: wrap;
+            gap: 1rem;
+            justify-content: center;
+        }
+
+        .brand-feature {
+            flex: 1 1 calc(50% - 1rem);
+            min-width: 200px;
+        }
+
+        .brand-stats {
+            display: none;
+        }
+
+        .auth-form-panel {
+            padding: 2rem;
+        }
+    }
+
+    @media (max-width: 576px) {
+        .auth-container {
+            padding: 0.5rem;
+        }
+
+        .auth-content {
+            min-height: auto;
+        }
+
+        .auth-branding,
+        .auth-form-panel {
+            padding: 1.5rem;
+        }
+
+        .brand-logo-title {
+            font-size: 1.5rem;
+        }
+
+        .brand-features {
+            flex-direction: column;
+        }
+
+        .brand-feature {
+            flex: 1 1 auto;
+        }
+
+        .role-selection {
+            grid-template-columns: 1fr;
+        }
+
+        .role-option {
+            flex-direction: row;
+            justify-content: flex-start;
+            padding: 0.875rem 1rem;
+        }
+
+        .role-option i {
+            font-size: 1.25rem;
+        }
+
+        .auth-header-icon {
+            width: 60px;
+            height: 60px;
+            font-size: 1.5rem;
+        }
+
+        .auth-title {
+            font-size: 1.5rem;
+        }
+
+        .brand-stats-grid {
+            grid-template-columns: 1fr;
+            gap: 1rem;
+        }
+
+        .auth-social {
+            gap: 0.75rem;
+        }
+    }
+</style>

@@ -1,104 +1,882 @@
-<div class="min-h-screen bg-gradient-to-br from-primary-600 via-primary-700 to-primary-800 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
-    <div class="max-w-md w-full">
-        <!-- Logo/Brand -->
-        <div class="text-center mb-8">
-            <i class="fas fa-graduation-cap text-6xl text-white mb-4 opacity-90"></i>
-            <h2 class="text-3xl font-bold text-white mb-2">Welcome Back</h2>
-            <p class="text-blue-100">Sign in to continue to College ERP</p>
+<div class="auth-container">
+    <div class="auth-content">
+        <!-- Left Panel - Branding -->
+        <div class="auth-branding">
+            <div class="branding-content">
+                <!-- Logo -->
+                <div class="brand-logo">
+                    <div class="brand-logo-icon">
+                        <i class="fas fa-graduation-cap"></i>
+                    </div>
+                    <div class="brand-logo-text">
+                        <h1 class="brand-logo-title">College ERP</h1>
+                        <p class="brand-logo-subtitle">Modern Education Management</p>
+                    </div>
+                </div>
+
+                <!-- Features -->
+                <div class="brand-features">
+                    <div class="brand-feature">
+                        <div class="brand-feature-icon brand-feature-purple">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                        <div class="brand-feature-text">
+                            <p class="brand-feature-title">Secure Access</p>
+                            <p class="brand-feature-desc">Enterprise-grade security for your data</p>
+                        </div>
+                    </div>
+
+                    <div class="brand-feature">
+                        <div class="brand-feature-icon brand-feature-blue">
+                            <i class="fas fa-bolt"></i>
+                        </div>
+                        <div class="brand-feature-text">
+                            <p class="brand-feature-title">Lightning Fast</p>
+                            <p class="brand-feature-desc">Optimized performance for seamless experience</p>
+                        </div>
+                    </div>
+
+                    <div class="brand-feature">
+                        <div class="brand-feature-icon brand-feature-pink">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <div class="brand-feature-text">
+                            <p class="brand-feature-title">Role-Based Access</p>
+                            <p class="brand-feature-desc">Personalized dashboards for every role</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Social Proof -->
+                <div class="brand-social-proof">
+                    <div class="brand-avatars">
+                        <div class="brand-avatar brand-avatar-1"></div>
+                        <div class="brand-avatar brand-avatar-2"></div>
+                        <div class="brand-avatar brand-avatar-3"></div>
+                        <div class="brand-avatar brand-avatar-more">
+                            <span>+2K</span>
+                        </div>
+                    </div>
+                    <div class="brand-trust">
+                        <div class="brand-stars">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                        </div>
+                        <p class="brand-trust-text">Trusted by 1000+ institutions</p>
+                    </div>
+                </div>
+            </div>
         </div>
 
-        <!-- Login Card -->
-        <div class="bg-white rounded-2xl shadow-2xl overflow-hidden">
-            <div class="p-8">
+        <!-- Right Panel - Login Form -->
+        <div class="auth-form-panel">
+            <div class="auth-form-card">
+                <!-- Header -->
+                <div class="auth-header">
+                    <div class="auth-header-icon">
+                        <i class="fas fa-sign-in-alt"></i>
+                    </div>
+                    <h2 class="auth-title">Welcome Back</h2>
+                    <p class="auth-subtitle">Sign in to continue to your dashboard</p>
+                </div>
+
                 <!-- Error Alert -->
-                <div class="mb-6 p-4 rounded-lg bg-red-50 border-l-4 border-red-500" ng-if="auth.loginError">
-                    <div class="flex">
-                        <i class="fas fa-exclamation-circle text-red-500 mt-0.5 mr-3"></i>
-                        <div>
-                            <p class="text-sm font-medium text-red-800">Login Failed</p>
-                            <p class="text-sm text-red-700 mt-1">{{ auth.loginError }}</p>
-                        </div>
+                <div class="auth-alert auth-alert-error" ng-if="auth.loginError">
+                    <div class="auth-alert-icon">
+                        <i class="fas fa-exclamation-circle"></i>
+                    </div>
+                    <div class="auth-alert-content">
+                        <p class="auth-alert-title">Login Failed</p>
+                        <p class="auth-alert-message">{{ auth.loginError }}</p>
                     </div>
                 </div>
 
                 <!-- Success Alert -->
-                <div class="mb-6 p-4 rounded-lg bg-green-50 border-l-4 border-green-500" ng-if="auth.loginSuccessMessage">
-                    <div class="flex">
-                        <i class="fas fa-check-circle text-green-500 mt-0.5 mr-3"></i>
-                        <p class="text-sm text-green-700">{{ auth.loginSuccessMessage }}</p>
+                <div class="auth-alert auth-alert-success" ng-if="auth.loginSuccessMessage">
+                    <div class="auth-alert-icon">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <div class="auth-alert-content">
+                        <p class="auth-alert-message">{{ auth.loginSuccessMessage }}</p>
                     </div>
                 </div>
 
                 <!-- Login Form -->
-                <form ng-submit="auth.login()">
-                    <div class="mb-5">
-                        <label class="block text-sm font-semibold text-gray-700 mb-2" for="email">
-                            <i class="fas fa-envelope mr-1 text-primary-600"></i> Email Address
+                <form class="auth-form" ng-submit="auth.login()">
+                    <!-- Email -->
+                    <div class="auth-field">
+                        <label class="auth-label" for="email">
+                            <i class="fas fa-envelope"></i> Email Address
                         </label>
-                        <input type="email"
-                               class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all"
-                               id="email"
-                               ng-model="auth.loginData.email"
-                               placeholder="Enter your email"
-                               required
-                               autofocus
-                               ng-disabled="auth.isLoading">
-                    </div>
-
-                    <div class="mb-5">
-                        <label class="block text-sm font-semibold text-gray-700 mb-2" for="password">
-                            <i class="fas fa-lock mr-1 text-primary-600"></i> Password
-                        </label>
-                        <input type="password"
-                               class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all"
-                               id="password"
-                               ng-model="auth.loginData.password"
-                               placeholder="Enter your password"
-                               required
-                               ng-disabled="auth.isLoading">
-                    </div>
-
-                    <div class="mb-6">
-                        <div class="flex items-center">
-                            <input type="checkbox"
-                                   class="w-4 h-4 text-primary-600 border-gray-300 rounded focus:ring-primary-500"
-                                   id="rememberMe"
-                                   ng-model="auth.loginData.rememberMe"
+                        <div class="auth-input-group">
+                            <input type="email"
+                                   class="auth-input"
+                                   id="email"
+                                   ng-model="auth.loginData.email"
+                                   placeholder="Enter your email"
+                                   required
+                                   autofocus
                                    ng-disabled="auth.isLoading">
-                            <label class="ml-2 text-sm text-gray-700" for="rememberMe">
-                                Remember me for 30 days
-                            </label>
+                            <span class="auth-input-icon">
+                                <i class="fas fa-envelope"></i>
+                            </span>
                         </div>
                     </div>
 
-                    <button type="submit"
-                            class="w-full bg-gradient-to-r from-primary-600 to-primary-700 text-white py-3 rounded-lg font-semibold hover:from-primary-700 hover:to-primary-800 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-all transform hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
-                            ng-disabled="auth.isLoading">
+                    <!-- Password -->
+                    <div class="auth-field">
+                        <label class="auth-label" for="password">
+                            <i class="fas fa-lock"></i> Password
+                        </label>
+                        <div class="auth-input-group">
+                            <input type="password"
+                                   class="auth-input"
+                                   id="password"
+                                   ng-model="auth.loginData.password"
+                                   placeholder="Enter your password"
+                                   required
+                                   ng-disabled="auth.isLoading">
+                            <span class="auth-input-icon auth-input-icon-toggle" ng-click="auth.togglePasswordVisibility('login')">
+                                <i class="fas" ng-class="auth.showPassword.login ? 'fa-eye-slash' : 'fa-eye'"></i>
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- Options -->
+                    <div class="auth-options">
+                        <label class="auth-checkbox">
+                            <input type="checkbox" ng-model="auth.loginData.rememberMe">
+                            <span class="auth-checkbox-label">Remember me</span>
+                        </label>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <button type="submit" class="auth-btn" ng-disabled="auth.isLoading">
                         <span ng-if="!auth.isLoading">
-                            <i class="fas fa-sign-in-alt mr-2"></i>Sign In
+                            <i class="fas fa-sign-in-alt"></i> Sign In
                         </span>
                         <span ng-if="auth.isLoading">
-                            <i class="fas fa-circle-notch fa-spin mr-2"></i>Signing In...
+                            <i class="fas fa-spinner fa-spin"></i> Signing in...
                         </span>
                     </button>
                 </form>
 
-                <div class="my-6 border-t border-gray-200"></div>
+                <!-- Divider -->
+                <div class="auth-divider">
+                    <div class="auth-divider-line"></div>
+                    <span class="auth-divider-text">Or continue with</span>
+                    <div class="auth-divider-line"></div>
+                </div>
 
-                <div class="text-center">
-                    <p class="text-gray-600 mb-3">Don't have an account?</p>
-                    <a href="#!/register" 
-                       class="inline-block border-2 border-primary-600 text-primary-600 hover:bg-primary-50 px-6 py-2 rounded-lg font-semibold transition-all">
-                        <i class="fas fa-user-plus mr-1"></i> Create Account
+                <!-- Social Login -->
+                <div class="auth-social">
+                    <button class="auth-social-btn" ng-click="auth.loginWithGoogle()">
+                        <i class="fab fa-google"></i>
+                    </button>
+                    <button class="auth-social-btn" ng-click="auth.loginWithMicrosoft()">
+                        <i class="fab fa-microsoft"></i>
+                    </button>
+                    <button class="auth-social-btn" ng-click="auth.loginWithApple()">
+                        <i class="fab fa-apple"></i>
+                    </button>
+                </div>
+
+                <!-- Footer -->
+                <div class="auth-footer">
+                    <p class="auth-footer-text">Don't have an account?</p>
+                    <a class="auth-footer-link" href="#!/register">
+                        <i class="fas fa-user-plus"></i> Create Account
+                        <i class="fas fa-arrow-right"></i>
                     </a>
                 </div>
 
-                <div class="mt-4 text-center">
-                    <a href="#!/" class="text-gray-500 hover:text-gray-700 text-sm transition-colors">
-                        <i class="fas fa-arrow-left mr-1"></i> Back to Home
+                <!-- Back to Home -->
+                <div class="auth-back">
+                    <a href="#!/">
+                        <i class="fas fa-arrow-left"></i> Back to Home
                     </a>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+<style>
+    /* ===== CSS Variables ===== */
+    :root {
+        --bg-dark: #0a0a0a;
+        --bg-card: #141414;
+        --bg-card-hover: #1a1a1a;
+        --border-color: rgba(255, 255, 255, 0.1);
+        --border-hover: rgba(99, 102, 241, 0.3);
+        --accent-color: #6366f1;
+        --accent-hover: #4f46e5;
+        --accent-light: rgba(99, 102, 241, 0.2);
+        --text-primary: #fafafa;
+        --text-secondary: #a3a3a3;
+        --text-muted: rgba(255, 255, 255, 0.7);
+        --success-color: #22c55e;
+        --error-color: #ef4444;
+        --warning-color: #fbbf24;
+    }
+
+    /* ===== Container ===== */
+    .auth-container {
+        min-height: 100vh;
+        background: var(--bg-dark);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 1rem;
+    }
+
+    .auth-content {
+        display: flex;
+        max-width: 1200px;
+        width: 100%;
+        min-height: 600px;
+        background: var(--bg-card);
+        border: 1px solid var(--border-color);
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    }
+
+    /* ===== Left Panel - Branding ===== */
+    .auth-branding {
+        flex: 1;
+        padding: 3rem;
+        background: linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(59, 130, 246, 0.05) 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .branding-content {
+        max-width: 400px;
+    }
+
+    .brand-logo {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        margin-bottom: 3rem;
+    }
+
+    .brand-logo-icon {
+        width: 60px;
+        height: 60px;
+        background: var(--accent-color);
+        border-radius: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 4px 12px rgba(99, 102, 241, 0.25);
+    }
+
+    .brand-logo-icon i {
+        font-size: 1.75rem;
+        color: var(--text-primary);
+    }
+
+    .brand-logo-title {
+        font-size: 1.75rem;
+        font-weight: 800;
+        margin: 0;
+        color: var(--text-primary);
+    }
+
+    .brand-logo-subtitle {
+        color: var(--text-secondary);
+        margin: 0;
+        font-size: 0.9rem;
+    }
+
+    .brand-features {
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+        margin-bottom: 3rem;
+    }
+
+    .brand-feature {
+        display: flex;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+
+    .brand-feature-icon {
+        width: 48px;
+        height: 48px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        transition: transform 0.3s ease;
+    }
+
+    .brand-feature:hover .brand-feature-icon {
+        transform: scale(1.1);
+    }
+
+    .brand-feature-purple {
+        background: var(--accent-light);
+    }
+
+    .brand-feature-purple i {
+        color: var(--accent-color);
+    }
+
+    .brand-feature-blue {
+        background: rgba(59, 130, 246, 0.2);
+    }
+
+    .brand-feature-blue i {
+        color: #3b82f6;
+    }
+
+    .brand-feature-pink {
+        background: rgba(236, 72, 153, 0.2);
+    }
+
+    .brand-feature-pink i {
+        color: #ec4899;
+    }
+
+    .brand-feature-icon i {
+        font-size: 1.25rem;
+    }
+
+    .brand-feature-title {
+        color: var(--text-primary);
+        font-weight: 600;
+        margin: 0 0 0.25rem 0;
+        font-size: 1rem;
+    }
+
+    .brand-feature-desc {
+        color: var(--text-secondary);
+        margin: 0;
+        font-size: 0.875rem;
+        line-height: 1.5;
+    }
+
+    .brand-social-proof {
+        padding: 1.5rem;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid var(--border-color);
+        border-radius: 12px;
+        backdrop-filter: blur(10px);
+    }
+
+    .brand-avatars {
+        display: flex;
+        align-items: center;
+        margin-bottom: 1rem;
+    }
+
+    .brand-avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        border: 3px solid var(--bg-card);
+        margin-left: -12px;
+        transition: transform 0.3s ease;
+    }
+
+    .brand-avatar:first-child {
+        margin-left: 0;
+    }
+
+    .brand-avatar:hover {
+        transform: translateY(-5px);
+        z-index: 10;
+    }
+
+    .brand-avatar-1 {
+        background: var(--accent-color);
+    }
+
+    .brand-avatar-2 {
+        background: #3b82f6;
+    }
+
+    .brand-avatar-3 {
+        background: var(--success-color);
+    }
+
+    .brand-avatar-more {
+        background: #f97316;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--text-primary);
+        font-size: 0.75rem;
+        font-weight: 700;
+    }
+
+    .brand-stars {
+        color: var(--warning-color);
+        font-size: 0.875rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .brand-trust-text {
+        color: var(--text-secondary);
+        margin: 0;
+        font-size: 0.875rem;
+    }
+
+    /* ===== Right Panel - Form ===== */
+    .auth-form-panel {
+        flex: 1;
+        padding: 3rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .auth-form-card {
+        width: 100%;
+        max-width: 420px;
+    }
+
+    .auth-header {
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+
+    .auth-header-icon {
+        width: 70px;
+        height: 70px;
+        margin: 0 auto 1.5rem;
+        background: var(--accent-light);
+        border-radius: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .auth-header-icon i {
+        font-size: 1.75rem;
+        color: var(--accent-color);
+    }
+
+    .auth-title {
+        font-size: 1.875rem;
+        font-weight: 700;
+        margin: 0 0 0.5rem 0;
+        color: var(--text-primary);
+    }
+
+    .auth-subtitle {
+        color: var(--text-secondary);
+        margin: 0;
+        font-size: 0.95rem;
+    }
+
+    /* ===== Alerts ===== */
+    .auth-alert {
+        display: flex;
+        gap: 0.75rem;
+        padding: 1rem 1.25rem;
+        border-radius: 12px;
+        margin-bottom: 1.5rem;
+        animation: slideDown 0.3s ease;
+    }
+
+    @keyframes slideDown {
+        from {
+            opacity: 0;
+            transform: translateY(-10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .auth-alert-error {
+        background: rgba(239, 68, 68, 0.1);
+        border: 1px solid rgba(239, 68, 68, 0.2);
+    }
+
+    .auth-alert-success {
+        background: rgba(34, 197, 94, 0.1);
+        border: 1px solid rgba(34, 197, 94, 0.2);
+    }
+
+    .auth-alert-icon {
+        flex-shrink: 0;
+    }
+
+    .auth-alert-error .auth-alert-icon i {
+        color: var(--error-color);
+    }
+
+    .auth-alert-success .auth-alert-icon i {
+        color: var(--success-color);
+    }
+
+    .auth-alert-content {
+        flex: 1;
+    }
+
+    .auth-alert-title {
+        font-weight: 600;
+        margin: 0 0 0.25rem 0;
+        font-size: 0.9rem;
+    }
+
+    .auth-alert-error .auth-alert-title {
+        color: var(--error-color);
+    }
+
+    .auth-alert-message {
+        font-size: 0.875rem;
+        margin: 0;
+        color: var(--text-secondary);
+    }
+
+    /* ===== Form Fields ===== */
+    .auth-field {
+        margin-bottom: 1.25rem;
+    }
+
+    .auth-label {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-weight: 500;
+        margin-bottom: 0.5rem;
+        font-size: 0.9rem;
+        color: var(--text-primary);
+    }
+
+    .auth-label i {
+        color: var(--accent-color);
+        font-size: 0.875rem;
+    }
+
+    .auth-input-group {
+        position: relative;
+    }
+
+    .auth-input {
+        width: 100%;
+        padding: 0.875rem 3rem 0.875rem 1rem;
+        background: var(--bg-card-hover);
+        border: 1px solid var(--border-color);
+        border-radius: 10px;
+        color: var(--text-primary);
+        font-size: 0.95rem;
+        transition: all 0.2s ease;
+    }
+
+    .auth-input::placeholder {
+        color: var(--text-muted);
+    }
+
+    .auth-input:focus {
+        outline: none;
+        border-color: var(--accent-color);
+        box-shadow: 0 0 0 3px var(--accent-light);
+    }
+
+    .auth-input:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+
+    .auth-input-icon {
+        position: absolute;
+        right: 1rem;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--text-secondary);
+        font-size: 0.9rem;
+        pointer-events: none;
+    }
+
+    .auth-input-icon-toggle {
+        cursor: pointer;
+        pointer-events: auto;
+        transition: color 0.2s ease;
+    }
+
+    .auth-input-icon-toggle:hover {
+        color: var(--accent-color);
+    }
+
+    /* ===== Options ===== */
+    .auth-options {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 1.5rem;
+        font-size: 0.875rem;
+    }
+
+    .auth-checkbox {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        cursor: pointer;
+        color: var(--text-secondary);
+    }
+
+    .auth-checkbox input {
+        width: 16px;
+        height: 16px;
+        accent-color: var(--accent-color);
+        cursor: pointer;
+    }
+
+    .auth-checkbox-label {
+        user-select: none;
+    }
+
+    .auth-link {
+        color: var(--accent-color);
+        text-decoration: none;
+        font-weight: 500;
+        transition: color 0.2s ease;
+    }
+
+    .auth-link:hover {
+        color: var(--accent-hover);
+    }
+
+    /* ===== Submit Button ===== */
+    .auth-btn {
+        width: 100%;
+        padding: 0.875rem 1.5rem;
+        background: var(--accent-color);
+        border: none;
+        border-radius: 10px;
+        color: var(--text-primary);
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+    }
+
+    .auth-btn:hover:not(:disabled) {
+        background: var(--accent-hover);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+    }
+
+    .auth-btn:active:not(:disabled) {
+        transform: translateY(0);
+    }
+
+    .auth-btn:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+
+    /* ===== Divider ===== */
+    .auth-divider {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        margin: 1.5rem 0;
+    }
+
+    .auth-divider-line {
+        flex: 1;
+        height: 1px;
+        background: var(--border-color);
+    }
+
+    .auth-divider-text {
+        color: var(--text-secondary);
+        font-size: 0.875rem;
+    }
+
+    /* ===== Social Login ===== */
+    .auth-social {
+        display: flex;
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .auth-social-btn {
+        flex: 1;
+        padding: 0.75rem;
+        background: var(--bg-card-hover);
+        border: 1px solid var(--border-color);
+        border-radius: 10px;
+        color: var(--text-primary);
+        font-size: 1.25rem;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .auth-social-btn:hover {
+        background: var(--bg-card);
+        border-color: var(--accent-color);
+        transform: translateY(-2px);
+    }
+
+    /* ===== Footer ===== */
+    .auth-footer {
+        text-align: center;
+        margin-bottom: 1rem;
+    }
+
+    .auth-footer-text {
+        color: var(--text-secondary);
+        margin: 0 0 0.75rem 0;
+        font-size: 0.9rem;
+    }
+
+    .auth-footer-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.75rem 1.5rem;
+        background: var(--accent-light);
+        border: 1px solid var(--accent-color);
+        border-radius: 10px;
+        color: var(--accent-color);
+        text-decoration: none;
+        font-weight: 600;
+        transition: all 0.2s ease;
+    }
+
+    .auth-footer-link:hover {
+        background: var(--accent-color);
+        color: var(--text-primary);
+        transform: translateY(-2px);
+    }
+
+    .auth-footer-link i:last-child {
+        transition: transform 0.2s ease;
+    }
+
+    .auth-footer-link:hover i:last-child {
+        transform: translateX(3px);
+    }
+
+    .auth-back {
+        text-align: center;
+    }
+
+    .auth-back a {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        color: var(--text-secondary);
+        text-decoration: none;
+        font-size: 0.875rem;
+        transition: color 0.2s ease;
+    }
+
+    .auth-back a:hover {
+        color: var(--text-primary);
+    }
+
+    .auth-back a i {
+        transition: transform 0.2s ease;
+    }
+
+    .auth-back a:hover i {
+        transform: translateX(-3px);
+    }
+
+    /* ===== Responsive ===== */
+    @media (max-width: 991px) {
+        .auth-content {
+            flex-direction: column;
+        }
+
+        .auth-branding {
+            padding: 2rem;
+        }
+
+        .brand-logo {
+            justify-content: center;
+            margin-bottom: 2rem;
+        }
+
+        .brand-features {
+            flex-direction: row;
+            flex-wrap: wrap;
+            gap: 1rem;
+            justify-content: center;
+        }
+
+        .brand-feature {
+            flex: 1 1 calc(50% - 1rem);
+            min-width: 200px;
+        }
+
+        .brand-social-proof {
+            display: none;
+        }
+
+        .auth-form-panel {
+            padding: 2rem;
+        }
+    }
+
+    @media (max-width: 576px) {
+        .auth-container {
+            padding: 0.5rem;
+        }
+
+        .auth-content {
+            min-height: auto;
+        }
+
+        .auth-branding,
+        .auth-form-panel {
+            padding: 1.5rem;
+        }
+
+        .brand-logo-title {
+            font-size: 1.5rem;
+        }
+
+        .brand-features {
+            flex-direction: column;
+        }
+
+        .brand-feature {
+            flex: 1 1 auto;
+        }
+
+        .auth-header-icon {
+            width: 60px;
+            height: 60px;
+            font-size: 1.5rem;
+        }
+
+        .auth-title {
+            font-size: 1.5rem;
+        }
+
+        .auth-options {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 0.75rem;
+        }
+
+        .auth-social {
+            gap: 0.75rem;
+        }
+    }
+</style>
