@@ -50,7 +50,7 @@
         }
 
         function isAuthPage() {
-            var authPages = ['/login', '/register'];
+            var authPages = ['/login', '/register', '/dashboard', '/profile'];
             return authPages.indexOf($location.path()) !== -1;
         }
     }
