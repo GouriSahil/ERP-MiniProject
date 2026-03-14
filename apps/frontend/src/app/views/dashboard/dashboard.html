@@ -1,17 +1,440 @@
-<div class="min-h-screen bg-gray-50">
-    <!-- Top Navigation for Dashboard -->
-    <nav class="bg-white shadow-sm sticky top-0 z-40">
+<!-- Modern Clean Dashboard with Professional Dark Theme -->
+<style>
+    /* ===== CSS Variables ===== */
+    :root {
+        --accent-color: #6366f1;
+        --accent-hover: #4f46e5;
+        --bg-dark: #0a0a0a;
+        --bg-card: #141414;
+        --bg-card-hover: #1a1a1a;
+        --border-color: #262626;
+        --text-primary: #fafafa;
+        --text-secondary: #a3a3a3;
+        --text-muted: #737373;
+        --success-color: #22c55e;
+        --warning-color: #eab308;
+        --danger-color: #ef4444;
+        --info-color: #3b82f6;
+    }
+
+    /* ===== Dashboard Container ===== */
+    .dashboard-glass-container {
+        position: relative;
+        min-height: 100vh;
+        background: var(--bg-dark);
+        overflow-x: hidden;
+    }
+
+    /* ===== Navigation ===== */
+    .dashboard-glass-nav {
+        background: var(--bg-card);
+        border-bottom: 1px solid var(--border-color);
+        position: sticky;
+        top: 0;
+        z-index: 50;
+    }
+
+    /* ===== Standard Card ===== */
+    .glass-card {
+        background: var(--bg-card);
+        border: 1px solid var(--border-color);
+        border-radius: 12px;
+        padding: 1.5rem;
+        transition: all 0.2s ease;
+    }
+
+    .glass-card:hover {
+        background: var(--bg-card-hover);
+        border-color: var(--accent-color);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    }
+
+    /* ===== Stat Card ===== */
+    .glass-stat-card {
+        background: var(--bg-card);
+        border: 1px solid var(--border-color);
+        border-left: 3px solid var(--accent-color);
+        border-radius: 12px;
+        padding: 1.5rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        transition: all 0.2s ease;
+    }
+
+    .glass-stat-card:hover {
+        background: var(--bg-card-hover);
+        border-color: var(--accent-color);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    }
+
+    .stat-value-glass {
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: var(--text-primary);
+        line-height: 1;
+    }
+
+    .stat-label-glass {
+        font-size: 0.875rem;
+        font-weight: 500;
+        color: var(--text-secondary);
+        margin-top: 0.5rem;
+    }
+
+    .stat-icon-glass {
+        width: 56px;
+        height: 56px;
+        background: var(--bg-card-hover);
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .stat-icon-glass i {
+        font-size: 1.5rem;
+        color: var(--accent-color);
+    }
+
+    /* ===== Section Card ===== */
+    .glass-section-card {
+        background: var(--bg-card);
+        border: 1px solid var(--border-color);
+        border-radius: 12px;
+        overflow: hidden;
+        margin-bottom: 1.5rem;
+        transition: all 0.2s ease;
+    }
+
+    .glass-section-card:hover {
+        border-color: var(--accent-color);
+    }
+
+    .glass-section-header {
+        background: var(--bg-card-hover);
+        padding: 1.25rem 1.5rem;
+        border-bottom: 1px solid var(--border-color);
+    }
+
+    .glass-section-body {
+        padding: 1.5rem;
+    }
+
+    /* ===== Welcome Card ===== */
+    .glass-welcome-card {
+        background: var(--bg-card);
+        border: 1px solid var(--border-color);
+        border-radius: 16px;
+        padding: 2rem;
+        margin-bottom: 2rem;
+        display: flex;
+        align-items: center;
+        gap: 1.5rem;
+    }
+
+    .glass-welcome-icon {
+        width: 64px;
+        height: 64px;
+        background: var(--accent-color);
+        border-radius: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+    }
+
+    .glass-welcome-icon i {
+        font-size: 2rem;
+        color: white;
+    }
+
+    .glass-welcome-title {
+        font-size: 1.75rem;
+        font-weight: 700;
+        color: var(--text-primary);
+        margin: 0 0 0.5rem 0;
+    }
+
+    .glass-welcome-subtitle {
+        color: var(--text-secondary);
+        font-size: 1rem;
+        margin: 0;
+    }
+
+    /* ===== Stats Grid ===== */
+    .dashboard-stats {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+    }
+
+    /* ===== Dashboard Grid ===== */
+    .dashboard-grid {
+        display: grid;
+        grid-template-columns: 2fr 1fr;
+        gap: 1.5rem;
+    }
+
+    @media (max-width: 1024px) {
+        .dashboard-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    /* ===== Table Styles ===== */
+    .glass-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    .glass-table td {
+        padding: 0.875rem 0;
+        color: var(--text-secondary);
+        border-bottom: 1px solid var(--border-color);
+    }
+
+    .glass-table td:first-child {
+        color: var(--text-muted);
+        font-weight: 500;
+    }
+
+    .glass-table td:last-child {
+        color: var(--text-primary);
+        text-align: right;
+        font-weight: 600;
+    }
+
+    .glass-table tr:last-child td {
+        border-bottom: none;
+    }
+
+    /* ===== Badge Styles ===== */
+    .glass-badge {
+        display: inline-block;
+        padding: 0.25rem 0.75rem;
+        border-radius: 6px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .glass-badge-purple {
+        background: rgba(99, 102, 241, 0.15);
+        color: var(--accent-color);
+        border: 1px solid rgba(99, 102, 241, 0.3);
+    }
+
+    .glass-badge-green {
+        background: rgba(34, 197, 94, 0.15);
+        color: var(--success-color);
+        border: 1px solid rgba(34, 197, 94, 0.3);
+    }
+
+    .glass-badge-yellow {
+        background: rgba(234, 179, 8, 0.15);
+        color: var(--warning-color);
+        border: 1px solid rgba(234, 179, 8, 0.3);
+    }
+
+    .glass-badge-red {
+        background: rgba(239, 68, 68, 0.15);
+        color: var(--danger-color);
+        border: 1px solid rgba(239, 68, 68, 0.3);
+    }
+
+    .glass-badge-blue {
+        background: rgba(59, 130, 246, 0.15);
+        color: var(--info-color);
+        border: 1px solid rgba(59, 130, 246, 0.3);
+    }
+
+    /* ===== Activity List ===== */
+    .activity-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .activity-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 1rem;
+        padding: 1rem 0;
+        border-bottom: 1px solid var(--border-color);
+    }
+
+    .activity-item:last-child {
+        border-bottom: none;
+    }
+
+    .activity-icon {
+        width: 40px;
+        height: 40px;
+        background: var(--bg-card-hover);
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+    }
+
+    .activity-icon i {
+        color: var(--accent-color);
+    }
+
+    .activity-content {
+        flex: 1;
+    }
+
+    .activity-text {
+        color: var(--text-primary);
+        font-size: 0.95rem;
+        margin-bottom: 0.25rem;
+    }
+
+    .activity-time {
+        color: var(--text-muted);
+        font-size: 0.8rem;
+    }
+
+    /* ===== Empty State ===== */
+    .glass-empty-state {
+        text-align: center;
+        padding: 3rem 1rem;
+        color: var(--text-muted);
+    }
+
+    .glass-empty-state i {
+        font-size: 3rem;
+        margin-bottom: 1rem;
+        opacity: 0.5;
+    }
+
+    .glass-empty-state p {
+        margin: 0;
+        font-size: 0.95rem;
+    }
+
+    /* ===== Info Alert ===== */
+    .glass-info-alert {
+        background: var(--bg-card);
+        border: 1px solid var(--border-color);
+        border-left: 3px solid var(--accent-color);
+        border-radius: 12px;
+        padding: 1.25rem 1.5rem;
+        display: flex;
+        align-items: flex-start;
+        gap: 1rem;
+        margin-top: 1.5rem;
+    }
+
+    .glass-info-alert i {
+        color: var(--accent-color);
+        font-size: 1.25rem;
+        margin-top: 0.15rem;
+    }
+
+    .glass-info-alert h4 {
+        color: var(--text-primary);
+        font-size: 1rem;
+        font-weight: 600;
+        margin: 0 0 0.25rem 0;
+    }
+
+    .glass-info-alert p {
+        color: var(--text-secondary);
+        font-size: 0.9rem;
+        margin: 0;
+    }
+
+    /* ===== Link Styles ===== */
+    .glass-link {
+        color: var(--text-secondary);
+        text-decoration: none;
+        transition: all 0.2s ease;
+    }
+
+    .glass-link:hover {
+        color: var(--accent-color);
+    }
+
+    /* ===== Content Wrapper ===== */
+    .dashboard-content-wrapper {
+        position: relative;
+        z-index: 1;
+    }
+
+    /* ===== Loading State ===== */
+    .dashboard-loading {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        min-height: 60vh;
+        color: var(--text-muted);
+    }
+
+    .dashboard-loading i {
+        font-size: 3rem;
+        margin-bottom: 1rem;
+        animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+        from { transform: rotate(0deg); }
+        to { transform: rotate(360deg); }
+    }
+
+    /* ===== Responsive ===== */
+    @media (max-width: 768px) {
+        .dashboard-stats {
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+        }
+
+        .glass-welcome-card {
+            flex-direction: column;
+            text-align: center;
+            padding: 1.5rem;
+        }
+
+        .glass-welcome-title {
+            font-size: 1.5rem;
+        }
+
+        .stat-value-glass {
+            font-size: 2rem;
+        }
+
+        .dashboard-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+
+<!-- Dashboard Container -->
+<div class="dashboard-glass-container" ng-if="!dashboard.isLoading">
+    <!-- Navigation -->
+    <nav class="dashboard-glass-nav">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between h-16">
                 <div class="flex items-center">
-                    <a href="#!/" class="flex items-center gap-2 text-primary-600 font-bold text-xl">
-                        <i class="fas fa-graduation-cap"></i>
+                    <a href="#!/" class="flex items-center gap-2 text-white font-bold text-xl">
+                        <i class="fas fa-graduation-cap" style="color: var(--accent-color);"></i>
                         <span>College ERP</span>
                     </a>
                 </div>
                 <div class="flex items-center gap-4">
-                    <span class="text-gray-700">{{ dashboard.currentUser.name }}</span>
-                    <a href="" ng-click="dashboard.logout()" class="text-gray-500 hover:text-red-600 transition-colors">
+                    <a href="" ng-click="dashboard.navigateTo('/profile')" class="glass-link" style="display: flex; align-items: center; gap: 0.5rem; color: var(--text-secondary); cursor: pointer; padding: 0.5rem 1rem; background: var(--bg-card-hover); border-radius: 8px; transition: all 0.2s ease; border: 1px solid var(--border-color);" onmouseover="this.style.borderColor='var(--accent-color)'" onmouseout="this.style.borderColor='var(--border-color)'">
+                        <i class="fas fa-user-circle text-lg"></i>
+                        <span>{{ dashboard.currentUser.name }}</span>
+                    </a>
+                    <a href="" ng-click="dashboard.logout()" class="glass-link" style="cursor: pointer; padding: 0.5rem; color: var(--text-secondary);">
                         <i class="fas fa-sign-out-alt text-xl"></i>
                     </a>
                 </div>
@@ -19,155 +442,119 @@
         </div>
     </nav>
 
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <!-- Welcome Section -->
-        <div class="bg-white rounded-xl shadow-md p-6 mb-8">
-            <div class="flex items-center gap-6">
-                <div class="w-16 h-16 bg-gradient-to-br from-primary-500 to-primary-700 rounded-xl flex items-center justify-center text-white text-2xl shadow-lg">
+    <!-- Dashboard Content -->
+    <div class="dashboard-content-wrapper">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            
+            <!-- Welcome Section -->
+            <div class="glass-welcome-card mb-8">
+                <div class="glass-welcome-icon">
                     <i class="fas fa-user"></i>
                 </div>
                 <div>
-                    <h2 class="text-2xl font-bold text-gray-900 mb-1">{{ dashboard.getGreeting() }}, {{ dashboard.currentUser.name }}!</h2>
-                    <p class="text-gray-600">
-                        <span class="inline-block bg-primary-100 text-primary-700 px-3 py-1 rounded-full text-sm font-semibold">
-                            {{ dashboard.currentUser.role | uppercase }}
-                        </span>
-                        <span class="ml-2">Welcome to your dashboard</span>
-                    </p>
+                    <h2 class="glass-welcome-title">{{ dashboard.getGreeting() }}, {{ dashboard.currentUser.name }}!</h2>
+                    <p class="glass-welcome-subtitle">Welcome to your dashboard. Here's what's happening today.</p>
                 </div>
             </div>
-        </div>
 
-        <!-- Loading State -->
-        <div ng-if="dashboard.isLoading" class="text-center py-20">
-            <div class="inline-block animate-spin rounded-full h-16 w-16 border-b-2 border-primary-600"></div>
-            <p class="text-gray-600 mt-4">Loading...</p>
-        </div>
+            <!-- Stats Grid -->
+            <div class="dashboard-stats">
+                <div class="glass-stat-card" ng-repeat="stat in dashboard.dashboardStats">
+                    <div>
+                        <div class="stat-value-glass">{{ stat.value }}</div>
+                        <div class="stat-label-glass">{{ stat.label }}</div>
+                    </div>
+                    <div class="stat-icon-glass">
+                        <i class="{{ stat.icon }}" ng-class="{
+                            'text-success': stat.color === 'success',
+                            'text-warning': stat.color === 'warning',
+                            'text-danger': stat.color === 'danger',
+                            'text-info': stat.color === 'info'
+                        }"></i>
+                    </div>
+                </div>
+            </div>
 
-        <!-- Dashboard Content -->
-        <div ng-if="!dashboard.isLoading">
-            <!-- Stats Cards -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-                <div class="bg-white rounded-xl shadow-md p-6 border-l-4 border-primary-500 hover:shadow-xl transition-all"
-                     ng-repeat="stat in dashboard.dashboardStats">
-                    <div class="flex items-center justify-between">
-                        <div>
-                            <div class="text-3xl font-bold text-gray-900">{{ stat.value }}</div>
-                            <div class="text-sm text-gray-600 font-medium mt-1">{{ stat.label }}</div>
+            <!-- Dashboard Grid -->
+            <div class="dashboard-grid">
+                <!-- Left Column -->
+                <div>
+                    <!-- Recent Activity -->
+                    <div class="glass-section-card">
+                        <div class="glass-section-header">
+                            <h5 style="color: var(--text-primary); font-weight: 700; margin: 0; font-size: 1.125rem;">
+                                <i class="fas fa-clock mr-2" style="color: var(--accent-color);"></i>Recent Activity
+                            </h5>
                         </div>
-                        <div class="w-12 h-12 bg-blue-50 rounded-lg flex items-center justify-center">
-                            <i class="{{ stat.icon }} text-primary-600 text-xl"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Quick Actions -->
-            <div class="bg-white rounded-xl shadow-md mb-8 overflow-hidden">
-                <div class="bg-gradient-to-r from-primary-600 to-primary-700 px-6 py-4">
-                    <h5 class="text-white font-bold text-lg">
-                        <i class="fas fa-bolt mr-2"></i>Quick Actions
-                    </h5>
-                </div>
-                <div class="p-6">
-                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                        <button class="bg-gradient-to-r from-primary-500 to-primary-600 text-white px-4 py-3 rounded-lg font-semibold hover:from-primary-600 hover:to-primary-700 transition-all transform hover:scale-105">
-                            <i class="fas fa-user-edit mr-2"></i>Update Profile
-                        </button>
-                        <button class="bg-gradient-to-r from-primary-500 to-primary-600 text-white px-4 py-3 rounded-lg font-semibold hover:from-primary-600 hover:to-primary-700 transition-all transform hover:scale-105">
-                            <i class="fas fa-lock mr-2"></i>Change Password
-                        </button>
-                        <button class="bg-gradient-to-r from-primary-500 to-primary-600 text-white px-4 py-3 rounded-lg font-semibold hover:from-primary-600 hover:to-primary-700 transition-all transform hover:scale-105"
-                                ng-show="dashboard.currentUser.role === 'student'">
-                            <i class="fas fa-book mr-2"></i>View Courses
-                        </button>
-                        <button class="bg-gradient-to-r from-primary-500 to-primary-600 text-white px-4 py-3 rounded-lg font-semibold hover:from-primary-600 hover:to-primary-700 transition-all transform hover:scale-105"
-                                ng-show="dashboard.currentUser.role === 'faculty'">
-                            <i class="fas fa-calendar-check mr-2"></i>My Schedule
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Two Column Layout -->
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
-                <!-- Recent Activity -->
-                <div class="bg-white rounded-xl shadow-md overflow-hidden">
-                    <div class="bg-gradient-to-r from-primary-600 to-primary-700 px-6 py-4">
-                        <h5 class="text-white font-bold text-lg">
-                            <i class="fas fa-history mr-2"></i>Recent Activity
-                        </h5>
-                    </div>
-                    <div class="p-6">
-                        <div ng-if="dashboard.recentActivities.length > 0" class="space-y-4">
-                            <div class="flex items-start gap-3 p-3 hover:bg-gray-50 rounded-lg transition-colors"
-                                 ng-repeat="activity in dashboard.recentActivities">
-                                <div class="w-10 h-10 bg-blue-50 rounded-lg flex items-center justify-center flex-shrink-0">
-                                    <i class="{{ activity.icon }} {{ activity.color }}"></i>
-                                </div>
-                                <div class="flex-1">
-                                    <div class="font-semibold text-gray-900">{{ activity.text }}</div>
-                                    <small class="text-gray-500">{{ activity.time }}</small>
-                                </div>
+                        <div class="glass-section-body">
+                            <ul class="activity-list">
+                                <li class="activity-item" ng-repeat="activity in dashboard.recentActivities">
+                                    <div class="activity-icon">
+                                        <i class="{{ activity.icon }}"></i>
+                                    </div>
+                                    <div class="activity-content">
+                                        <div class="activity-text">{{ activity.text }}</div>
+                                        <div class="activity-time">{{ activity.time }}</div>
+                                    </div>
+                                </li>
+                            </ul>
+                            <div class="glass-empty-state" ng-if="dashboard.recentActivities.length === 0">
+                                <i class="fas fa-inbox"></i>
+                                <p>No recent activity</p>
                             </div>
                         </div>
-                        <div class="text-center text-gray-400 py-8" ng-if="dashboard.recentActivities.length === 0">
-                            <i class="fas fa-inbox text-4xl mb-3"></i>
-                            <p>No recent activity</p>
-                        </div>
                     </div>
                 </div>
 
-                <!-- Account Info -->
-                <div class="bg-white rounded-xl shadow-md overflow-hidden">
-                    <div class="bg-gradient-to-r from-primary-600 to-primary-700 px-6 py-4">
-                        <h5 class="text-white font-bold text-lg">
-                            <i class="fas fa-user-circle mr-2"></i>Account Information
-                        </h5>
-                    </div>
-                    <div class="p-6">
-                        <table class="w-full">
-                            <tbody class="divide-y divide-gray-200">
-                                <tr>
-                                    <td class="py-3 font-semibold text-gray-700">Name:</td>
-                                    <td class="py-3 text-gray-900">{{ dashboard.currentUser.name }}</td>
-                                </tr>
-                                <tr>
-                                    <td class="py-3 font-semibold text-gray-700">Email:</td>
-                                    <td class="py-3 text-gray-900">{{ dashboard.currentUser.email }}</td>
-                                </tr>
-                                <tr>
-                                    <td class="py-3 font-semibold text-gray-700">Role:</td>
-                                    <td class="py-3">
-                                        <span class="inline-block bg-primary-100 text-primary-700 px-3 py-1 rounded-full text-sm font-semibold">
-                                            {{ dashboard.currentUser.role | uppercase }}
-                                        </span>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="py-3 font-semibold text-gray-700">Status:</td>
-                                    <td class="py-3">
-                                        <span class="inline-block bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm font-semibold">
-                                            Active
-                                        </span>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
+                <!-- Right Column -->
+                <div>
+                    <!-- Account Info -->
+                    <div class="glass-section-card">
+                        <div class="glass-section-header">
+                            <h5 style="color: var(--text-primary); font-weight: 700; margin: 0; font-size: 1.125rem;">
+                                <i class="fas fa-user-circle mr-2" style="color: var(--accent-color);"></i>Account Information
+                            </h5>
+                        </div>
+                        <div class="glass-section-body">
+                            <table class="glass-table">
+                                <tbody>
+                                    <tr>
+                                        <td>Name:</td>
+                                        <td>{{ dashboard.currentUser.name }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Email:</td>
+                                        <td>{{ dashboard.currentUser.email }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Role:</td>
+                                        <td><span class="glass-badge glass-badge-purple">{{ dashboard.currentUser.role | uppercase }}</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Status:</td>
+                                        <td><span class="glass-badge glass-badge-green">Active</span></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>
 
             <!-- Info Banner -->
-            <div class="bg-blue-50 border-l-4 border-primary-500 p-6 rounded-xl">
-                <div class="flex">
-                    <i class="fas fa-info-circle text-primary-600 text-xl mt-0.5 mr-4"></i>
-                    <div>
-                        <h4 class="font-bold text-gray-900 mb-1">More features coming soon!</h4>
-                        <p class="text-gray-700">This dashboard will be expanded with role-specific modules for Students, Faculty, and Administrators.</p>
-                    </div>
+            <div class="glass-info-alert">
+                <i class="fas fa-info-circle"></i>
+                <div>
+                    <h4>More features coming soon!</h4>
+                    <p>This dashboard will be expanded with role-specific modules for Students, Faculty, and Administrators.</p>
                 </div>
             </div>
         </div>
     </div>
+</div>
+
+<!-- Loading State -->
+<div class="dashboard-loading" ng-if="dashboard.isLoading">
+    <i class="fas fa-circle-notch"></i>
+    <p>Loading dashboard...</p>
 </div>
