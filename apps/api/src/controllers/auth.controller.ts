@@ -389,4 +389,87 @@ export class AuthController {
       return errorResponse(res, 'An error occurred while processing your request', 500);
     }
   }
+
+  // Reset Password - completes password reset with token
+  static async resetPassword(req: Request, res: Response) {
+    try {
+      const { token, newPassword } = req.body;
+
+      if (!token || !newPassword) {
+        return errorResponse(res, 'Token and new password are required', 400);
+      }
+
+      // Find all reset tokens for this user and check each one
+      // We need to find the token by comparing the hashed values
+      const allTokens = await PasswordResetToken.find({
+        used: false,
+        expiresAt: { $gt: new Date() }
+      }).sort({ createdAt: -1 });
+
+      let validToken = null;
+      let userId = null;
+
+      // Check each token to find a match
+      for (const resetToken of allTokens) {
+        const isValid = await bcrypt.compare(token, resetToken.token);
+        if (isValid) {
+          validToken = resetToken;
+          userId = resetToken.userId;
+          break;
+        }
+      }
+
+      if (!validToken || !userId) {
+        await saveAuditLog({
+          actorUserId: null,
+          actorRole: 'anonymous',
+          action: 'reset_password',
+          targetType: 'auth',
+          targetId: 'unknown',
+          status: 'failure',
+          errorMessage: 'Invalid or expired reset token',
+          ipAddress: req.ip || 'unknown',
+          userAgent: req.get('user-agent') || 'unknown'
+        });
+        return errorResponse(res, 'Invalid or expired reset token', 400);
+      }
+
+      // Find user by ID
+      const user = await User.findById(userId);
+
+      if (!user) {
+        return errorResponse(res, 'User not found', 404);
+      }
+
+      // Hash new password
+      const passwordHash = await bcrypt.hash(newPassword, 12);
+
+      // Update user password
+      await User.findByIdAndUpdate(userId, {
+        passwordHash,
+        mustChangePassword: false
+      });
+
+      // Mark token as used
+      await PasswordResetToken.findByIdAndUpdate(validToken._id, {
+        used: true
+      });
+
+      await saveAuditLog({
+        actorUserId: user._id.toString(),
+        actorRole: user.role,
+        action: 'reset_password',
+        targetType: 'user',
+        targetId: user._id.toString(),
+        status: 'success',
+        ipAddress: req.ip || 'unknown',
+        userAgent: req.get('user-agent') || 'unknown'
+      });
+
+      return successResponse(res, null, 'Password has been reset successfully.');
+    } catch (error: any) {
+      console.error('[resetPassword] Error:', error);
+      return errorResponse(res, 'An error occurred while resetting your password', 500);
+    }
+  }
 }
