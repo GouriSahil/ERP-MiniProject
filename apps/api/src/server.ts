@@ -7,6 +7,7 @@ import { connectDatabase } from './config/database';
 import passport from './config/passport';
 import routes from './routes';
 import { errorHandler, notFoundHandler } from './middleware/error';
+import { swaggerSpec, swaggerUi } from './config/swagger';
 
 // Load environment variables
 dotenv.config();
@@ -34,6 +35,12 @@ app.use(passport.initialize());
 // API Routes
 app.use('/api', routes);
 
+// API Documentation
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec, {
+  customSiteTitle: 'ERP API Docs',
+  customCss: '.swagger-ui .topbar { display: none }',
+}));
+
 // Root route
 app.get('/', (_req, res) => {
   res.status(200).json({
@@ -42,7 +49,8 @@ app.get('/', (_req, res) => {
     version: '1.0.0',
     endpoints: {
       health: '/api/health',
-      auth: '/api/auth/*'
+      auth: '/api/auth/*',
+      docs: '/api-docs'
     }
   });
 });
@@ -74,9 +82,13 @@ const startServer = async () => {
 ║   - GET  /api/health                                      ║
 ║   - POST /api/auth/register                               ║
 ║   - POST /api/auth/login                                  ║
+║   - POST /api/auth/forgot-password                        ║
+║   - POST /api/auth/reset-password                         ║
 ║   - POST /api/auth/refresh                                ║
 ║   - POST /api/auth/logout                                 ║
 ║   - GET  /api/auth/me                                     ║
+║                                                           ║
+║   📚 API Documentation: http://localhost:${PORT}/api-docs     ║
 ║                                                           ║
 ╚═══════════════════════════════════════════════════════════╝
       `);
