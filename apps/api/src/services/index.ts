@@ -29,3 +29,6 @@ export * from './bulk.service';
 
 // Export report service
 export * from './report.service';
+
+// Export email service
+export * from './email.service';
