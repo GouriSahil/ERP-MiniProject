@@ -1,22 +1,5 @@
 <!-- Modern Clean Dashboard with Professional Dark Theme -->
 <style>
-    /* ===== CSS Variables ===== */
-    :root {
-        --accent-color: #6366f1;
-        --accent-hover: #4f46e5;
-        --bg-dark: #0a0a0a;
-        --bg-card: #141414;
-        --bg-card-hover: #1a1a1a;
-        --border-color: #262626;
-        --text-primary: #fafafa;
-        --text-secondary: #a3a3a3;
-        --text-muted: #737373;
-        --success-color: #22c55e;
-        --warning-color: #eab308;
-        --danger-color: #ef4444;
-        --info-color: #3b82f6;
-    }
-
     /* ===== Dashboard Container ===== */
     .dashboard-glass-container {
         position: relative;
@@ -363,6 +346,38 @@
         color: var(--accent-color);
     }
 
+    /* ===== Dashboard Navigation Links ===== */
+    .dashboard-user-link {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        color: var(--text-secondary);
+        cursor: pointer;
+        padding: 0.5rem 1rem;
+        background: var(--bg-card-hover);
+        border-radius: 8px;
+        transition: all 0.2s ease;
+        border: 1px solid var(--border-color);
+        text-decoration: none;
+    }
+
+    .dashboard-user-link:hover {
+        border-color: var(--accent-color);
+        color: var(--text-primary);
+    }
+
+    .dashboard-logout-link {
+        cursor: pointer;
+        padding: 0.5rem;
+        color: var(--text-secondary);
+        text-decoration: none;
+        transition: all 0.2s ease;
+    }
+
+    .dashboard-logout-link:hover {
+        color: var(--accent-color);
+    }
+
     /* ===== Content Wrapper ===== */
     .dashboard-content-wrapper {
         position: relative;
@@ -430,11 +445,11 @@
                     </a>
                 </div>
                 <div class="flex items-center gap-4">
-                    <a href="" ng-click="dashboard.navigateTo('/profile')" class="glass-link" style="display: flex; align-items: center; gap: 0.5rem; color: var(--text-secondary); cursor: pointer; padding: 0.5rem 1rem; background: var(--bg-card-hover); border-radius: 8px; transition: all 0.2s ease; border: 1px solid var(--border-color);" onmouseover="this.style.borderColor='var(--accent-color)'" onmouseout="this.style.borderColor='var(--border-color)'">
+                    <a href="" ng-click="dashboard.navigateTo('/profile')" class="dashboard-user-link">
                         <i class="fas fa-user-circle text-lg"></i>
                         <span>{{ dashboard.currentUser.name }}</span>
                     </a>
-                    <a href="" ng-click="dashboard.logout()" class="glass-link" style="cursor: pointer; padding: 0.5rem; color: var(--text-secondary);">
+                    <a href="" ng-click="dashboard.logout()" class="dashboard-logout-link">
                         <i class="fas fa-sign-out-alt text-xl"></i>
                     </a>
                 </div>
