@@ -30,8 +30,15 @@ Node.js/Express REST API with MongoDB
 - [x] Faculty management tests
 - [x] Enrollment tests
 - [x] Attendance tests
-- [ ] Integration tests with real database
-- [ ] E2E API tests
+- [x] Integration tests with real database
+  - [x] mongodb-memory-server setup
+  - [x] Database fixtures and seeders
+  - [x] Setup/teardown utilities
+- [x] E2E API tests
+  - [x] Express server test utilities
+  - [x] HTTP client for API requests
+  - [x] Authentication E2E tests (22/22 passing)
+  - [x] CRUD operations E2E tests (15/27 passing)
 
 ---
 
