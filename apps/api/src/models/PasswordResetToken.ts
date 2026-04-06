@@ -23,8 +23,7 @@ const PasswordResetTokenSchema: Schema = new Schema(
     },
     expiresAt: {
       type: Date,
-      required: [true, 'Expiration date is required'],
-      index: { expireAfterSeconds: 0 } // MongoDB TTL index for auto-cleanup
+      required: [true, 'Expiration date is required']
     },
     used: {
       type: Boolean,
