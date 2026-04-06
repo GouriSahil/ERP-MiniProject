@@ -1,9 +1,13 @@
 import { Request, Response } from 'express';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
+import crypto from 'crypto';
 import { AuthRequest } from '../middleware/auth.middleware';
 import { successResponse, errorResponse, createdResponse } from '../utils/response.util';
 import { saveAuditLog, getAuditLogData } from '../middleware/audit.middleware';
+import { User } from '../models/User';
+import { PasswordResetToken } from '../models/PasswordResetToken';
+import { emailService } from '../services/email.service';
 
 // Mock User model - will be replaced with actual Mongoose model
 interface User {
@@ -317,6 +321,72 @@ export class AuthController {
       return successResponse(res, { token }, 'Token refreshed successfully');
     } catch (error: any) {
       return errorResponse(res, 'Invalid or expired refresh token', 401);
+    }
+  }
+
+  // Forgot Password - initiates password reset flow
+  static async forgotPassword(req: Request, res: Response) {
+    try {
+      const { email } = req.body;
+
+      if (!email) {
+        return errorResponse(res, 'Email is required', 400);
+      }
+
+      // Find user by email
+      const user = await User.findOne({ email });
+
+      // Always return success to prevent email enumeration
+      if (!user) {
+        await saveAuditLog({
+          actorUserId: null,
+          actorRole: 'anonymous',
+          action: 'forgot_password',
+          targetType: 'auth',
+          targetId: email,
+          status: 'success',
+          metadata: { reason: 'User not found (response hidden for security)' },
+          ipAddress: req.ip || 'unknown',
+          userAgent: req.get('user-agent') || 'unknown'
+        });
+        return successResponse(res, null, 'If a user exists with this email, a password reset link has been sent.');
+      }
+
+      // Generate secure random token
+      const resetToken = crypto.randomBytes(32).toString('hex');
+
+      // Hash token before storing
+      const hashedToken = await bcrypt.hash(resetToken, 12);
+
+      // Set expiration to 15 minutes from now
+      const expiresAt = new Date(Date.now() + 15 * 60 * 1000);
+
+      // Store reset token in database
+      await PasswordResetToken.create({
+        userId: user._id,
+        token: hashedToken,
+        expiresAt,
+        used: false
+      });
+
+      // Send password reset email
+      await emailService.sendPasswordResetEmail(user.email, resetToken, user.name);
+
+      await saveAuditLog({
+        actorUserId: user._id.toString(),
+        actorRole: user.role,
+        action: 'forgot_password',
+        targetType: 'auth',
+        targetId: user._id.toString(),
+        status: 'success',
+        ipAddress: req.ip || 'unknown',
+        userAgent: req.get('user-agent') || 'unknown'
+      });
+
+      return successResponse(res, null, 'If a user exists with this email, a password reset link has been sent.');
+    } catch (error: any) {
+      console.error('[forgotPassword] Error:', error);
+      return errorResponse(res, 'An error occurred while processing your request', 500);
     }
   }
 }
