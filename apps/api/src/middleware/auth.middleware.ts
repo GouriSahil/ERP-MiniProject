@@ -4,10 +4,12 @@ import jwt from 'jsonwebtoken';
 declare global {
   namespace Express {
     interface User {
-      userId: string;
+      _id?: string;
+      userId?: string;
       email: string;
       role: string;
       departmentId?: string;
+      name?: string;
     }
   }
 }

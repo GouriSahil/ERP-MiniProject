@@ -82,7 +82,7 @@ export class AuthController {
           departmentId: user.departmentId
         },
         process.env.JWT_SECRET || 'your-secret-key',
-        { expiresIn: '1h' }
+        { expiresIn: '1h', issuer: 'erp-api', audience: 'erp-frontend' }
       );
 
       const refreshToken = jwt.sign(
@@ -93,7 +93,7 @@ export class AuthController {
           departmentId: user.departmentId
         },
         process.env.JWT_SECRET || 'your-secret-key',
-        { expiresIn: '30d' }
+        { expiresIn: '30d', issuer: 'erp-api', audience: 'erp-frontend' }
       );
 
       await saveAuditLog({
@@ -203,12 +203,15 @@ export class AuthController {
     try {
       // For JWT-based auth, logout is handled client-side by removing the token
       // But we can log the activity for audit purposes
+      const user = req.user!;
+      const userId = user._id || user.userId || '';
+
       await saveAuditLog({
-        actorUserId: req.user!.userId,
-        actorRole: req.user!.role,
+        actorUserId: userId,
+        actorRole: user.role,
         action: 'logout',
         targetType: 'auth',
-        targetId: req.user!.userId,
+        targetId: userId,
         status: 'success',
         ipAddress: req.ip || 'unknown',
         userAgent: req.get('user-agent') || 'unknown'
@@ -223,17 +226,21 @@ export class AuthController {
   // Get current user
   static async me(req: AuthRequest, res: Response) {
     try {
-      // const user = await User.findById(req.user!.userId).populate('departmentId');
+      // Get user from passport authentication
+      const user = req.user!;
+      const userId = user._id || user.userId || '';
 
-      const user = {
-        _id: req.user!.userId,
-        name: 'Current User',
-        email: req.user!.email,
-        role: req.user!.role,
-        departmentId: req.user!.departmentId
+      // Return user data from passport user object
+      const userData = {
+        _id: user._id || userId,
+        id: user._id || userId,
+        name: user.name || 'Current User',
+        email: user.email,
+        role: user.role,
+        departmentId: user.departmentId
       };
 
-      return successResponse(res, user);
+      return successResponse(res, userData);
     } catch (error: any) {
       return errorResponse(res, error.message, 500);
     }
@@ -243,6 +250,8 @@ export class AuthController {
   static async changePassword(req: AuthRequest, res: Response) {
     try {
       const { currentPassword, newPassword } = req.body;
+      const user = req.user!;
+      const userId = user._id || user.userId || '';
 
       if (!currentPassword || !newPassword) {
         return errorResponse(res, 'Current password and new password are required');
@@ -252,7 +261,7 @@ export class AuthController {
         return errorResponse(res, 'New password must be at least 8 characters');
       }
 
-      // const user = await User.findById(req.user!.userId);
+      // const userRecord = await User.findById(userId);
       // const isValidPassword = await bcrypt.compare(currentPassword, user.passwordHash);
 
       // if (!isValidPassword) {
@@ -260,14 +269,14 @@ export class AuthController {
       // }
 
       // const passwordHash = await bcrypt.hash(newPassword, 12);
-      // await User.findByIdAndUpdate(req.user!.userId, { passwordHash, mustChangePassword: false });
+      // await User.findByIdAndUpdate(userId, { passwordHash, mustChangePassword: false });
 
       await saveAuditLog({
-        actorUserId: req.user!.userId,
-        actorRole: req.user!.role,
+        actorUserId: userId || null,
+        actorRole: user.role,
         action: 'change_password',
         targetType: 'user',
-        targetId: req.user!.userId,
+        targetId: userId || 'unknown',
         status: 'success',
         ipAddress: req.ip || 'unknown',
         userAgent: req.get('user-agent') || 'unknown'
@@ -282,20 +291,32 @@ export class AuthController {
   // Refresh token
   static async refreshToken(req: AuthRequest, res: Response) {
     try {
+      // Get refresh token from body (validated by middleware)
+      const { refreshToken } = req.body as { refreshToken: string };
+
+      // Verify the refresh token
+      const decoded = jwt.verify(
+        refreshToken,
+        process.env.JWT_SECRET || 'your-secret-key',
+        { issuer: 'erp-api', audience: 'erp-frontend' }
+      ) as any;
+
+      const userId = decoded.userId || decoded._id;
+
       const token = jwt.sign(
         {
-          userId: req.user!.userId,
-          email: req.user!.email,
-          role: req.user!.role,
-          departmentId: req.user!.departmentId
+          userId: userId,
+          email: decoded.email,
+          role: decoded.role,
+          departmentId: decoded.departmentId
         },
         process.env.JWT_SECRET || 'your-secret-key',
-        { expiresIn: '1h' }
+        { expiresIn: '1h', issuer: 'erp-api', audience: 'erp-frontend' }
       );
 
       return successResponse(res, { token }, 'Token refreshed successfully');
     } catch (error: any) {
-      return errorResponse(res, error.message, 500);
+      return errorResponse(res, 'Invalid or expired refresh token', 401);
     }
   }
 }
