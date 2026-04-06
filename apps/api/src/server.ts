@@ -35,7 +35,7 @@ app.use(passport.initialize());
 app.use('/api', routes);
 
 // Root route
-app.get('/', (req, res) => {
+app.get('/', (_req, res) => {
   res.status(200).json({
     success: true,
     message: 'ERP Mini Project API',
@@ -105,7 +105,9 @@ process.on('SIGTERM', () => {
   process.exit(0);
 });
 
-// Start the server
-startServer();
+// Only start server if this file is run directly (not imported)
+if (require.main === module) {
+  startServer();
+}
 
 export default app;

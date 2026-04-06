@@ -6,59 +6,72 @@ import { verifyAccessToken } from '../utils/auth.utils';
 declare global {
   namespace Express {
     interface Request {
-      user?: any;
+      user?: {
+        _id?: string;
+        userId?: string;
+        email: string;
+        role: string;
+        departmentId?: string;
+        name?: string;
+      };
     }
   }
 }
 
 // Authentication middleware
 export const authenticate = (req: Request, res: Response, next: NextFunction): void => {
-  passport.authenticate('jwt', { session: false }, (err: any, user: any, info: any) => {
+  passport.authenticate('jwt', { session: false }, (err: any, user: any) => {
     if (err) {
-      return res.status(500).json({
+      res.status(500).json({
         success: false,
         message: 'Internal server error during authentication'
       });
+      return;
     }
 
     if (!user) {
-      return res.status(401).json({
+      res.status(401).json({
         success: false,
         message: 'Unauthorized - Invalid or missing token'
       });
+      return;
     }
 
     req.user = user;
     next();
-  })(req, res, next);
+  })(req as any, res, next);
 };
 
 // Authorization middleware - check user role
 export const authorize = (...roles: string[]) => {
   return (req: Request, res: Response, next: NextFunction): void => {
     if (!req.user) {
-      return res.status(401).json({
+      res.status(401).json({
         success: false,
         message: 'Unauthorized - Authentication required'
       });
+      return;
     }
 
-    if (!roles.includes(req.user.role)) {
-      return res.status(403).json({
-        success: false,
-        message: 'Forbidden - Insufficient permissions'
-      });
+    // super_admin has access to all routes
+    if (req.user.role === 'super_admin' || roles.includes(req.user.role)) {
+      next();
+      return;
     }
 
-    next();
+    res.status(403).json({
+      success: false,
+      message: 'Forbidden - Insufficient permissions'
+    });
   };
 };
 
 // Optional authentication - doesn't fail if no token
 export const optionalAuth = (req: Request, res: Response, next: NextFunction): void => {
-  passport.authenticate('jwt', { session: false }, (err: any, user: any, info: any) => {
+  passport.authenticate('jwt', { session: false }, (err: any, user: any) => {
     if (err) {
-      return next(err);
+      next(err);
+      return;
     }
     if (user) {
       req.user = user;
