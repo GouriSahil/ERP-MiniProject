@@ -8,6 +8,10 @@
     "build": "tsc",
     "start": "bun run dist/server.js",
     "test": "bun test",
+    "test:unit": "bun test tests/unit",
+    "test:integration": "bun test tests/integration",
+    "test:e2e": "bun test tests/e2e",
+    "test:watch": "bun test --watch",
     "lint": "eslint src --ext .ts"
   },
   "dependencies": {
@@ -37,6 +41,7 @@
     "@types/node": "^25.3.5",
     "@types/passport": "^1.0.16",
     "@types/passport-jwt": "^4.0.1",
+    "mongodb-memory-server": "^11.0.1",
     "typescript": "^5.3.3"
   }
 }
