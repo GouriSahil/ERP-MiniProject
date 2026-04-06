@@ -3,7 +3,7 @@
  * Tests authentication endpoints with actual MongoDB operations
  */
 
-import { describe, it, expect, beforeEach, afterEach } from 'bun:test';
+import { describe, it, expect, beforeEach, afterEach, afterAll } from 'bun:test';
 import jwt from 'jsonwebtoken';
 import * as bcrypt from 'bcryptjs';
 import {
