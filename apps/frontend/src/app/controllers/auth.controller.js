@@ -6,10 +6,10 @@
         .controller('AuthController', AuthController);
 
     AuthController.$inject = ['$scope', '$location', '$window', 'AuthService', 'APP_CONFIG'];
-    
+
     function AuthController($scope, $location, $window, AuthService, APP_CONFIG) {
         var vm = this;
-        
+
         // Login data
         vm.loginData = {
             email: '',
@@ -19,11 +19,14 @@
 
         // Register data
         vm.registerData = {
+            fullName: '',
             name: '',
             email: '',
+            phone: '',
             password: '',
             confirmPassword: '',
-            role: 'student'
+            role: 'student',
+            agreeTerms: false
         };
 
         // Error states
@@ -31,6 +34,19 @@
         vm.registerError = null;
         vm.loginSuccessMessage = null;
         vm.registerSuccessMessage = null;
+
+        // Password visibility toggles
+        vm.showPassword = {
+            login: false,
+            register: false
+        };
+
+        // Password strength indicator
+        vm.passwordStrength = {
+            class: '',
+            percent: 0,
+            text: ''
+        };
 
         // Roles available for registration
         vm.roles = [
@@ -43,7 +59,82 @@
         vm.register = register;
         vm.isLoginPage = isLoginPage;
         vm.isRegisterPage = isRegisterPage;
+        vm.togglePasswordVisibility = togglePasswordVisibility;
+        vm.updatePasswordStrength = updatePasswordStrength;
+        vm.loginWithGoogle = loginWithGoogle;
+        vm.loginWithMicrosoft = loginWithMicrosoft;
+        vm.loginWithApple = loginWithApple;
+        vm.registerWithGoogle = registerWithGoogle;
+        vm.registerWithMicrosoft = registerWithMicrosoft;
+        vm.registerWithApple = registerWithApple;
         vm.isLoading = false;
+
+        // Watch password changes to update strength indicator
+        $scope.$watch(function() {
+            return vm.registerData.password;
+        }, function(newPassword) {
+            if (newPassword) {
+                vm.updatePasswordStrength(newPassword);
+            } else {
+                vm.passwordStrength = { class: '', percent: 0, text: '' };
+            }
+        });
+
+        function togglePasswordVisibility(form) {
+            vm.showPassword[form] = !vm.showPassword[form];
+        }
+
+        function updatePasswordStrength(password) {
+            var strength = 0;
+
+            // Length check
+            if (password.length >= 8) strength += 25;
+            if (password.length >= 12) strength += 15;
+
+            // Character variety checks
+            if (/[a-z]/.test(password)) strength += 15;
+            if (/[A-Z]/.test(password)) strength += 15;
+            if (/[0-9]/.test(password)) strength += 15;
+            if (/[^a-zA-Z0-9]/.test(password)) strength += 15;
+
+            if (strength < 40) {
+                vm.passwordStrength = { class: 'weak', percent: Math.min(strength, 33), text: 'Weak' };
+            } else if (strength < 70) {
+                vm.passwordStrength = { class: 'medium', percent: Math.min(strength, 66), text: 'Medium' };
+            } else {
+                vm.passwordStrength = { class: 'strong', percent: strength, text: 'Strong' };
+            }
+        }
+
+        function loginWithGoogle() {
+            // TODO: Implement Google OAuth
+            console.log('Google login not implemented yet');
+        }
+
+        function loginWithMicrosoft() {
+            // TODO: Implement Microsoft OAuth
+            console.log('Microsoft login not implemented yet');
+        }
+
+        function loginWithApple() {
+            // TODO: Implement Apple OAuth
+            console.log('Apple login not implemented yet');
+        }
+
+        function registerWithGoogle() {
+            // TODO: Implement Google OAuth registration
+            console.log('Google registration not implemented yet');
+        }
+
+        function registerWithMicrosoft() {
+            // TODO: Implement Microsoft OAuth registration
+            console.log('Microsoft registration not implemented yet');
+        }
+
+        function registerWithApple() {
+            // TODO: Implement Apple OAuth registration
+            console.log('Apple registration not implemented yet');
+        }
 
         function login() {
             // Clear previous messages
@@ -98,15 +189,15 @@
             vm.registerError = null;
             vm.registerSuccessMessage = null;
 
-            // Validate form
-            if (!vm.registerData.name || !vm.registerData.email ||
+            // Validate form - check fullName first
+            if (!vm.registerData.fullName || !vm.registerData.email ||
                 !vm.registerData.password || !vm.registerData.confirmPassword) {
                 vm.registerError = 'Please fill in all required fields';
                 return;
             }
 
             // Validate name
-            if (vm.registerData.name.trim().length < 2) {
+            if (vm.registerData.fullName.trim().length < 2) {
                 vm.registerError = 'Name must be at least 2 characters long';
                 return;
             }
@@ -130,6 +221,12 @@
                 return;
             }
 
+            // Validate terms agreement
+            if (!vm.registerData.agreeTerms) {
+                vm.registerError = 'Please agree to the Terms of Service and Privacy Policy';
+                return;
+            }
+
             // Validate role selection
             if (!vm.registerData.role) {
                 vm.registerError = 'Please select your role';
@@ -138,10 +235,11 @@
 
             vm.isLoading = true;
 
-            // Prepare registration data
+            // Prepare registration data - use fullName as name for API
             var registrationData = {
-                name: vm.registerData.name.trim(),
+                name: vm.registerData.fullName.trim(),
                 email: vm.registerData.email.trim().toLowerCase(),
+                phone: vm.registerData.phone ? vm.registerData.phone.trim() : undefined,
                 password: vm.registerData.password,
                 role: vm.registerData.role
             };
