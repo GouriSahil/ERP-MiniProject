@@ -69,6 +69,33 @@ export const refreshTokenSchema = Joi.object({
     })
 });
 
+export const forgotPasswordSchema = Joi.object({
+  email: Joi.string()
+    .email()
+    .required()
+    .messages({
+      'string.email': 'Please provide a valid email address',
+      'any.required': 'Email is required'
+    })
+});
+
+export const resetPasswordSchema = Joi.object({
+  token: Joi.string()
+    .required()
+    .messages({
+      'any.required': 'Reset token is required'
+    }),
+  newPassword: Joi.string()
+    .min(8)
+    .pattern(/^(?=.*[A-Za-z])(?=.*\d)/)
+    .required()
+    .messages({
+      'string.min': 'Password must be at least 8 characters long',
+      'string.pattern.base': 'Password must contain at least one letter and one number',
+      'any.required': 'New password is required'
+    })
+});
+
 // Validation middleware factory
 export const validate = (schema: Joi.ObjectSchema) => {
   return (req: any, res: any, next: any) => {
