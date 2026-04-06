@@ -20,6 +20,13 @@ let mongoServer: MongoMemoryServer | null = null;
  * Connect to in-memory MongoDB for testing
  */
 export async function setupTestDatabase(): Promise<void> {
+  // Only connect if not already connected
+  if (mongoose.connection.readyState === 1) { // connected
+    console.log('[Test] Already connected to MongoDB, clearing database...');
+    await clearTestDatabase();
+    return;
+  }
+
   mongoServer = await MongoMemoryServer.create();
   const uri = mongoServer.getUri();
 
