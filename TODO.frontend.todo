@@ -1,0 +1,448 @@
+# College ERP System - Frontend TODO
+
+AngularJS SPA consuming REST API
+
+**Tech Stack:** AngularJS 1.x, Bootstrap 4, Playwright (E2E Tests)
+
+---
+
+## Frontend Infrastructure
+
+### Application Setup
+- [x] AngularJS module configuration
+- [x] Routing setup ($routeProvider with #! hash)
+- [x] HTTP interceptors for JWT token injection
+- [x] HTTP interceptors for error handling
+- [ ] State management service
+- [ ] Local storage service wrapper
+- [ ] Environment configuration (dev/prod)
+
+### Testing
+- [x] Playwright E2E test framework
+- [x] Test configuration (playwright.config.ts)
+- [x] AngularJS-specific test helpers
+- [x] Authentication flow tests
+- [x] Dashboard tests
+- [ ] Component unit tests
+- [ ] Service unit tests
+
+---
+
+## Authentication Views
+
+### Login Page
+- [x] Login form with email/password
+- [x] Email validation
+- [x] Password validation (min 8 characters)
+- [x] "Remember me" checkbox
+- [x] "Forgot password" link (UI only)
+- [x] "Create account" link
+- [x] Form submission handling
+- [x] JWT token storage (localStorage)
+- [x] Redirect after login
+- [ ] Password visibility toggle
+- [ ] Social login buttons (UI mockup)
+- [ ] Remember email in localStorage
+- [ ] Login failure error display
+
+### Registration Page
+- [x] Registration form
+  - [x] Name input
+  - [x] Email input
+  - [x] Password input
+  - [x] Confirm password input (optional)
+  - [x] Role selection (if admin)
+- [x] Password strength indicator
+- [x] Email validation
+- [x] Form submission handling
+- [x] Success/error message display
+- [ ] Terms & conditions checkbox
+- [ ] Email verification flow
+- [ ] Auto-redirect on success
+
+### Forgot Password Page
+- [ ] Forgot password form
+- [ ] Email input
+- [ ] Submit button
+- [ ] Success message
+- [ ] Resend link
+
+### Reset Password Page
+- [ ] Reset password form
+- [ ] New password input
+- [ ] Confirm password input
+- [ ] Password strength indicator
+- [ ] Token validation
+- [ ] Submit handling
+
+---
+
+## Layout & Navigation
+
+### Main Layout
+- [x] Responsive navbar
+- [ ] Sidebar navigation
+- [ ] User dropdown menu
+  - [x] User name display
+  - [ ] Profile link
+  - [ ] Settings link
+  - [x] Logout button
+- [ ] Mobile hamburger menu
+- [ ] Breadcrumb navigation
+- [ ] Footer
+
+### Navigation Menu Items
+- [x] Home / Landing
+- [x] Dashboard
+- [ ] Departments
+- [ ] Courses
+- [ ] Terms
+- [ ] Course Offerings
+- [ ] Sessions
+- [ ] Students
+- [ ] Faculty
+- [ ] Enrollments
+- [ ] Attendance
+- [ ] Reports
+- [ ] Audit Logs
+- [ ] Settings
+
+---
+
+## Dashboard
+
+### Dashboard Widgets
+- [x] Statistics cards
+  - [ ] Total students
+  - [ ] Total faculty
+  - [ ] Active courses
+  - [ ] Total departments
+- [ ] Quick action buttons
+- [ ] Recent activity feed
+- [ ] Upcoming sessions
+- [ ] Pending approvals
+- [ ] Attendance overview chart
+- [ ] Enrollment trend chart
+
+### Dashboard Actions
+- [ ] Navigate to student list
+- [ ] Navigate to faculty list
+- [ ] Navigate to courses
+- [ ] Quick attendance mark
+- [ ] Quick enrollment
+
+---
+
+## Department Management Views
+
+### Department List
+- [ ] Department table with pagination
+- [ ] Columns: Name, Code, Faculty Count, Student Count, Actions
+- [ ] Search by name/code
+- [ ] Sort by columns
+- [ ] Create department button
+- [ ] Row actions: Edit, Delete, View Faculty, View Courses
+
+### Department Form (Create/Edit)
+- [ ] Name input
+- [ ] Code input (auto-uppercase)
+- [ ] Save button
+- [ ] Cancel button
+- [ ] Validation messages
+- [ ] Delete confirmation
+
+### Department Detail View
+- [ ] Department info card
+- [ ] Faculty list
+- [ ] Course list
+- [ ] Student count
+- [ ] Edit/Delete buttons
+
+---
+
+## Course Management Views
+
+### Course List
+- [ ] Course table with pagination
+- [ ] Columns: Name, Code, Department, Credits, Actions
+- [ ] Filter by department
+- [ ] Search by name/code
+- [ ] Create course button
+- [ ] Row actions: Edit, Delete, View Offerings
+
+### Course Form (Create/Edit)
+- [ ] Name input
+- [ ] Code input
+- [ ] Department dropdown
+- [ ] Credits input (1-10)
+- [ ] Description textarea
+- [ ] Level dropdown (beginner/intermediate/advanced)
+- [ ] Elective checkbox
+- [ ] Prerequisites multi-select
+- [ ] Save/Cancel buttons
+
+### Course Detail View
+- [ ] Course info card
+- [ ] Prerequisites list
+- [ ] Current offerings
+- [ ] Faculty assigned
+
+---
+
+## Term Management Views
+
+### Term List
+- [ ] Term table
+- [ ] Columns: Name, Start Date, End Date, Status, Actions
+- [ ] Status badge (upcoming/active/completed/cancelled)
+- [ ] Create term button
+- [ ] Row actions: Edit, Delete, Activate
+
+### Term Form (Create/Edit)
+- [ ] Name input
+- [ ] Start date picker
+- [ ] End date picker
+- [ ] Status dropdown
+- [ ] Overlap validation message
+- [ ] Save/Cancel buttons
+
+---
+
+## Student Management Views
+
+### Student List
+- [ ] Student table with pagination
+- [ ] Columns: Name, Roll Number, Email, Department, Batch, Actions
+- [ ] Filter by department
+- [ ] Filter by batch
+- [ ] Search by name/email/roll number
+- [ ] Create student button
+- [ ] Bulk import button
+- [ ] Row actions: Edit, Delete, View Profile
+
+### Student Form (Create/Edit)
+- [ ] Name input
+- [ ] Email input
+- [ ] Roll number input
+- [ ] Department dropdown
+- [ ] Batch input
+- [ ] Semester dropdown
+- [ ] Save/Cancel buttons
+
+### Student Detail View
+- [ ] Student info card
+- [ ] Enrollment history
+- [ ] Attendance summary
+- [ ] Performance metrics
+- [ ] Edit/Delete buttons
+
+### Bulk Student Import
+- [ ] CSV file upload
+- [ ] Template download
+- [ ] Validation preview
+- [ ] Error reporting
+- [ ] Confirm import button
+
+---
+
+## Faculty Management Views
+
+### Faculty List
+- [ ] Faculty table with pagination
+- [ ] Columns: Name, Email, Department, Specialization, Actions
+- [ ] Filter by department
+- [ ] Search by name/email
+- [ ] Create faculty button
+- [ ] Row actions: Edit, Delete, View Profile
+
+### Faculty Form (Create/Edit)
+- [ ] Name input
+- [ ] Email input
+- [ ] Department dropdown
+- [ ] Specialization input
+- [ ] Designation dropdown
+- [ ] Save/Cancel buttons
+
+### Faculty Detail View
+- [ ] Faculty info card
+- [ ] Assigned offerings
+- [ ] Teaching load
+- [ ] Edit/Delete buttons
+
+---
+
+## Enrollment Views
+
+### Enrollment List
+- [ ] Enrollment table with pagination
+- [ ] Filter by offering
+- [ ] Filter by student
+- [ ] Filter by status
+- [ ] Create enrollment button
+
+### Enrollment Form (Create)
+- [ ] Student dropdown/search
+- [ ] Offering dropdown/search
+- [ ] Capacity indicator
+- [ ] Save/Cancel buttons
+
+### Bulk Enrollment Form
+- [ ] Offering selection
+- [ ] Student multi-select
+- [ ] Capacity check display
+- [ ] Preview list
+- [ ] Confirm button
+- [ ] Results display (success/failed)
+
+### Enrollment Detail View
+- [ ] Enrollment info
+- [ ] Drop enrollment button
+- [ ] Transfer option
+
+---
+
+## Attendance Views
+
+### Attendance List
+- [ ] Filter by session
+- [ ] Filter by student
+- [ ] Filter by date range
+- [ ] Filter by status
+- [ ] Export to CSV button
+
+### Mark Attendance View
+- [ ] Session selection
+- [ ] Enrolled students table
+- [ ] Radio buttons: Present/Absent/Late/Excused
+- [ ] Remarks column
+- [ ] Select All buttons
+- [ ] Save button
+- [ ] Bulk mark options
+
+### Student Attendance Dashboard
+- [ ] Enrolled courses list
+- [ ] Attendance percentage per course
+- [ ] Session history
+- [ ] Low attendance warnings
+- [ ] Attendance trend chart
+
+---
+
+## Reports Views
+
+### Report Selection
+- [ ] Report type dropdown
+- [ ] Date range picker
+- [ ] Filter options (department, course, student)
+- [ ] Generate button
+
+### Attendance Report
+- [ ] Summary cards
+- [ ] Attendance table
+- [ ] Export CSV button
+- [ ] Print button
+
+### Student Performance Report
+- [ ] Student selection
+- [ ] Academic metrics
+- [ ] Attendance summary
+- [ ] Enrollment history
+- [ ] Export/Print buttons
+
+### Faculty Performance Report
+- [ ] Faculty selection
+- [ ] Teaching load
+- [ ] Course assignments
+- [ ] Average attendance
+- [ ] Export/Print buttons
+
+### Course Analytics Report
+- [ ] Course selection
+- [ ] Enrollment statistics
+- [ ] Attendance statistics
+- [ ] Charts/Graphs
+- [ ] Export/Print buttons
+
+### System Dashboard
+- [ ] Key metrics cards
+- [ ] Charts (Bar, Line, Pie)
+- [ ] Date range filter
+- [ ] Refresh button
+
+---
+
+## Settings & Profile Views
+
+### User Profile
+- [x] Profile page
+  - [x] Name display
+  - [x] Email display
+  - [x] Role display
+- [ ] Edit profile form
+- [ ] Change password form
+  - [ ] Current password
+  - [ ] New password
+  - [ ] Confirm password
+- [ ] Profile picture upload
+
+### Settings Page
+- [ ] Account settings
+- [ ] Notification preferences
+- [ ] Theme selection
+- [ ] Language selection
+- [ ] Timezone selection
+
+---
+
+## UI/UX Components
+
+### Common Components
+- [ ] Loading spinner
+- [ ] Toast notifications (success/error/info)
+- [ ] Confirmation modal
+- [ ] Data table with pagination
+- [ ] Search/filter bar
+- [ ] Dropdown select
+- [ ] Multi-select dropdown
+- [ ] Date picker
+- [ ] Date range picker
+- [ ] Modal/Dialog
+- [ ] Tabs
+- [ ] Accordion
+- [ ] Chart components
+
+### Validation
+- [ ] Form validation directives
+- [ ] Error message display
+- [ ] Real-time validation
+- [ ] Custom validators
+
+---
+
+## Utility Features
+
+### Export/Import
+- [ ] Export to CSV
+- [ ] Export to PDF
+- [ ] Print functionality
+- [ ] Bulk import with CSV
+
+### Search & Filter
+- [ ] Global search
+- [ ] Advanced filter panel
+- [ ] Saved filters
+- [ ] Filter presets
+
+### Notifications
+- [ ] Toast notification service
+- [ ] Notification types: success, error, warning, info
+- [ ] Auto-dismiss
+- [ ] Position options
+
+---
+
+## Status Legend
+
+- [ ] Not Started
+- [~] In Progress
+- [x] Complete

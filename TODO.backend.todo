@@ -1,0 +1,388 @@
+# College ERP System - Backend API TODO
+
+Node.js/Express REST API with MongoDB
+
+**Tech Stack:** Node.js, Express, MongoDB, Mongoose, JWT, Passport.js
+
+---
+
+## API Infrastructure
+
+### Server & Configuration
+- [x] Express server setup with TypeScript
+- [x] CORS configuration
+- [x] Security middleware (Helmet.js)
+- [x] Request logging (Morgan)
+- [x] Environment variables (.env)
+- [x] MongoDB connection with Mongoose
+- [x] Passport.js configuration
+- [x] Global error handling middleware
+- [x] 404 handler middleware
+
+### Testing
+- [x] Bun test framework setup
+- [x] Test helpers and utilities
+- [x] Mock request/response utilities
+- [x] Authentication controller tests
+- [x] Department management tests
+- [x] Course management tests
+- [x] Student management tests
+- [x] Faculty management tests
+- [x] Enrollment tests
+- [x] Attendance tests
+- [ ] Integration tests with real database
+- [ ] E2E API tests
+
+---
+
+## Authentication & Authorization
+
+### Authentication (AUTH-001 to AUTH-005)
+- [x] User Registration API
+  - [x] POST /api/auth/register
+  - [x] Email validation (unique check)
+  - [x] Password minimum 8 characters
+  - [x] Password hashing with bcrypt (12 rounds)
+  - [ ] Pending state requiring admin approval
+- [x] User Login API
+  - [x] POST /api/auth/login
+  - [x] JWT token generation (access + refresh)
+  - [x] Token expiration (1 hour access, 30 day refresh)
+  - [ ] Password reset flow (email)
+- [x] Token Refresh API
+  - [x] POST /api/auth/refresh
+- [x] Logout API
+  - [x] POST /api/auth/logout
+  - [x] Audit logging
+- [x] Get Current User API
+  - [x] GET /api/auth/me
+- [x] Change Password API
+  - [x] POST /api/auth/change-password
+  - [x] Current password verification
+  - [x] Audit logging
+- [ ] Password Reset API
+  - [ ] POST /api/auth/forgot-password
+  - [ ] POST /api/auth/reset-password
+
+### Authorization
+- [x] JWT authentication middleware
+- [x] Role-based authorization middleware
+- [x] Six built-in roles: super_admin, admin, dept_head, faculty, staff, student
+- [x] Server-side permission validation
+- [x] Permission format: resource:action
+- [ ] Role inheritance
+- [ ] Custom role creation API
+- [ ] Admin session revocation
+
+---
+
+## User Management
+
+### User CRUD (USER-001 to USER-004)
+- [x] List Users API
+  - [x] GET /api/users
+  - [x] Pagination support
+  - [ ] Search by name, email
+  - [ ] Filter by role, department
+  - [ ] Sort options
+- [x] Create User API
+  - [x] POST /api/users
+  - [x] Role assignment
+  - [x] Department assignment
+  - [x] Audit logging
+- [x] Get User by ID API
+  - [x] GET /api/users/:id
+- [x] Update User API
+  - [x] PUT /api/users/:id
+  - [x] Audit logging
+- [x] Delete User API
+  - [x] DELETE /api/users/:id
+  - [x] Dependency validation
+- [ ] Deactivate/Reactivate User API
+- [ ] Admin Password Reset API
+
+---
+
+## Academic Structure
+
+### Department Management (ACAD-001)
+- [x] Create Department API
+  - [x] POST /api/departments
+  - [x] Name and unique code validation
+  - [x] Code max 10 characters, auto-uppercase
+- [x] List Departments API
+  - [x] GET /api/departments
+  - [x] Pagination
+  - [x] Search by name, code
+- [x] Get Department by ID API
+  - [x] GET /api/departments/:id
+  - [x] Include stats (faculty, student, course counts)
+- [x] Update Department API
+  - [x] PUT /api/departments/:id
+  - [x] Code uniqueness validation
+- [x] Delete Department API
+  - [x] DELETE /api/departments/:id
+  - [x] Dependency check (faculty, students, courses)
+- [x] Get Department Faculty API
+  - [x] GET /api/departments/:id/faculty
+- [x] Get Department Courses API
+  - [x] GET /api/departments/:id/courses
+
+### Course Management (ACAD-002)
+- [x] Create Course API
+  - [x] POST /api/courses
+  - [x] Name, code, description, credits, department
+  - [x] Unique code within department
+  - [x] Credits validation (1-10)
+- [x] List Courses API
+  - [x] GET /api/courses
+  - [x] Filter by department
+  - [x] Pagination
+- [x] Get Course by ID API
+  - [x] GET /api/courses/:id
+  - [x] Include prerequisites
+- [x] Update Course API
+  - [x] PUT /api/courses/:id
+- [x] Delete Course API
+  - [x] DELETE /api/courses/:id
+  - [x] Dependency validation
+
+### Term Management (ACAD-003)
+- [x] Create Term API
+  - [x] POST /api/terms
+  - [x] Name, start date, end date, status
+  - [x] Overlap validation
+- [x] List Terms API
+  - [x] GET /api/terms
+- [x] Get Term by ID API
+  - [x] GET /api/terms/:id
+- [x] Update Term API
+  - [x] PUT /api/terms/:id
+- [x] Delete Term API
+  - [x] DELETE /api/terms/:id
+  - [x] Dependency validation
+- [ ] Activate/Deactivate Term API
+- [ ] Get Current Active Term API
+
+---
+
+## Course Administration
+
+### Course Offerings (COUR-001)
+- [x] Create Offering API
+  - [x] POST /api/offerings
+  - [x] Link course and term
+  - [x] Set capacity limits
+- [x] List Offerings API
+  - [x] GET /api/offerings
+  - [x] Filter by term, course
+- [x] Get Offering by ID API
+  - [x] GET /api/offerings/:id
+  - [x] Include assigned faculty
+- [x] Update Offering API
+  - [x] PUT /api/offerings/:id
+- [x] Delete Offering API
+  - [x] DELETE /api/offerings/:id
+- [x] Assign Faculty to Offering API
+  - [x] POST /api/offerings/:id/faculty
+  - [x] Support multiple faculty
+- [x] Remove Faculty from Offering API
+  - [x] DELETE /api/offerings/:id/faculty/:facultyId
+- [ ] Set Schedule API (days, times, location)
+
+### Sessions (COUR-002)
+- [x] Create Session API
+  - [x] POST /api/sessions
+  - [x] Date, start time, end time, location
+  - [x] Link to offering
+- [x] List Sessions API
+  - [x] GET /api/sessions
+  - [x] Filter by offering
+- [x] Get Session by ID API
+  - [x] GET /api/sessions/:id
+- [x] Update Session API
+  - [x] PUT /api/sessions/:id
+- [x] Delete Session API
+  - [x] DELETE /api/sessions/:id
+- [x] Session status tracking (scheduled, completed, cancelled)
+
+---
+
+## Student & Faculty Management
+
+### Student Management (STU-001 to STU-004)
+- [x] Create Student API
+  - [x] POST /api/students
+  - [x] Name, email, roll number, department
+  - [x] Create associated user account
+  - [x] Unique roll number within department
+- [x] List Students API
+  - [x] GET /api/students
+  - [x] Pagination
+  - [ ] Search by name, email, roll number
+  - [ ] Filter by department, enrollment status
+- [x] Get Student by ID API
+  - [x] GET /api/students/:id
+  - [x] Include user and department
+- [x] Update Student API
+  - [x] PUT /api/students/:id
+- [x] Delete Student API
+  - [x] DELETE /api/students/:id
+- [ ] Bulk Student Import API
+  - [ ] POST /api/students/import
+  - [ ] CSV upload
+  - [ ] Validation with error reporting
+- [ ] Get Student Enrollment History API
+- [ ] Get Student Attendance Summary API
+
+### Faculty Management (FAC-001 to FAC-003)
+- [x] Create Faculty API
+  - [x] POST /api/faculty
+  - [x] Name, email, department, specialization
+  - [x] Create associated user account
+- [x] List Faculty API
+  - [x] GET /api/faculty
+  - [x] Pagination
+  - [ ] Filter by department
+- [x] Get Faculty by ID API
+  - [x] GET /api/faculty/:id
+- [x] Update Faculty API
+  - [x] PUT /api/faculty/:id
+- [x] Delete Faculty API
+  - [x] DELETE /api/faculty/:id
+- [ ] Get Faculty Teaching Load API
+- [ ] Get Faculty Assigned Offerings API
+
+---
+
+## Enrollment & Attendance
+
+### Enrollment (ENR-001 to ENR-003)
+- [x] Create Enrollment API
+  - [x] POST /api/enrollments
+  - [x] Student and offering link
+  - [x] Capacity check
+  - [x] Duplicate prevention
+- [x] Bulk Enrollment API
+  - [x] POST /api/enrollments/bulk
+  - [x] Multiple students for one offering
+  - [x] Partial success support
+  - [x] Error reporting
+- [x] List Enrollments API
+  - [x] GET /api/enrollments
+- [x] Get Enrollments by Offering API
+  - [x] GET /api/enrollments/offering/:offeringId
+- [x] Get Enrollments by Student API
+  - [x] GET /api/enrollments/student/:studentId
+- [x] Drop Enrollment API
+  - [x] DELETE /api/enrollments/:id
+  - [x] Reason tracking
+- [ ] Transfer Enrollment API
+- [ ] Get Student Enrollment History API
+
+### Attendance (ATT-001 to ATT-005)
+- [x] Create Attendance Record API
+  - [x] POST /api/attendance
+  - [x] Session, student, status
+  - [x] Enrollment verification
+  - [x] Duplicate prevention
+- [x] Bulk Mark Attendance API
+  - [x] POST /api/attendance/mark-session
+  - [x] Multiple students for one session
+  - [x] Update or create logic
+  - [x] Partial success support
+- [x] List Attendance API
+  - [x] GET /api/attendance
+  - [x] Filter by session, student, status, date range
+  - [x] Pagination
+- [x] Get Attendance by Session API
+  - [x] GET /api/attendance/session/:sessionId
+- [x] Get Attendance by Student API
+  - [x] GET /api/attendance/student/:studentId
+- [x] Update Attendance API
+  - [x] PUT /api/attendance/:id
+- [x] Delete Attendance API
+  - [x] DELETE /api/attendance/:id
+- [ ] Calculate Attendance Percentage API
+- [ ] Get Attendance Trends API
+- [ ] Export Attendance to CSV API
+- [ ] Get Low Attendance Students API
+- [ ] Student Attendance Dashboard API
+
+---
+
+## Reporting & Analytics
+
+### Reports (REP-001 to REP-005)
+- [x] Attendance Reports API
+  - [x] GET /api/reports/attendance
+  - [x] Filter by term, course, student, date range
+  - [x] Summary statistics
+  - [x] CSV export
+- [x] Student Performance Reports API
+  - [x] GET /api/reports/student-performance
+  - [x] Attendance summary
+  - [x] Enrollment history
+- [x] Faculty Performance Reports API
+  - [x] GET /api/reports/faculty-performance
+  - [x] Teaching load
+  - [x] Average attendance
+- [x] Course Analytics Reports API
+  - [x] GET /api/reports/course-analytics
+  - [x] Enrollment statistics
+  - [x] Attendance statistics
+- [x] System Analytics Dashboard API
+  - [x] GET /api/reports/dashboard
+  - [x] Key metrics (users, students, faculty, departments, courses)
+- [ ] Interactive Charts Data API
+- [ ] Print-friendly Report Formats
+
+---
+
+## System Administration
+
+### Audit Logging
+- [x] Audit Log Model with 90-day TTL
+- [x] saveAuditLog helper function
+- [x] Automatic logging for all mutations
+- [x] Get Audit Logs API
+  - [x] GET /api/audit/logs
+  - [x] Filter by action, target, user, date range
+  - [x] Pagination
+  - [x] CSV export
+- [x] Get Audit Log by ID API
+  - [x] GET /api/audit/logs/:id
+
+### Role Management
+- [x] Custom Role Model
+- [x] Create Custom Role API
+- [x] List Roles API
+- [x] Update Role API
+- [x] Delete Role API
+- [x] Permission assignment
+
+---
+
+## Database Collections
+
+- [x] Users - `{ email, passwordHash, role, departmentId, mustChangePassword }`
+- [x] Students - `{ userId, rollNumber, departmentId, batch, semester }`
+- [x] Faculty - `{ userId, departmentId, specialization, designation }`
+- [x] Departments - `{ name, code (unique) }`
+- [x] Courses - `{ name, code, departmentId, credits, description, prerequisites, level, elective }`
+- [x] Terms - `{ name, startDate, endDate, status }`
+- [x] CourseOfferings - `{ courseId, termId, capacity, status }`
+- [x] OfferingFaculty - `{ offeringId, facultyId, role }`
+- [x] Sessions - `{ offeringId, date, startTime, endTime, location, status }`
+- [x] Enrollments - `{ studentId, offeringId, status, enrolledAt, droppedAt }`
+- [x] AttendanceRecords - `{ sessionId, studentId, status, remarks, markedBy, markedAt }`
+- [x] AuditLogs - `{ actorUserId, action, targetType, targetId, status, metadata, ipAddress, createdAt }`
+- [x] CustomRoles - `{ name, permissions, createdBy }`
+
+---
+
+## Status Legend
+
+- [ ] Not Started
+- [~] In Progress
+- [x] Complete
