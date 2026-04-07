@@ -23,8 +23,6 @@ export class CoursesController {
       }
 
       const courses = await Course.find(filter)
-        .populate('departmentId', 'name code')
-        .populate('prerequisites')
         .sort({ [sortBy]: sortOrder })
         .skip((page - 1) * limit)
         .limit(limit)
@@ -47,10 +45,7 @@ export class CoursesController {
     try {
       const { id } = req.params;
 
-      const course = await Course.findById(id)
-        .populate('departmentId', 'name code')
-        .populate('prerequisites', 'name code')
-        .lean();
+      const course = await Course.findById(id).lean();
 
       if (!course) {
         return notFoundResponse(res, 'Course');
@@ -99,16 +94,18 @@ export class CoursesController {
         level: level || 'beginner'
       });
 
+      const userId = req.user!.userId || req.user!._id?.toString() || 'unknown';
+
       await saveAuditLog({
-        actorUserId: req.user!.userId,
+        actorUserId: userId,
         actorRole: req.user!.role,
         action: 'create',
         targetType: 'course',
         targetId: course._id.toString(),
         status: 'success',
         metadata: { name, code, credits, prerequisiteCount: prerequisites?.length || 0 },
-        ipAddress: req.ip || 'unknown',
-        userAgent: req.get('user-agent') || 'unknown'
+        ipAddress: (req.ip as string | null) || 'unknown',
+        userAgent: (req.get('user-agent') as string | null) || 'unknown'
       });
 
       return createdResponse(res, course, 'Course created successfully');
@@ -177,18 +174,20 @@ export class CoursesController {
         id,
         updateData,
         { new: true, runValidators: true }
-      ).populate('departmentId', 'name code').populate('prerequisites', 'name code');
+      ).lean();
+
+      const userId = req.user!.userId || req.user!._id?.toString() || 'unknown';
 
       await saveAuditLog({
-        actorUserId: req.user!.userId,
+        actorUserId: userId,
         actorRole: req.user!.role,
         action: 'update',
         targetType: 'course',
         targetId: id,
         status: 'success',
         metadata: { changes: req.body },
-        ipAddress: req.ip || 'unknown',
-        userAgent: req.get('user-agent') || 'unknown'
+        ipAddress: (req.ip as string | null) || 'unknown',
+        userAgent: (req.get('user-agent') as string | null) || 'unknown'
       });
 
       return successResponse(res, updatedCourse, 'Course updated successfully');
@@ -237,15 +236,17 @@ export class CoursesController {
 
       await Course.findByIdAndDelete(id);
 
+      const userId = req.user!.userId || req.user!._id?.toString() || 'unknown';
+
       await saveAuditLog({
-        actorUserId: req.user!.userId,
+        actorUserId: userId,
         actorRole: req.user!.role,
         action: 'delete',
         targetType: 'course',
         targetId: id,
         status: 'success',
-        ipAddress: req.ip || 'unknown',
-        userAgent: req.get('user-agent') || 'unknown'
+        ipAddress: (req.ip as string | null) || 'unknown',
+        userAgent: (req.get('user-agent') as string | null) || 'unknown'
       });
 
       return successResponse(res, null, 'Course deleted successfully');
@@ -291,16 +292,18 @@ export class CoursesController {
 
       const eligibility = await CoursesService.checkCourseEligibility(studentId, id);
 
+      const userId = req.user!.userId || req.user!._id?.toString() || 'unknown';
+
       await saveAuditLog({
-        actorUserId: req.user!.userId,
+        actorUserId: userId,
         actorRole: req.user!.role,
         action: 'check_eligibility',
         targetType: 'course',
         targetId: id,
         status: 'success',
         metadata: { studentId, eligible: eligibility.eligible },
-        ipAddress: req.ip || 'unknown',
-        userAgent: req.get('user-agent') || 'unknown'
+        ipAddress: (req.ip as string | null) || 'unknown',
+        userAgent: (req.get('user-agent') as string | null) || 'unknown'
       });
 
       return successResponse(res, eligibility);

@@ -7,18 +7,78 @@ import { describe, it, expect, beforeEach, mock } from 'bun:test';
 import { CoursesController } from '../../src/controllers/courses.controller';
 import { createMockRequest, createMockResponse, testUsers, testCourses, generateObjectId } from '../utils/test-helpers';
 
+// Mock courses service
+const mockCoursesService = {
+  getDependentCourses: mock(() => Promise.resolve([])),
+  getPrerequisiteChain: mock(() => Promise.resolve([])),
+  checkCourseEligibility: mock(() => Promise.resolve({ eligible: true }))
+};
+
+// Mock CourseOffering model
+const mockCourseOfferingModel = {
+  countDocuments: mock(() => Promise.resolve(0))
+};
+
 // Mock the models
 const mockCourses: any[] = [];
 const mockDepartments: any[] = [];
+const mockPrerequisites: any[] = [];
+
+// Simple mock implementation that doesn't use complex chaining
+const mockFindQuery = {
+  sort: mock(() => mockFindQuery),
+  skip: mock(() => mockFindQuery),
+  limit: mock(() => mockFindQuery),
+  lean: mock(() => Promise.resolve(mockCourses)),
+  populate: mock(() => mockFindQuery)
+};
 
 const mockCourseModel = {
-  find: mock(() => ({ sort: () => ({ skip: () => ({ limit: () => ({ populate: () => ({ lean: () => Promise.resolve(mockCourses) }) }) }) }) })),
+  find: mock(() => mockFindQuery),
   countDocuments: mock(() => Promise.resolve(mockCourses.length)),
-  findById: mock((id: string) => ({ populate: () => ({ lean: () => Promise.resolve(mockCourses.find((c: any) => c._id === id) || null) }) })),
-  findOne: mock(() => Promise.resolve(null)),
+  findById: mock((id: string) => {
+    const course = mockCourses.find((c: any) => c._id === id);
+    if (!course) {
+      // Return a query that returns null
+      return {
+        lean: mock(() => Promise.resolve(null))
+      };
+    }
+    // Return a query that returns the course
+    return {
+      lean: mock(() => Promise.resolve(course))
+    };
+  }),
+  findOne: mock((query: any) => {
+    // Check if we're looking for a course that already exists
+    if (query.code) {
+      const existingCourse = mockCourses.find((c: any) => c.code === query.code);
+      return Promise.resolve(existingCourse || null);
+    }
+    return Promise.resolve(null);
+  }),
   create: mock((data: any) => Promise.resolve({ _id: generateObjectId(), ...data, createdAt: new Date(), updatedAt: new Date() })),
-  findByIdAndUpdate: mock((id: string, data: any) => ({ lean: () => Promise.resolve({ _id: id, ...data }) })),
-  findByIdAndDelete: mock((id: string) => Promise.resolve({ _id: id })),
+  findByIdAndUpdate: mock((id: string, data: any) => {
+    // Find the course and update it
+    const courseIndex = mockCourses.findIndex((c: any) => c._id === id);
+    if (courseIndex !== -1) {
+      mockCourses[courseIndex] = { ...mockCourses[courseIndex], ...data };
+      return {
+        lean: mock(() => Promise.resolve({ ...mockCourses[courseIndex], createdAt: new Date(), updatedAt: new Date() }))
+      };
+    }
+    return {
+      lean: mock(() => Promise.resolve(null))
+    };
+  }),
+  findByIdAndDelete: mock((id: string) => {
+    const courseIndex = mockCourses.findIndex((c: any) => c._id === id);
+    if (courseIndex !== -1) {
+      const deleted = mockCourses.splice(courseIndex, 1)[0];
+      return Promise.resolve({ _id: deleted._id });
+    }
+    return Promise.resolve(null);
+  }),
   deleteOne: mock(() => Promise.resolve({ deletedCount: 1 }))
 };
 
@@ -31,13 +91,18 @@ const mockSaveAuditLog = mock(() => Promise.resolve());
 
 mock.module('../../src/models', () => ({
   Course: mockCourseModel,
-  Department: mockDepartmentModel
+  Department: mockDepartmentModel,
+  CourseOffering: mockCourseOfferingModel,
+  // Mock a prerequisite course
+  ...mockCourseModel
 }));
 
 mock.module('../../src/middleware/audit.middleware', () => ({
   saveAuditLog: mockSaveAuditLog,
   getAuditLogData: () => ({})
 }));
+
+mock.module('../../src/services/courses.service', () => mockCoursesService);
 
 mock.module('../../src/utils/pagination.util', () => ({
   getPaginationParams: () => ({ page: 1, limit: 10, search: '', sortBy: 'name', sortOrder: 1 }),
@@ -103,7 +168,12 @@ describe('CoursesController - Get By ID', () => {
       req.params = { id: generateObjectId() };
       const res = createMockResponse();
 
-      await CoursesController.getById(req as any, res as any);
+      try {
+        await CoursesController.getById(req as any, res as any);
+      } catch (error) {
+        console.error('Error in getById test:', error);
+        throw error;
+      }
 
       expect(res._status).toBe(404);
       expect(res._json?.success).toBe(false);
@@ -111,7 +181,17 @@ describe('CoursesController - Get By ID', () => {
 
     it('should return course with prerequisites', async () => {
       const courseId = generateObjectId();
-      mockCourses.push({ _id: courseId, name: 'Data Structures', code: 'CS201', prerequisites: [] });
+      const deptId = generateObjectId();
+      const mockDept = { _id: deptId, name: 'Computer Science', code: 'CS' };
+      mockDepartments.push(mockDept);
+
+      mockCourses.push({
+        _id: courseId,
+        name: 'Data Structures',
+        code: 'CS201',
+        prerequisites: [],
+        departmentId: deptId
+      });
 
       const req = createMockRequest(testUsers.admin);
       req.params = { id: courseId };
@@ -123,6 +203,7 @@ describe('CoursesController - Get By ID', () => {
       expect(res._json?.success).toBe(true);
       expect(res._json?.data).toHaveProperty('name');
       expect(res._json?.data).toHaveProperty('code');
+      expect(res._json?.data).toHaveProperty('departmentId', deptId);
     });
   });
 });
@@ -161,7 +242,7 @@ describe('CoursesController - Create', () => {
     it('should return 409 if course code already exists in department', async () => {
       const deptId = generateObjectId();
       const existingCourse = { _id: generateObjectId(), name: 'Old Course', code: 'CS101', departmentId: deptId };
-      mockCourseModel.findOne = mock(() => Promise.resolve(existingCourse));
+      mockCourseModel.findOne.mockImplementation(() => Promise.resolve(existingCourse));
 
       const req = createMockRequest(testUsers.admin);
       req.body = {
@@ -184,13 +265,22 @@ describe('CoursesController - Update', () => {
   beforeEach(() => {
     mockCourses.length = 0;
     mockSaveAuditLog.mockClear();
+    // Reset findOne to original implementation
+    mockCourseModel.findOne.mockImplementation((query: any) => {
+      // Check if we're looking for a course that already exists
+      if (query.code) {
+        const existingCourse = mockCourses.find((c: any) => c.code === query.code);
+        return Promise.resolve(existingCourse || null);
+      }
+      return Promise.resolve(null);
+    });
   });
 
   describe('PUT /api/courses/:id', () => {
     it('should update course successfully', async () => {
       const courseId = generateObjectId();
       const existingCourse = { _id: courseId, name: 'Old Name', code: 'CS101', credits: 3 };
-      mockCourseModel.findOne = mock(() => Promise.resolve(null));
+      mockCourseModel.findOne.mockImplementation(() => Promise.resolve(null));
 
       const req = createMockRequest(testUsers.admin);
       req.params = { id: courseId };
@@ -215,7 +305,8 @@ describe('CoursesController - Delete', () => {
   describe('DELETE /api/courses/:id', () => {
     it('should delete course successfully', async () => {
       const courseId = generateObjectId();
-      mockCourseModel.findById = mock(() => Promise.resolve({ _id: courseId, name: 'Course to Delete', code: 'CS101' }));
+      // Add the course to the mock data
+      mockCourses.push({ _id: courseId, name: 'Course to Delete', code: 'CS101' });
 
       const req = createMockRequest(testUsers.admin);
       req.params = { id: courseId };

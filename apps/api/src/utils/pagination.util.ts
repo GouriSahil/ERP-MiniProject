@@ -16,13 +16,13 @@ export interface PaginatedResult<T> {
   };
 }
 
-export const getPaginationParams = (query: any): PaginationOptions => {
+export const getPaginationParams = (query: any): Required<PaginationOptions> => {
   return {
     page: parseInt(query.page) || 1,
     limit: parseInt(query.limit) || 10,
     search: query.search || '',
     sortBy: query.sortBy || 'createdAt',
-    sortOrder: query.sortOrder === 'asc' ? 'asc' : 'desc'
+    sortOrder: (query.sortOrder === 'asc' ? 'asc' : 'desc') as 'asc' | 'desc'
   };
 };
 
