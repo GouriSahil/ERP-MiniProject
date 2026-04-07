@@ -1,18 +1,24 @@
-import multer from 'multer';
+import multer, { MulterError } from 'multer';
 import path from 'path';
+import { Request, Response, NextFunction } from 'express';
 
 // Configure storage for uploaded files
 const storage = multer.memoryStorage();
 
 // File filter to only accept CSV files
 const csvFileFilter = (
-  req: any,
+  _req: Request,
   file: Express.Multer.File,
   callback: multer.FileFilterCallback
 ) => {
   const ext = path.extname(file.originalname).toLowerCase();
   if (ext !== '.csv') {
     return callback(new Error('Only CSV files are allowed'));
+  }
+  // Also validate MIME type
+  const validMimeTypes = ['text/csv', 'application/vnd.ms-excel'];
+  if (file.mimetype && !validMimeTypes.includes(file.mimetype)) {
+    return callback(new Error('Invalid file type'));
   }
   callback(null, true);
 };
@@ -28,15 +34,22 @@ export const uploadCSV = multer({
 });
 
 // Error handling middleware for multer errors
-export const handleUploadError = (err: any, req: any, res: any, next: any) => {
+export const handleUploadError = (
+  err: Error | MulterError,
+  _req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  // Check if it's a MulterError (which has the 'code' property)
   if (err instanceof multer.MulterError) {
-    if (err.code === 'LIMIT_FILE_SIZE') {
+    const multerErr = err as MulterError;
+    if (multerErr.code === 'LIMIT_FILE_SIZE') {
       return res.status(400).json({
         success: false,
         error: 'File size exceeds 5MB limit'
       });
     }
-    if (err.code === 'LIMIT_FILE_COUNT') {
+    if (multerErr.code === 'LIMIT_FILE_COUNT') {
       return res.status(400).json({
         success: false,
         error: 'Only one file can be uploaded at a time'
@@ -44,14 +57,16 @@ export const handleUploadError = (err: any, req: any, res: any, next: any) => {
     }
     return res.status(400).json({
       success: false,
-      error: `Upload error: ${err.message}`
+      error: `Upload error: ${multerErr.message}`
     });
   }
 
-  if (err?.message === 'Only CSV files are allowed') {
+  // Handle custom file filter errors
+  const message = err.message;
+  if (message === 'Only CSV files are allowed' || message === 'Invalid file type') {
     return res.status(400).json({
       success: false,
-      error: err.message
+      error: message
     });
   }
 
