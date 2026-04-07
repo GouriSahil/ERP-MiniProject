@@ -88,18 +88,19 @@
                 return $q.reject({ message: 'No refresh token available' });
             }
 
-            return $http.post(APP_CONFIG.API_BASE_URL + '/auth/refresh-token', {
+            return $http.post(APP_CONFIG.API_BASE_URL + '/auth/refresh', {
                 refreshToken: refreshToken
             })
             .then(function(response) {
                 var data = response.data.data;
-                
+
                 var expires = new Date();
                 expires.setDate(expires.getDate() + 30);
-                
-                $cookies.put(APP_CONFIG.TOKEN_KEY, data.accessToken, { expires: expires });
-                $cookies.put(APP_CONFIG.REFRESH_TOKEN_KEY, data.refreshToken, { expires: expires });
-                
+
+                // Backend returns { token } as the new access token
+                $cookies.put(APP_CONFIG.TOKEN_KEY, data.token, { expires: expires });
+                // Refresh token remains unchanged (backend doesn't return new one)
+
                 return data;
             })
             .catch(function(error) {
