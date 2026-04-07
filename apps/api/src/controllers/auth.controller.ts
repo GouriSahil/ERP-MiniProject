@@ -120,8 +120,7 @@ export class AuthController {
           email: user.email,
           role: user.role,
           departmentId: user.departmentId,
-          status: user.status,
-          jti: tokenId // JWT ID for session tracking
+          status: user.status
         },
         process.env.JWT_SECRET || 'your-secret-key',
         { expiresIn: '1h', issuer: 'erp-api', audience: 'erp-frontend', jwtid: tokenId }
@@ -132,8 +131,7 @@ export class AuthController {
           userId: user._id,
           email: user.email,
           role: user.role,
-          departmentId: user.departmentId,
-          jti: tokenId
+          departmentId: user.departmentId
         },
         process.env.JWT_SECRET || 'your-secret-key',
         { expiresIn: '30d', issuer: 'erp-api', audience: 'erp-frontend', jwtid: tokenId }

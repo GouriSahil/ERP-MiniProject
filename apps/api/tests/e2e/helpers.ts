@@ -89,6 +89,16 @@ export async function teardownE2ETest(): Promise<void> {
 }
 
 /**
+ * Clear database between tests
+ */
+export async function clearDatabase(): Promise<void> {
+  if (mongoose.connection.readyState !== 0) {
+    await mongoose.connection.dropDatabase();
+    console.log('[E2E Test] Database cleared');
+  }
+}
+
+/**
  * Get the server URL (must be called after setupE2ETest)
  */
 export function getServerUrl(): string {

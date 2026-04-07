@@ -3,10 +3,11 @@
  * Tests main CRUD endpoints with actual HTTP requests
  */
 
-import { describe, it, expect, beforeAll, afterAll, beforeEach } from 'bun:test';
+import { describe, it, expect, beforeAll, afterAll, beforeEach, afterEach } from 'bun:test';
 import {
   setupE2ETest,
   teardownE2ETest,
+  clearDatabase,
   E2EApiClient,
 } from './helpers';
 import { seedTestFixtures } from './fixtures';
@@ -29,6 +30,11 @@ describe('Core CRUD Operations E2E API Tests', () => {
     client = new E2EApiClient(serverUrl);
     // Seed test fixtures and authenticate
     await seedTestFixtures(client);
+  });
+
+  afterEach(async () => {
+    // Clear database after each test
+    await clearDatabase();
   });
 
   describe('Departments API', () => {
