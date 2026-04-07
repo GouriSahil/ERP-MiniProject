@@ -12,6 +12,8 @@ import enrollmentsRoutes from './enrollments.routes';
 import attendanceRoutes from './attendance.routes';
 import reportsRoutes from './reports.routes';
 import auditRoutes from './audit.routes';
+import customRolesRoutes from './custom-roles.routes';
+import userSessionsRoutes from './user-sessions.routes';
 import { authenticate, authorize } from '../middleware/auth';
 
 const router = Router();
@@ -44,5 +46,11 @@ router.use('/reports', authenticate, reportsRoutes);
 
 // Admin-only routes (authentication + authorization required)
 router.use('/audit', authenticate, authorize('super_admin', 'college_admin'), auditRoutes);
+
+// Custom role management routes
+router.use('/custom-roles', authenticate, customRolesRoutes);
+
+// User session management routes
+router.use('/user-sessions', authenticate, userSessionsRoutes);
 
 export default router;
