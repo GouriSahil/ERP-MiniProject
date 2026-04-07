@@ -523,14 +523,21 @@ export class StudentsController {
             mustChangePassword: true
           });
 
-          // Create student
-          const student = await Student.create({
-            userId: user._id,
-            rollNumber: studentData.rollNumber,
-            departmentId: studentData.departmentId,
-            batch: studentData.batch,
-            semester: studentData.semester
-          });
+          // Create student with cleanup if it fails
+          let student;
+          try {
+            student = await Student.create({
+              userId: user._id,
+              rollNumber: studentData.rollNumber,
+              departmentId: studentData.departmentId,
+              batch: studentData.batch,
+              semester: studentData.semester
+            });
+          } catch (studentError: any) {
+            // Clean up orphaned user to prevent data integrity issues
+            await User.findByIdAndDelete(user._id);
+            throw studentError;
+          }
 
           results.success.push({
             row: rowNum,
