@@ -22,7 +22,6 @@
             fullName: '',
             name: '',
             email: '',
-            phone: '',
             password: '',
             confirmPassword: '',
             role: 'student',
@@ -51,8 +50,7 @@
         // Roles available for registration
         vm.roles = [
             { value: 'student', label: 'Student' },
-            { value: 'faculty', label: 'Faculty' },
-            { value: 'admin', label: 'Administrator' }
+            { value: 'faculty', label: 'Faculty' }
         ];
 
         vm.login = login;
@@ -244,14 +242,15 @@
             };
 
             AuthService.register(registrationData)
-                .then(function(response) {
+                .then(function(result) {
                     vm.isLoading = false;
-                    vm.registerSuccessMessage = 'Your account has been created! Redirecting to login...';
+                    // Use the backend's success message which includes approval status
+                    vm.registerSuccessMessage = result.message || 'Your account has been created! Redirecting to login...';
                     setTimeout(function() {
                         $scope.$applyAsync(function() {
                             $location.path('/login');
                         });
-                    }, 2000);
+                    }, 3000);
                 })
                 .catch(function(error) {
                     vm.isLoading = false;

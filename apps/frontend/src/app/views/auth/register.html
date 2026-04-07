@@ -113,12 +113,10 @@
                                 <i class="fas fa-chalkboard-teacher"></i>
                                 <span>Faculty</span>
                             </label>
-                            <label class="role-option" ng-class="{'role-option-selected': auth.registerData.role === 'admin'}">
-                                <input type="radio" name="role" value="admin" ng-model="auth.registerData.role">
-                                <i class="fas fa-user-shield"></i>
-                                <span>Admin</span>
-                            </label>
                         </div>
+                        <p class="role-notice" ng-if="auth.registerData.role === 'faculty'">
+                            <i class="fas fa-info-circle"></i> Faculty accounts require admin approval before login
+                        </p>
                     </div>
 
                     <!-- Full Name -->
@@ -155,24 +153,6 @@
                                    ng-disabled="auth.isLoading">
                             <span class="auth-input-icon">
                                 <i class="fas fa-envelope"></i>
-                            </span>
-                        </div>
-                    </div>
-
-                    <!-- Phone -->
-                    <div class="auth-field">
-                        <label class="auth-label" for="phone">
-                            <i class="fas fa-phone"></i> Phone Number
-                        </label>
-                        <div class="auth-input-group">
-                            <input type="tel"
-                                   class="auth-input"
-                                   id="phone"
-                                   ng-model="auth.registerData.phone"
-                                   placeholder="Enter your phone number"
-                                   ng-disabled="auth.isLoading">
-                            <span class="auth-input-icon">
-                                <i class="fas fa-phone"></i>
                             </span>
                         </div>
                     </div>
@@ -683,6 +663,23 @@
     .role-option-selected i,
     .role-option-selected span {
         color: var(--accent-color);
+    }
+
+    .role-notice {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-top: 0.75rem;
+        padding: 0.75rem 1rem;
+        background: rgba(59, 130, 246, 0.1);
+        border: 1px solid rgba(59, 130, 246, 0.2);
+        border-radius: 8px;
+        font-size: 0.8rem;
+        color: #3b82f6;
+    }
+
+    .role-notice i {
+        flex-shrink: 0;
     }
 
     .auth-input-group {

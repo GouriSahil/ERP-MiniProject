@@ -42,7 +42,8 @@
         function register(userData) {
             return $http.post(APP_CONFIG.API_BASE_URL + '/auth/register', userData)
                 .then(function(response) {
-                    return response.data.data;
+                    // Return full response data so controller can access message
+                    return response.data;
                 })
                 .catch(handleError);
         }
