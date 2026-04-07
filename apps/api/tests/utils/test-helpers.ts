@@ -106,8 +106,9 @@ export function wait(ms: number): Promise<void> {
  * Generate a random ObjectId string
  */
 export function generateObjectId(): string {
-  const timestamp = Math.floor(Date.now() / 1000).toString(16);
-  const randomBytes = Array.from({ length: 16 }, () =>
+  // Generate a proper 24-character hex string for MongoDB ObjectId
+  const timestamp = Math.floor(Date.now() / 1000).toString(16).padStart(8, '0');
+  const randomBytes = Array.from({ length: 12 }, () =>
     Math.floor(Math.random() * 256).toString(16).padStart(2, '0')
   ).join('');
 
