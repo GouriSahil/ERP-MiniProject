@@ -96,6 +96,42 @@ export const resetPasswordSchema = Joi.object({
     })
 });
 
+// Profile update validation schema
+export const updateProfileSchema = Joi.object({
+  name: Joi.string()
+    .trim()
+    .min(2)
+    .max(100)
+    .optional()
+    .messages({
+      'string.min': 'Name must be at least 2 characters',
+      'string.max': 'Name cannot exceed 100 characters'
+    }),
+  email: Joi.string()
+    .email()
+    .optional()
+    .messages({
+      'string.email': 'Please provide a valid email address'
+    }),
+  phone: Joi.string()
+    .pattern(/^[+]?[\d\s\-()]+$/)
+    .max(20)
+    .allow('')
+    .optional()
+    .messages({
+      'string.pattern.base': 'Please provide a valid phone number',
+      'string.max': 'Phone number cannot exceed 20 characters'
+    }),
+  departmentId: Joi.string()
+    .optional()
+    .messages({
+      'string.base': 'Department ID must be a string'
+    })
+}).min(1)
+  .messages({
+    'object.min': 'At least one field must be provided for update'
+  });
+
 // Validation middleware factory
 export const validate = (schema: Joi.ObjectSchema) => {
   return (req: any, res: any, next: any) => {

@@ -331,6 +331,134 @@ export class AuthController {
     }
   }
 
+  // Get current user profile (alias for /me with consistent response format)
+  static async getProfile(req: AuthRequest, res: Response) {
+    try {
+      // Get authenticated user from middleware
+      const user = req.user!;
+      const userId = user._id || user.userId || '';
+
+      // Fetch fresh user data from database to ensure consistency
+      const userRecord = await User.findById(userId)
+        .populate('departmentId', 'name code')
+        .lean();
+
+      if (!userRecord) {
+        return errorResponse(res, 'User not found', 404);
+      }
+
+      // Return user data matching /me response format
+      const userData = {
+        id: userRecord._id,
+        _id: userRecord._id,
+        name: userRecord.name,
+        email: userRecord.email,
+        role: userRecord.role,
+        status: userRecord.status,
+        departmentId: userRecord.departmentId,
+        mustChangePassword: userRecord.mustChangePassword
+      };
+
+      return successResponse(res, userData);
+    } catch (error: any) {
+      return errorResponse(res, error.message, 500);
+    }
+  }
+
+  // Update current user profile
+  static async updateProfile(req: AuthRequest, res: Response) {
+    try {
+      const { name, email, phone, departmentId } = req.body;
+      const user = req.user!;
+      const userId = user._id || user.userId || '';
+
+      // Build update object with only provided fields
+      const updateData: Record<string, any> = {};
+
+      if (name !== undefined && name !== null && name.trim() !== '') {
+        updateData.name = name.trim();
+      }
+
+      if (email !== undefined && email !== null && email.trim() !== '') {
+        const trimmedEmail = email.trim().toLowerCase();
+
+        // Check if email is already taken by another user
+        const existingUser = await User.findOne({
+          email: trimmedEmail,
+          _id: { $ne: userId }
+        });
+
+        if (existingUser) {
+          return errorResponse(res, 'Email is already in use by another account', 409);
+        }
+
+        updateData.email = trimmedEmail;
+      }
+
+      // Handle departmentId update - validate it exists if provided
+      if (departmentId !== undefined && departmentId !== null && departmentId !== '') {
+        const { Department } = require('../models/index');
+        const department = await Department.findById(departmentId);
+
+        if (!department) {
+          return errorResponse(res, 'Invalid department ID', 400);
+        }
+
+        updateData.departmentId = departmentId;
+      }
+
+      // Update user record
+      const updatedUser = await User.findByIdAndUpdate(
+        userId,
+        { $set: updateData },
+        { new: true, runValidators: true }
+      ).populate('departmentId', 'name code').lean();
+
+      if (!updatedUser) {
+        return errorResponse(res, 'User not found', 404);
+      }
+
+      await saveAuditLog({
+        actorUserId: userId,
+        actorRole: user.role,
+        action: 'update_profile',
+        targetType: 'user',
+        targetId: userId,
+        status: 'success',
+        metadata: { updatedFields: Object.keys(updateData) },
+        ipAddress: req.ip || 'unknown',
+        userAgent: req.get('user-agent') || 'unknown'
+      });
+
+      // Return updated user data matching the expected response format
+      const userData = {
+        id: updatedUser._id,
+        _id: updatedUser._id,
+        name: updatedUser.name,
+        email: updatedUser.email,
+        role: updatedUser.role,
+        status: updatedUser.status,
+        departmentId: updatedUser.departmentId,
+        mustChangePassword: updatedUser.mustChangePassword
+      };
+
+      return successResponse(res, userData, 'Profile updated successfully');
+    } catch (error: any) {
+      // Handle duplicate key error for email
+      if (error.code === 11000 && error.keyPattern?.email) {
+        return errorResponse(res, 'Email is already in use by another account', 409);
+      }
+
+      // Handle validation errors
+      if (error.name === 'ValidationError') {
+        const validationErrors = Object.values(error.errors).map((err: any) => err.message);
+        return errorResponse(res, validationErrors.join(', '), 400);
+      }
+
+      return errorResponse(res, error.message || 'An error occurred while updating profile', 500);
+    }
+  }
+
   // Change password
   static async changePassword(req: AuthRequest, res: Response) {
     try {
