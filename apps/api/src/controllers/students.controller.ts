@@ -1,4 +1,5 @@
 import { Response } from 'express';
+import mongoose from 'mongoose';
 import { AuthRequest } from '../middleware/auth.middleware';
 import { successResponse, createdResponse, notFoundResponse, errorResponse, conflictResponse } from '../utils/response.util';
 import { getPaginationParams, buildPaginationMeta, buildSearchFilter } from '../utils/pagination.util';
@@ -278,67 +279,69 @@ export class StudentsController {
         return notFoundResponse(res, 'Student');
       }
 
-      // Aggregation pipeline to calculate attendance stats
-      const stats = await Enrollment.aggregate([
-        { $match: { studentId: student._id } },
-        {
-          $lookup: {
-            from: 'attendancerecords',
-            localField: '_id',
-            foreignField: 'enrollmentId',
-            as: 'attendance'
-          }
-        },
-        {
-          $group: {
-            _id: null,
-            totalSessions: { $sum: { $size: '$attendance' } },
-            present: {
-              $sum: {
-                $size: {
-                  $filter: {
-                    input: '$attendance',
-                    cond: { $eq: ['$$this.status', 'present'] }
-                  }
-                }
-              }
-            },
-            absent: {
-              $sum: {
-                $size: {
-                  $filter: {
-                    input: '$attendance',
-                    cond: { $eq: ['$$this.status', 'absent'] }
-                  }
-                }
-              }
-            },
-            late: {
-              $sum: {
-                $size: {
-                  $filter: {
-                    input: '$attendance',
-                    cond: { $eq: ['$$this.status', 'late'] }
-                  }
-                }
-              }
-            }
-          }
-        }
-      ]);
+      // Get all enrollments for the student
+      const enrollments = await Enrollment.find({ studentId: student._id })
+        .lean();
 
-      const attendanceStats = stats[0] || {
-        totalSessions: 0,
+      const enrollmentIds = enrollments.map(e => e._id);
+
+      // Get all offerings for these enrollments
+      const CourseOffering = mongoose.model('CourseOffering');
+      const offerings = await CourseOffering.find({
+        _id: { $in: enrollments.map((e: any) => e.offeringId) }
+      }).lean();
+
+      const offeringIds = offerings.map(o => o._id);
+
+      // Get all sessions for these offerings
+      const Session = mongoose.model('Session');
+      const sessions = await Session.find({
+        offeringId: { $in: offeringIds }
+      }).lean();
+
+      const sessionIds = sessions.map(s => s._id);
+
+      // Get all attendance records for these sessions
+      const AttendanceRecord = mongoose.model('AttendanceRecord');
+      const attendanceRecords = await AttendanceRecord.find({
+        sessionId: { $in: sessionIds },
+        studentId: student._id
+      }).lean();
+
+      // Calculate statistics
+      const stats = {
+        totalSessions: sessionIds.length,
         present: 0,
         absent: 0,
-        late: 0
+        late: 0,
+        excused: 0,
+        percentage: 0
       };
 
-      attendanceStats.percentage = attendanceStats.totalSessions > 0
-        ? Math.round((attendanceStats.present / attendanceStats.totalSessions) * 100)
+      attendanceRecords.forEach((record: any) => {
+        switch (record.status) {
+          case 'present':
+            stats.present++;
+            break;
+          case 'absent':
+            stats.absent++;
+            break;
+          case 'late':
+            stats.late++;
+            break;
+          case 'excused':
+            stats.excused++;
+            break;
+        }
+      });
+
+      // Calculate attendance percentage (present + late) / total
+      const attendedCount = stats.present + stats.late;
+      stats.percentage = stats.totalSessions > 0
+        ? Math.round((attendedCount / stats.totalSessions) * 100)
         : 0;
 
-      return successResponse(res, attendanceStats);
+      return successResponse(res, stats);
     } catch (error: any) {
       if (error instanceof AppError) {
         return errorResponse(res, error.message, error.statusCode);
