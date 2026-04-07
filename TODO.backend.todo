@@ -50,12 +50,12 @@ Node.js/Express REST API with MongoDB
   - [x] Email validation (unique check)
   - [x] Password minimum 8 characters
   - [x] Password hashing with bcrypt (12 rounds)
-  - [ ] Pending state requiring admin approval
+  - [x] Pending state requiring admin approval
 - [x] User Login API
   - [x] POST /api/auth/login
   - [x] JWT token generation (access + refresh)
   - [x] Token expiration (1 hour access, 30 day refresh)
-  - [ ] Password reset flow (email)
+  - [x] Password reset flow (email)
 - [x] Token Refresh API
   - [x] POST /api/auth/refresh
 - [x] Logout API
@@ -67,9 +67,9 @@ Node.js/Express REST API with MongoDB
   - [x] POST /api/auth/change-password
   - [x] Current password verification
   - [x] Audit logging
-- [ ] Password Reset API
-  - [ ] POST /api/auth/forgot-password
-  - [ ] POST /api/auth/reset-password
+- [x] Password Reset API
+  - [x] POST /api/auth/forgot-password
+  - [x] POST /api/auth/reset-password
 
 ### Authorization
 - [x] JWT authentication middleware
@@ -77,9 +77,10 @@ Node.js/Express REST API with MongoDB
 - [x] Six built-in roles: super_admin, admin, dept_head, faculty, staff, student
 - [x] Server-side permission validation
 - [x] Permission format: resource:action
-- [ ] Role inheritance
-- [ ] Custom role creation API
-- [ ] Admin session revocation
+- [x] User approval status checking in JWT authentication
+- [x] Role inheritance
+- [x] Custom role creation API
+- [x] Admin session revocation
 
 ---
 
@@ -107,6 +108,27 @@ Node.js/Express REST API with MongoDB
   - [x] Dependency validation
 - [ ] Deactivate/Reactivate User API
 - [ ] Admin Password Reset API
+
+### User Approval (USER-APPROVAL)
+- [x] User Status Model (pending, approved, active, rejected, suspended)
+- [x] List Pending Users API
+  - [x] GET /api/users/pending
+  - [x] Pagination and search support
+- [x] Approve User API
+  - [x] POST /api/users/:id/approve
+  - [x] Audit logging
+  - [x] Approved by tracking
+- [x] Reject User API
+  - [x] POST /api/users/:id/reject
+  - [x] Optional rejection reason
+  - [x] Audit logging
+- [x] Suspend User API
+  - [x] POST /api/users/:id/suspend
+  - [x] Optional suspension reason
+- [x] Activate User API
+  - [x] POST /api/users/:id/activate
+  - [x] Clear rejection reason on activation
+- [ ] Email notifications for approval/rejection
 
 ---
 
@@ -235,12 +257,12 @@ Node.js/Express REST API with MongoDB
   - [x] PUT /api/students/:id
 - [x] Delete Student API
   - [x] DELETE /api/students/:id
-- [ ] Bulk Student Import API
-  - [ ] POST /api/students/import
-  - [ ] CSV upload
-  - [ ] Validation with error reporting
-- [ ] Get Student Enrollment History API
-- [ ] Get Student Attendance Summary API
+- [x] Bulk Student Import API
+  - [x] POST /api/students/import
+  - [x] CSV upload
+  - [x] Validation with error reporting
+- [x] Get Student Enrollment History API
+- [x] Get Student Attendance Summary API
 
 ### Faculty Management (FAC-001 to FAC-003)
 - [x] Create Faculty API
@@ -372,7 +394,7 @@ Node.js/Express REST API with MongoDB
 
 ## Database Collections
 
-- [x] Users - `{ email, passwordHash, role, departmentId, mustChangePassword }`
+- [x] Users - `{ email, passwordHash, role, status, departmentId, mustChangePassword, approvedAt, approvedBy, rejectionReason }`
 - [x] Students - `{ userId, rollNumber, departmentId, batch, semester }`
 - [x] Faculty - `{ userId, departmentId, specialization, designation }`
 - [x] Departments - `{ name, code (unique) }`
