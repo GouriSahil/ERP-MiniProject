@@ -82,7 +82,7 @@ export class StudentsController {
   // Create new student
   static async create(req: AuthRequest, res: Response) {
     try {
-      const { name, email, password, rollNumber, departmentId } = req.body;
+      const { name, email, password, rollNumber, departmentId, batch, semester } = req.body;
 
       // Check for duplicate roll number in department
       const existingStudent = await Student.findOne({ rollNumber, departmentId });
@@ -112,7 +112,9 @@ export class StudentsController {
       const student = await Student.create({
         userId: user._id,
         rollNumber,
-        departmentId
+        departmentId,
+        batch,
+        semester
       });
 
       const populatedStudent = await Student.findById(student._id)
@@ -144,7 +146,7 @@ export class StudentsController {
   static async update(req: AuthRequest, res: Response) {
     try {
       const { id } = req.params;
-      const { name, email, rollNumber, departmentId } = req.body;
+      const { name, email, rollNumber, departmentId, batch, semester } = req.body;
 
       const student = await Student.findById(id).populate('userId');
       if (!student) {
@@ -173,10 +175,17 @@ export class StudentsController {
       // Update user
       await User.findByIdAndUpdate(student.userId, { name, email });
 
+      // Build update object with only provided fields
+      const updateData: any = {};
+      if (rollNumber !== undefined) updateData.rollNumber = rollNumber;
+      if (departmentId !== undefined) updateData.departmentId = departmentId;
+      if (batch !== undefined) updateData.batch = batch;
+      if (semester !== undefined) updateData.semester = semester;
+
       // Update student
       const updatedStudent = await Student.findByIdAndUpdate(
         id,
-        { rollNumber, departmentId },
+        updateData,
         { new: true, runValidators: true }
       ).populate('userId').populate('departmentId', 'name code');
 

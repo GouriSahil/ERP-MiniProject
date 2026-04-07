@@ -35,18 +35,18 @@ router.get(
   FacultyController.getTeachingLoad
 );
 
-// Create faculty (admin, dept_head only)
+// Create faculty (admin, dept_head, super_admin only)
 router.post(
   '/',
-  authorize('college_admin', 'department_head'),
+  authorize('super_admin', 'college_admin', 'department_head'),
   validateFacultyCreate,
   FacultyController.create
 );
 
-// Update faculty (admin, dept_head only)
+// Update faculty (admin, dept_head, super_admin only)
 router.put(
   '/:id',
-  authorize('college_admin', 'department_head'),
+  authorize('super_admin', 'college_admin', 'department_head'),
   validateUUIDParam(),
   validateFacultyUpdate,
   FacultyController.update

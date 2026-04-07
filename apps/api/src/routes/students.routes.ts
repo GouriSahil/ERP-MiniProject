@@ -36,18 +36,18 @@ router.get(
   StudentsController.getAttendance
 );
 
-// Create student (admin, dept_head only)
+// Create student (admin, dept_head, super_admin only)
 router.post(
   '/',
-  authorize('college_admin', 'department_head'),
+  authorize('super_admin', 'college_admin', 'department_head'),
   validateStudentCreate,
   StudentsController.create
 );
 
-// Update student (admin, dept_head only)
+// Update student (admin, dept_head, super_admin only)
 router.put(
   '/:id',
-  authorize('college_admin', 'department_head'),
+  authorize('super_admin', 'college_admin', 'department_head'),
   validateUUIDParam(),
   validateStudentUpdate,
   StudentsController.update

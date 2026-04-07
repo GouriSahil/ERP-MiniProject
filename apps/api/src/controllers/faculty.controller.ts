@@ -65,7 +65,7 @@ export class FacultyController {
   // Create new faculty
   static async create(req: AuthRequest, res: Response) {
     try {
-      const { name, email, password, departmentId, specialization } = req.body;
+      const { name, email, password, departmentId, specialization, designation } = req.body;
 
       // Check for duplicate email
       const existingUser = await User.findOne({ email });
@@ -89,7 +89,8 @@ export class FacultyController {
       const faculty = await Faculty.create({
         userId: user._id,
         departmentId,
-        specialization
+        specialization,
+        designation
       });
 
       const populatedFaculty = await Faculty.findById(faculty._id)

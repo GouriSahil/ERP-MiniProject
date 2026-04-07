@@ -1,5 +1,12 @@
 import { Request, Response, NextFunction } from 'express';
 import { body, param, query, validationResult } from 'express-validator';
+import mongoose from 'mongoose';
+
+// Custom validator for MongoDB ObjectId
+const isObjectId = (value: any) => {
+  if (!value) return false;
+  return mongoose.Types.ObjectId.isValid(value);
+};
 
 export const handleValidationErrors = (req: Request, res: Response, next: NextFunction) => {
   const errors = validationResult(req);
@@ -35,17 +42,22 @@ export const validateUserUpdate = [
 export const validateStudentCreate = [
   body('name').trim().notEmpty().withMessage('Name is required'),
   body('email').isEmail().withMessage('Valid email is required'),
+  body('password').isLength({ min: 8 }).withMessage('Password must be at least 8 characters'),
   body('rollNumber').trim().notEmpty().withMessage('Roll number is required'),
-  body('departmentId').isUUID().withMessage('Valid department ID is required'),
+  body('departmentId').custom(isObjectId).withMessage('Valid department ID is required'),
+  body('batch').trim().notEmpty().withMessage('Batch is required'),
+  body('semester').isInt({ min: 1, max: 10 }).withMessage('Semester must be between 1 and 10'),
   handleValidationErrors
 ];
 
 export const validateStudentUpdate = [
-  param('id').isUUID(),
+  param('id').custom(isObjectId).withMessage('Valid student ID is required'),
   body('name').optional().trim().notEmpty(),
   body('email').optional().isEmail(),
   body('rollNumber').optional().trim().notEmpty(),
-  body('departmentId').optional().isUUID(),
+  body('departmentId').optional().custom(isObjectId),
+  body('batch').optional().trim().notEmpty(),
+  body('semester').optional().isInt({ min: 1, max: 10 }),
   handleValidationErrors
 ];
 
@@ -53,17 +65,20 @@ export const validateStudentUpdate = [
 export const validateFacultyCreate = [
   body('name').trim().notEmpty().withMessage('Name is required'),
   body('email').isEmail().withMessage('Valid email is required'),
-  body('departmentId').isUUID().withMessage('Valid department ID is required'),
-  body('specialization').optional().trim(),
+  body('password').isLength({ min: 8 }).withMessage('Password must be at least 8 characters'),
+  body('departmentId').custom(isObjectId).withMessage('Valid department ID is required'),
+  body('specialization').trim().notEmpty().withMessage('Specialization is required'),
+  body('designation').isIn(['Professor', 'Associate Professor', 'Assistant Professor', 'Lecturer', 'HOD']).withMessage('Valid designation is required'),
   handleValidationErrors
 ];
 
 export const validateFacultyUpdate = [
-  param('id').isUUID(),
+  param('id').custom(isObjectId).withMessage('Valid faculty ID is required'),
   body('name').optional().trim().notEmpty(),
   body('email').optional().isEmail(),
-  body('departmentId').optional().isUUID(),
+  body('departmentId').optional().custom(isObjectId),
   body('specialization').optional().trim(),
+  body('designation').optional().isIn(['Professor', 'Associate Professor', 'Assistant Professor', 'Lecturer', 'HOD']),
   handleValidationErrors
 ];
 
@@ -191,7 +206,7 @@ export const validatePagination = [
 
 export const validateUUIDParam = (paramName: string = 'id') => {
   return [
-    param(paramName).isUUID().withMessage(`Valid ${paramName} is required`),
+    param(paramName).custom(isObjectId).withMessage(`Valid ${paramName} is required`),
     handleValidationErrors
   ];
 };

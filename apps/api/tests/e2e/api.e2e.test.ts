@@ -220,16 +220,23 @@ describe('Core CRUD Operations E2E API Tests', () => {
     let studentId: string;
 
     it('should create a new student', async () => {
+      // First create a department
+      const deptResponse = await client.post('/api/departments', {
+        name: 'Engineering',
+        code: 'ENG',
+      });
+      const departmentId = deptResponse.data.data._id;
+
       const response = await client.post('/api/students', {
-        studentId: 'S2024001',
-        userId: '507f1f77bcf86cd799439011',
         name: 'Jane Student',
         email: 'jane.student@example.com',
-        enrollmentDate: '2024-01-15',
-        status: 'active',
+        password: 'password123',
+        rollNumber: 'S2024001',
+        departmentId,
+        batch: '2024',
+        semester: 1,
       });
 
-      // The implementation may vary - accept success or created
       expect([200, 201]).toContain(response.status);
       expect(response.data.success).toBe(true);
 
@@ -254,30 +261,37 @@ describe('Core CRUD Operations E2E API Tests', () => {
     });
 
     it('should update a student', async () => {
-      // This test depends on the create student working
-      if (!studentId) {
-        // Create a student first
-        const createResponse = await client.post('/api/students', {
-          studentId: 'S2024002',
-          userId: '507f1f77bcf86cd799439012',
-          name: 'John Student',
-          email: 'john.student@example.com',
-          status: 'active',
-        });
+      // Create a department first
+      const deptResponse = await client.post('/api/departments', {
+        name: 'Engineering',
+        code: 'ENG',
+      });
+      const departmentId = deptResponse.data.data._id;
 
-        if (createResponse.data.data) {
-          studentId = createResponse.data.data._id || createResponse.data.data.id;
-        }
-      }
+      // Create a student first
+      const createResponse = await client.post('/api/students', {
+        name: 'John Student',
+        email: 'john.student@example.com',
+        password: 'password123',
+        rollNumber: 'S2024002',
+        departmentId,
+        batch: '2024',
+        semester: 1,
+      });
 
-      if (studentId) {
-        const updateResponse = await client.put(`/api/students/${studentId}`, {
-          status: 'inactive',
-        });
+      expect([200, 201]).toContain(createResponse.status);
+      expect(createResponse.data.success).toBe(true);
 
-        expect(updateResponse.status).toBe(200);
-        expect(updateResponse.data.success).toBe(true);
-      }
+      const createdStudentId = createResponse.data.data._id || createResponse.data.data.id;
+      expect(createdStudentId).toBeTruthy();
+
+      // Now update the student
+      const updateResponse = await client.put(`/api/students/${createdStudentId}`, {
+        semester: 2,
+      });
+
+      expect(updateResponse.status).toBe(200);
+      expect(updateResponse.data.success).toBe(true);
     });
   });
 
@@ -285,13 +299,20 @@ describe('Core CRUD Operations E2E API Tests', () => {
     let facultyId: string;
 
     it('should create a new faculty member', async () => {
+      // First create a department
+      const deptResponse = await client.post('/api/departments', {
+        name: 'Biology',
+        code: 'BIO',
+      });
+      const departmentId = deptResponse.data.data._id;
+
       const response = await client.post('/api/faculty', {
-        employeeId: 'F2024001',
-        userId: '507f1f77bcf86cd799439013',
         name: 'Dr. Smith',
         email: 'dr.smith@example.com',
-        hireDate: '2024-01-15',
-        status: 'active',
+        password: 'password123',
+        departmentId,
+        specialization: 'Biology',
+        designation: 'Assistant Professor',
       });
 
       expect([200, 201]).toContain(response.status);
