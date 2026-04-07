@@ -1670,4 +1670,137 @@ export class ReportsController {
       return errorResponse(res, error.message, 500);
     }
   }
+
+  // Get low attendance report
+  static async getLowAttendance(req: AuthRequest, res: Response) {
+    try {
+      const threshold = parseInt(req.query.threshold as string) || 75;
+      const { termId, courseId, departmentId } = req.query;
+
+      const offeringFilter: any = {};
+      if (termId) offeringFilter.termId = termId;
+      if (courseId) offeringFilter.courseId = courseId;
+
+      const offerings = await CourseOffering.find(offeringFilter).distinct('_id');
+      const enrollments = await Enrollment.find({ offeringId: { $in: offerings }, status: 'active' }).lean();
+
+      let studentIds = enrollments.map((e: any) => e.studentId);
+      if (departmentId) {
+        const deptStudents = await Student.find({ departmentId }).distinct('_id');
+        studentIds = studentIds.filter((id: any) => deptStudents.includes(id));
+      }
+
+      const students = await Student.find({ _id: { $in: studentIds } })
+        .populate('userId', 'name email')
+        .populate('departmentId', 'name code')
+        .lean();
+
+      const result = [];
+      for (const student of students) {
+        const studentEnrollments = enrollments.filter((e: any) => e.studentId.toString() === student._id.toString());
+        const studentOfferingIds = studentEnrollments.map((e: any) => e.offeringId);
+
+        const sessions = await Session.find({ offeringId: { $in: studentOfferingIds } }).distinct('_id');
+        const attendanceRecords = await AttendanceRecord.find({ studentId: student._id, sessionId: { $in: sessions } });
+
+        const totalSessions = sessions.length;
+        const present = attendanceRecords.filter(r => r.status === 'present').length;
+        const late = attendanceRecords.filter(r => r.status === 'late').length;
+        const percentage = totalSessions > 0 ? Math.round(((present + late) / totalSessions) * 100) : 0;
+
+        if (percentage < threshold) {
+          result.push({
+            studentId: student._id,
+            name: (student as any).userId?.name || 'Unknown',
+            email: (student as any).userId?.email || '',
+            rollNumber: student.rollNumber,
+            department: (student as any).departmentId?.name || 'N/A',
+            totalSessions,
+            present,
+            late,
+            percentage
+          });
+        }
+      }
+
+      result.sort((a, b) => a.percentage - b.percentage);
+
+      return successResponse(res, { threshold, count: result.length, students: result });
+    } catch (error: any) {
+      return errorResponse(res, error.message, 500);
+    }
+  }
+
+  // Get charts data
+  static async getChartsData(req: AuthRequest, res: Response) {
+    try {
+      const { chartType } = req.params;
+      const { termId } = req.query;
+
+      let data: any = {};
+
+      switch (chartType) {
+        case 'enrollment-trends':
+          const terms = await Term.find().sort({ startDate: -1 }).limit(10).lean();
+          data = await Promise.all(terms.map(async (term) => {
+            const offerings = await CourseOffering.find({ termId: term._id }).distinct('_id');
+            const enrollmentCount = await Enrollment.countDocuments({ offeringId: { $in: offerings } });
+            return { label: term.name, value: enrollmentCount };
+          }));
+          break;
+
+        case 'attendance-stats':
+          const offerings = await CourseOffering.find(termId ? { termId } : {}).lean();
+          data = await Promise.all(offerings.map(async (offering) => {
+            const sessions = await Session.find({ offeringId: offering._id }).distinct('_id');
+            const attendanceRecords = await AttendanceRecord.find({ sessionId: { $in: sessions } });
+            const present = attendanceRecords.filter(r => r.status === 'present').length;
+            const total = attendanceRecords.length;
+            const percentage = total > 0 ? Math.round((present / total) * 100) : 0;
+            const course = await Course.findById(offering.courseId).lean();
+            return { label: (course as any)?.name || 'Unknown', present, absent: total - present, percentage };
+          }));
+          break;
+
+        case 'course-popularity':
+          const popularOfferings = await CourseOffering.find(termId ? { termId } : {}).lean();
+          const courseEnrollments = new Map();
+          for (const offering of popularOfferings) {
+            const count = await Enrollment.countDocuments({ offeringId: offering._id });
+            const existing = courseEnrollments.get(offering.courseId.toString()) || 0;
+            courseEnrollments.set(offering.courseId.toString(), existing + count);
+          }
+          data = await Promise.all(
+            Array.from(courseEnrollments.entries()).slice(0, 10).map(async ([courseId, count]) => {
+              const course = await Course.findById(courseId).lean();
+              return { label: (course as any)?.name || 'Unknown', value: count };
+            })
+          );
+          break;
+
+        case 'faculty-load':
+          const allOfferings = await CourseOffering.find(termId ? { termId } : {}).distinct('_id');
+          const facultyLoads = await OfferingFaculty.aggregate([
+            { $match: { offeringId: { $in: allOfferings } } },
+            { $group: { _id: '$facultyId', count: { $sum: 1 } } },
+            { $sort: { count: -1 } },
+            { $limit: 20 }
+          ]);
+          data = await Promise.all(
+            facultyLoads.map(async (item) => {
+              const faculty = await Faculty.findById(item._id).populate('userId', 'name').lean();
+              return { label: (faculty as any)?.userId?.name || 'Unknown', value: item.count };
+            })
+          );
+          break;
+
+        default:
+          return errorResponse(res, `Unknown chart type: ${chartType}`, 400);
+      }
+
+      return successResponse(res, { chartType, data });
+    } catch (error: any) {
+      return errorResponse(res, error.message, 500);
+    }
+  }
 }

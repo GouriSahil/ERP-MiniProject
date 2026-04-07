@@ -659,4 +659,241 @@ export class AttendanceController {
       return errorResponse(res, error.message, 500);
     }
   }
+
+  // Get attendance percentage for a student
+  static async getPercentage(req: AuthRequest, res: Response) {
+    try {
+      const { studentId } = req.params;
+      const { offeringId, termId, startDate, endDate } = req.query;
+
+      const student = await Student.findById(studentId);
+      if (!student) return notFoundResponse(res, 'Student');
+
+      const enrollmentFilter: any = { studentId };
+      let enrollments = await Enrollment.find(enrollmentFilter).lean();
+      if (offeringId) enrollments = enrollments.filter((e: any) => e.offeringId.toString() === offeringId.toString());
+      const offeringIds = enrollments.map((e: any) => e.offeringId);
+
+      let filteredOfferingIds = offeringIds;
+      if (termId) {
+        const termOfferings = await CourseOffering.find({ _id: { $in: offeringIds }, termId }).distinct('_id');
+        filteredOfferingIds = termOfferings;
+      }
+
+      const sessionFilter: any = { offeringId: { $in: filteredOfferingIds } };
+      if (startDate || endDate) {
+        sessionFilter.date = {};
+        if (startDate) sessionFilter.date.$gte = new Date(startDate as string);
+        if (endDate) sessionFilter.date.$lte = new Date(endDate as string);
+      }
+
+      const sessions = await Session.find(sessionFilter).lean();
+      const sessionIds = sessions.map(s => s._id);
+
+      const attendanceRecords = await AttendanceRecord.find({ studentId, sessionId: { $in: sessionIds } }).lean();
+
+      const totalSessions = sessionIds.length;
+      const present = attendanceRecords.filter(r => r.status === 'present').length;
+      const absent = attendanceRecords.filter(r => r.status === 'absent').length;
+      const late = attendanceRecords.filter(r => r.status === 'late').length;
+      const excused = attendanceRecords.filter(r => r.status === 'excused').length;
+      const attended = present + late;
+      const percentage = totalSessions > 0 ? Math.round((attended / totalSessions) * 100) : 0;
+
+      return successResponse(res, { studentId, totalSessions, present, absent, late, excused, attended, percentage });
+    } catch (error: any) {
+      return errorResponse(res, error.message, 500);
+    }
+  }
+
+  // Get attendance trends
+  static async getTrends(req: AuthRequest, res: Response) {
+    try {
+      const { studentId, offeringId, termId, startDate, endDate, groupBy = 'day' } = req.query;
+      const filter: any = {};
+
+      if (studentId) filter.studentId = studentId;
+      else if (offeringId) {
+        const sessions = await Session.find({ offeringId }).distinct('_id');
+        filter.sessionId = { $in: sessions };
+      } else if (termId) {
+        const offerings = await CourseOffering.find({ termId }).distinct('_id');
+        const sessions = await Session.find({ offeringId: { $in: offerings } }).distinct('_id');
+        filter.sessionId = { $in: sessions };
+      }
+
+      const attendanceRecords = await AttendanceRecord.find(filter).populate('sessionId').lean();
+      const groupedData: Record<string, { present: number; absent: number; late: number; total: number }> = {};
+
+      for (const record of attendanceRecords) {
+        const session: any = record.sessionId;
+        if (!session || !session.date) continue;
+
+        const date = new Date(session.date);
+        let key: string;
+        switch (groupBy) {
+          case 'week':
+            const weekStart = new Date(date);
+            weekStart.setDate(date.getDate() - date.getDay());
+            key = weekStart.toISOString().split('T')[0];
+            break;
+          case 'month':
+            key = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
+            break;
+          default:
+            key = date.toISOString().split('T')[0];
+        }
+
+        if (!groupedData[key]) groupedData[key] = { present: 0, absent: 0, late: 0, total: 0 };
+        groupedData[key].total++;
+        if (record.status === 'present') groupedData[key].present++;
+        else if (record.status === 'absent') groupedData[key].absent++;
+        else if (record.status === 'late') groupedData[key].late++;
+      }
+
+      const trends = Object.entries(groupedData).map(([date, stats]) => ({
+        date, ...stats,
+        percentage: stats.total > 0 ? Math.round(((stats.present + stats.late) / stats.total) * 100) : 0
+      })).sort((a, b) => a.date.localeCompare(b.date));
+
+      return successResponse(res, { groupBy, trends });
+    } catch (error: any) {
+      return errorResponse(res, error.message, 500);
+    }
+  }
+
+  // Export attendance to CSV
+  static async exportToCSV(req: AuthRequest, res: Response) {
+    try {
+      const { offeringId, sessionId, startDate, endDate } = req.query;
+      const filter: any = {};
+
+      if (sessionId) filter.sessionId = sessionId;
+      else if (offeringId) {
+        const sessions = await Session.find({ offeringId }).distinct('_id');
+        filter.sessionId = { $in: sessions };
+      }
+
+      if (startDate || endDate) {
+        const sessions = await Session.find({
+          _id: filter.sessionId || { $ne: null },
+          date: { ...(startDate && { $gte: new Date(startDate as string) }), ...(endDate && { $lte: new Date(endDate as string) }) }
+        }).distinct('_id');
+        filter.sessionId = { $in: sessions };
+      }
+
+      const attendanceRecords = await AttendanceRecord.find(filter)
+        .populate('sessionId')
+        .populate({ path: 'studentId', populate: ['userId', 'departmentId'] })
+        .lean();
+
+      const csvHeaders = ['Date', 'Student Name', 'Roll Number', 'Department', 'Status', 'Remarks'];
+      const csvRows = attendanceRecords.map((record: any) => {
+        const session: any = record.sessionId || {};
+        const student: any = record.studentId || {};
+        const user: any = student.userId || {};
+        const department: any = student.departmentId || {};
+
+        return [
+          session.date ? new Date(session.date).toISOString().split('T')[0] : '',
+          user.name || '',
+          student.rollNumber || '',
+          department.name || '',
+          record.status || '',
+          record.remarks || ''
+        ].map(field => `"${String(field).replace(/"/g, '""')}"`).join(',');
+      });
+
+      const csv = [csvHeaders.join(','), ...csvRows].join('\n');
+
+      res.setHeader('Content-Type', 'text/csv');
+      res.setHeader('Content-Disposition', `attachment; filename=attendance-${Date.now()}.csv`);
+      return res.send(csv);
+    } catch (error: any) {
+      return errorResponse(res, error.message, 500);
+    }
+  }
+
+  // Get student attendance dashboard
+  static async getStudentDashboard(req: AuthRequest, res: Response) {
+    try {
+      const { studentId } = req.params;
+      const { termId } = req.query;
+
+      const student = await Student.findById(studentId)
+        .populate('userId', 'name email')
+        .populate('departmentId', 'name code')
+        .lean();
+
+      if (!student) return notFoundResponse(res, 'Student');
+
+      const enrollmentFilter: any = { studentId };
+      let enrollments = await Enrollment.find(enrollmentFilter).lean();
+      if (termId) {
+        const termOfferings = await CourseOffering.find({ termId }).distinct('_id');
+        enrollments = enrollments.filter((e: any) => termOfferings.includes(e.offeringId));
+      }
+
+      const offeringIds = enrollments.map((e: any) => e.offeringId);
+      const sessions = await Session.find({ offeringId: { $in: offeringIds } }).lean();
+      const sessionIds = sessions.map(s => s._id);
+
+      const attendanceRecords = await AttendanceRecord.find({ studentId, sessionId: { $in: sessionIds } })
+        .populate('sessionId')
+        .sort({ markedAt: -1 })
+        .limit(10)
+        .lean();
+
+      const totalSessions = sessionIds.length;
+      const present = attendanceRecords.filter(r => r.status === 'present').length;
+      const absent = attendanceRecords.filter(r => r.status === 'absent').length;
+      const late = attendanceRecords.filter(r => r.status === 'late').length;
+      const excused = attendanceRecords.filter(r => r.status === 'excused').length;
+      const percentage = totalSessions > 0 ? Math.round((present / totalSessions) * 100) : 0;
+
+      const courseBreakdown = [];
+      for (const enrollment of enrollments) {
+        const offering = await CourseOffering.findById(enrollment.offeringId).populate('courseId').lean();
+        if (!offering) continue;
+
+        const offeringSessions = sessions.filter(s => s.offeringId.toString() === (offering._id as any).toString());
+        const offeringSessionIds = offeringSessions.map(s => s._id);
+
+        const offeringAttendance = await AttendanceRecord.find({ studentId, sessionId: { $in: offeringSessionIds } });
+        const coursePresent = offeringAttendance.filter(r => r.status === 'present').length;
+        const courseLate = offeringAttendance.filter(r => r.status === 'late').length;
+        const coursePercentage = offeringSessions.length > 0 ? Math.round(((coursePresent + courseLate) / offeringSessions.length) * 100) : 0;
+
+        courseBreakdown.push({
+          courseId: (offering as any).courseId._id,
+          courseName: (offering as any).courseId.name,
+          courseCode: (offering as any).courseId.code,
+          totalSessions: offeringSessions.length,
+          present: coursePresent,
+          late: courseLate,
+          percentage: coursePercentage
+        });
+      }
+
+      return successResponse(res, {
+        student: {
+          id: student._id,
+          name: (student as any).userId?.name,
+          email: (student as any).userId?.email,
+          rollNumber: student.rollNumber,
+          department: (student as any).departmentId?.name
+        },
+        overall: { totalSessions, present, absent, late, excused, percentage },
+        courseBreakdown,
+        recentAttendance: attendanceRecords.map(r => ({
+          date: (r as any).sessionId?.date,
+          status: r.status,
+          remarks: (r as any).remarks
+        })),
+        warnings: percentage < 75 ? ['Attendance below 75% threshold'] : []
+      });
+    } catch (error: any) {
+      return errorResponse(res, error.message, 500);
+    }
+  }
 }

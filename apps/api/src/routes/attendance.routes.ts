@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { AttendanceController } from '../controllers/attendance.controller';
-import { authenticate, checkPermission } from '../middleware/auth.middleware';
+import { authenticate, checkPermission, authorize } from '../middleware/auth.middleware';
 import { validateAttendanceMark, validateUUIDParam, validatePagination } from '../middleware/validate.middleware';
 import { body } from 'express-validator';
 
@@ -94,6 +94,36 @@ router.get(
   checkPermission('attendance', 'view'),
   validateUUIDParam('sessionId'),
   AttendanceController.getSessionSummary
+);
+
+// Get attendance percentage for a student - view permission
+router.get(
+  '/student/:studentId/percentage',
+  checkPermission('attendance', 'view'),
+  validateUUIDParam('studentId'),
+  AttendanceController.getPercentage
+);
+
+// Get student attendance dashboard - view permission
+router.get(
+  '/student/:studentId/dashboard',
+  checkPermission('attendance', 'view'),
+  validateUUIDParam('studentId'),
+  AttendanceController.getStudentDashboard
+);
+
+// Get attendance trends - view permission
+router.get(
+  '/trends',
+  checkPermission('attendance', 'view'),
+  AttendanceController.getTrends
+);
+
+// Export attendance to CSV - authorized roles
+router.get(
+  '/export',
+  authorize('super_admin', 'college_admin', 'department_head', 'faculty', 'support_staff'),
+  AttendanceController.exportToCSV
 );
 
 export default router;

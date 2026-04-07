@@ -48,4 +48,16 @@ router.get(
   ReportsController.termOverview
 );
 
+// Low attendance report
+router.get(
+  '/low-attendance',
+  ReportsController.getLowAttendance
+);
+
+// Charts data endpoint
+router.get(
+  '/charts/:chartType',
+  ReportsController.getChartsData
+);
+
 export default router;
