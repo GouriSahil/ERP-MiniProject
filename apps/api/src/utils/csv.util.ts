@@ -20,14 +20,18 @@ export interface CSVValidationResult {
 
 // Parse CSV buffer to array of objects
 export function parseCSVBuffer(buffer: Buffer): Array<Record<string, string>> {
-  const content = buffer.toString('utf-8');
-  const records = parse(content, {
-    columns: true,
-    skip_empty_lines: true,
-    trim: true,
-    relax_column_count: false
-  });
-  return records;
+  try {
+    const content = buffer.toString('utf-8');
+    const records = parse(content, {
+      columns: true,
+      skip_empty_lines: true,
+      trim: true,
+      relax_column_count: false
+    });
+    return records;
+  } catch (error: any) {
+    throw new Error(`Failed to parse CSV: ${error.message}`);
+  }
 }
 
 // Validate CSV structure and required fields
