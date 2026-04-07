@@ -19,27 +19,41 @@ export class StudentsController {
       const filter: any = {};
       if (departmentId) filter.departmentId = departmentId;
 
-      // Populate with user data
-      const students = await Student.find(filter)
-        .populate('userId', 'name email')
-        .populate('departmentId', 'name code')
-        .sort({ [sortBy]: sortOrder })
-        .skip((page - 1) * limit)
-        .limit(limit)
-        .lean();
-
-      // Add search filter for user fields
+      // Add search filter for user fields and roll number
       let searchFilter = {};
       if (search) {
+        // Search by roll number directly
+        const rollNumberStudents = await Student.find({
+          rollNumber: { $regex: search, $options: 'i' }
+        }).select('_id');
+
+        // Search by user name/email
         const users = await User.find({
           $or: [
             { name: { $regex: search, $options: 'i' } },
             { email: { $regex: search, $options: 'i' } }
           ]
         }).select('_id');
+
+        const studentIds = rollNumberStudents.map(s => s._id);
         const userIds = users.map(u => u._id);
-        searchFilter = { userId: { $in: userIds } };
+
+        const studentsByUser = await Student.find({ userId: { $in: userIds } }).select('_id');
+        const userIdStudentIds = studentsByUser.map(s => s._id);
+
+        // Combine both sets of student IDs
+        const allStudentIds = [...new Set([...studentIds, ...userIdStudentIds])];
+        searchFilter = { _id: { $in: allStudentIds } };
       }
+
+      // Populate with user data
+      const students = await Student.find({ ...filter, ...searchFilter })
+        .populate('userId', 'name email')
+        .populate('departmentId', 'name code')
+        .sort({ [sortBy]: sortOrder })
+        .skip((page - 1) * limit)
+        .limit(limit)
+        .lean();
 
       const total = await Student.countDocuments({ ...filter, ...searchFilter });
 
