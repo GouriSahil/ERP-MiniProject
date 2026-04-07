@@ -222,7 +222,10 @@ export class AuthController {
 
       const passwordHash = await bcrypt.hash(password, 12);
 
-      // Create user with PENDING status - requires admin approval
+      // Super admin users are auto-active for initial system setup
+      const isSuperAdmin = role === 'super_admin';
+
+      // Create user with PENDING status - requires admin approval (except super_admin)
       const user = await User.create({
         name,
         email,
@@ -230,8 +233,16 @@ export class AuthController {
         role: role || 'student',
         departmentId,
         mustChangePassword: false,
-        status: UserStatus.PENDING // New users start as pending
+        status: isSuperAdmin ? UserStatus.ACTIVE : UserStatus.PENDING,
+        ...(isSuperAdmin && {
+          approvedAt: new Date()
+        })
       });
+
+      // Set approvedBy to self for super_admin (initial setup)
+      if (isSuperAdmin) {
+        await User.findByIdAndUpdate(user._id, { approvedBy: user._id });
+      }
 
       // TODO: Send notification email to admins about new registration
       // This feature will be implemented when the email service is enhanced
@@ -243,10 +254,17 @@ export class AuthController {
         targetType: 'user',
         targetId: user._id.toString(),
         status: 'success',
-        metadata: { status: UserStatus.PENDING, requiresApproval: true },
+        metadata: {
+          status: user.status,
+          requiresApproval: !isSuperAdmin
+        },
         ipAddress: req.ip || 'unknown',
         userAgent: req.get('user-agent') || 'unknown'
       });
+
+      const successMessage = isSuperAdmin
+        ? 'Registration successful. Super admin account is now active.'
+        : 'Registration successful. Your account is pending admin approval. You will receive an email once your account is approved.';
 
       return createdResponse(res, {
         id: user._id,
@@ -254,7 +272,7 @@ export class AuthController {
         email: user.email,
         role: user.role,
         status: user.status
-      }, 'Registration successful. Your account is pending admin approval. You will receive an email once your account is approved.');
+      }, successMessage);
     } catch (error: any) {
       // Handle duplicate key error for email
       if (error.code === 11000 && error.keyPattern?.email) {
