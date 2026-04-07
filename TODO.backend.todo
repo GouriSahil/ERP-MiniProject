@@ -90,9 +90,9 @@ Node.js/Express REST API with MongoDB
 - [x] List Users API
   - [x] GET /api/users
   - [x] Pagination support
-  - [ ] Search by name, email
-  - [ ] Filter by role, department
-  - [ ] Sort options
+  - [x] Search by name, email
+  - [x] Filter by role, department
+  - [x] Sort options
 - [x] Create User API
   - [x] POST /api/users
   - [x] Role assignment
@@ -106,8 +106,8 @@ Node.js/Express REST API with MongoDB
 - [x] Delete User API
   - [x] DELETE /api/users/:id
   - [x] Dependency validation
-- [ ] Deactivate/Reactivate User API
-- [ ] Admin Password Reset API
+- [x] Deactivate/Reactivate User API
+- [x] Admin Password Reset API
 
 ### User Approval (USER-APPROVAL)
 - [x] User Status Model (pending, approved, active, rejected, suspended)
@@ -128,7 +128,7 @@ Node.js/Express REST API with MongoDB
 - [x] Activate User API
   - [x] POST /api/users/:id/activate
   - [x] Clear rejection reason on activation
-- [ ] Email notifications for approval/rejection
+- [x] Email notifications for approval/rejection
 
 ---
 
@@ -190,8 +190,8 @@ Node.js/Express REST API with MongoDB
 - [x] Delete Term API
   - [x] DELETE /api/terms/:id
   - [x] Dependency validation
-- [ ] Activate/Deactivate Term API
-- [ ] Get Current Active Term API
+- [x] Activate/Deactivate Term API
+- [x] Get Current Active Term API
 
 ---
 
@@ -217,7 +217,7 @@ Node.js/Express REST API with MongoDB
   - [x] Support multiple faculty
 - [x] Remove Faculty from Offering API
   - [x] DELETE /api/offerings/:id/faculty/:facultyId
-- [ ] Set Schedule API (days, times, location)
+- [x] Set Schedule API (days, times, location)
 
 ### Sessions (COUR-002)
 - [x] Create Session API
@@ -248,8 +248,8 @@ Node.js/Express REST API with MongoDB
 - [x] List Students API
   - [x] GET /api/students
   - [x] Pagination
-  - [ ] Search by name, email, roll number
-  - [ ] Filter by department, enrollment status
+  - [x] Search by name, email, roll number
+  - [x] Filter by department, enrollment status
 - [x] Get Student by ID API
   - [x] GET /api/students/:id
   - [x] Include user and department
@@ -272,15 +272,15 @@ Node.js/Express REST API with MongoDB
 - [x] List Faculty API
   - [x] GET /api/faculty
   - [x] Pagination
-  - [ ] Filter by department
+  - [x] Filter by department
 - [x] Get Faculty by ID API
   - [x] GET /api/faculty/:id
 - [x] Update Faculty API
   - [x] PUT /api/faculty/:id
 - [x] Delete Faculty API
   - [x] DELETE /api/faculty/:id
-- [ ] Get Faculty Teaching Load API
-- [ ] Get Faculty Assigned Offerings API
+- [x] Get Faculty Teaching Load API
+- [x] Get Faculty Assigned Offerings API
 
 ---
 
@@ -332,11 +332,11 @@ Node.js/Express REST API with MongoDB
   - [x] PUT /api/attendance/:id
 - [x] Delete Attendance API
   - [x] DELETE /api/attendance/:id
-- [ ] Calculate Attendance Percentage API
-- [ ] Get Attendance Trends API
-- [ ] Export Attendance to CSV API
-- [ ] Get Low Attendance Students API
-- [ ] Student Attendance Dashboard API
+- [x] Calculate Attendance Percentage API
+- [x] Get Attendance Trends API
+- [x] Export Attendance to CSV API
+- [x] Get Low Attendance Students API
+- [x] Student Attendance Dashboard API
 
 ---
 
@@ -363,8 +363,8 @@ Node.js/Express REST API with MongoDB
 - [x] System Analytics Dashboard API
   - [x] GET /api/reports/dashboard
   - [x] Key metrics (users, students, faculty, departments, courses)
-- [ ] Interactive Charts Data API
-- [ ] Print-friendly Report Formats
+- [x] Interactive Charts Data API
+- [x] Print-friendly Report Formats
 
 ---
 
