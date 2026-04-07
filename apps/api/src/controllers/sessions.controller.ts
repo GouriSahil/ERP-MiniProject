@@ -107,7 +107,7 @@ export class SessionsController {
           new Date(date),
           startTime,
           endTime,
-          location || offering.schedule?.room
+          location || offering.schedule?.location
         );
 
         if (conflictCheck.hasConflict) {
@@ -131,7 +131,7 @@ export class SessionsController {
         topic,
         sessionType: sessionType || 'lecture',
         notes,
-        location: location || offering.schedule?.room,
+        location: location || offering.schedule?.location,
         status: 'scheduled'
       });
 

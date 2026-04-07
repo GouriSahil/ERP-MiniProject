@@ -1,11 +1,11 @@
 import mongoose, { Schema, Document, Model } from 'mongoose';
 
 // Schedule interface
-interface ISchedule {
-  days: string[]; // ['Monday', 'Wednesday', 'Friday']
-  startTime: string; // '09:00'
-  endTime: string; // '10:30'
-  room?: string;
+export interface ICourseOfferingSchedule {
+  days?: string[];
+  startTime?: string;
+  endTime?: string;
+  location?: string;
 }
 
 // Course Offering interface
@@ -13,7 +13,7 @@ interface ICourseOffering extends Document {
   courseId: mongoose.Types.ObjectId;
   termId: mongoose.Types.ObjectId;
   capacity: number;
-  schedule: ISchedule;
+  schedule?: ICourseOfferingSchedule;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -22,28 +22,20 @@ interface ICourseOffering extends Document {
 const ScheduleSchema: Schema = new Schema({
   days: {
     type: [String],
-    required: true,
-    enum: {
-      values: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
-      message: '{VALUE} is not a valid day'
-    }
+    enum: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
   },
   startTime: {
     type: String,
-    required: true,
-    match: /^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/,
-    message: 'Start time must be in HH:MM format'
+    match: /^([01]\d|2[0-3]):([0-5]\d)$/
   },
   endTime: {
     type: String,
-    required: true,
-    match: /^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/,
-    message: 'End time must be in HH:MM format'
+    match: /^([01]\d|2[0-3]):([0-5]\d)$/
   },
-  room: {
+  location: {
     type: String,
     trim: true,
-    maxlength: [50, 'Room name cannot exceed 50 characters']
+    maxlength: 100
   }
 }, { _id: false });
 
@@ -67,8 +59,7 @@ const CourseOfferingSchema: Schema = new Schema(
       max: [500, 'Capacity cannot exceed 500']
     },
     schedule: {
-      type: ScheduleSchema,
-      required: [true, 'Schedule is required']
+      type: ScheduleSchema
     }
   },
   {

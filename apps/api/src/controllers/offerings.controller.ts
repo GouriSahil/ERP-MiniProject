@@ -147,7 +147,7 @@ export class OfferingsController {
 
       // If updating schedule or room, check for conflicts
       const newSchedule = schedule || offering.schedule;
-      const newRoom = room !== undefined ? room : offering.schedule.room;
+      const newRoom = room !== undefined ? room : offering.schedule?.location;
       const newTermId = termId || offering.termId;
 
       if (schedule || room !== undefined) {
