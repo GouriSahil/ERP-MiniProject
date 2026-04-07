@@ -5,22 +5,9 @@ import crypto from 'crypto';
 import { AuthRequest } from '../middleware/auth.middleware';
 import { successResponse, errorResponse, createdResponse } from '../utils/response.util';
 import { saveAuditLog, getAuditLogData } from '../middleware/audit.middleware';
-import { User } from '../models/User';
+import { User, UserStatus, UserSession } from '../models';
 import { PasswordResetToken } from '../models/PasswordResetToken';
 import { emailService } from '../services/email.service';
-
-// Mock User model - will be replaced with actual Mongoose model
-interface User {
-  _id: string;
-  name: string;
-  email: string;
-  passwordHash: string;
-  role: string;
-  departmentId?: string;
-  mustChangePassword?: boolean;
-  createdAt: Date;
-  updatedAt: Date;
-}
 
 export class AuthController {
   // Login
@@ -32,19 +19,8 @@ export class AuthController {
         return errorResponse(res, 'Email and password are required');
       }
 
-      // Mock user lookup - replace with actual database query
-      // const user = await User.findOne({ email }).populate('departmentId');
-
-      // Mock authentication for now
-      const user = {
-        _id: 'mock-user-id',
-        name: 'Test User',
-        email: email,
-        passwordHash: await bcrypt.hash(password, 12),
-        role: 'super_admin',
-        createdAt: new Date(),
-        updatedAt: new Date()
-      } as User;
+      // Find user by email with password field
+      const user = await User.findOne({ email }).select('+passwordHash').populate('departmentId', 'name code').lean();
 
       if (!user) {
         await saveAuditLog({
@@ -78,15 +54,77 @@ export class AuthController {
         return errorResponse(res, 'Invalid credentials', 401);
       }
 
+      // Check user status
+      switch (user.status) {
+        case UserStatus.PENDING:
+          await saveAuditLog({
+            actorUserId: user._id.toString(),
+            actorRole: user.role,
+            action: 'login',
+            targetType: 'auth',
+            targetId: user._id.toString(),
+            status: 'failure',
+            errorMessage: 'Account pending approval',
+            ipAddress: req.ip || 'unknown',
+            userAgent: req.get('user-agent') || 'unknown'
+          });
+          return errorResponse(
+            res,
+            'Your account is pending admin approval. Please wait for an administrator to approve your registration.',
+            403
+          );
+
+        case UserStatus.REJECTED:
+          await saveAuditLog({
+            actorUserId: user._id.toString(),
+            actorRole: user.role,
+            action: 'login',
+            targetType: 'auth',
+            targetId: user._id.toString(),
+            status: 'failure',
+            errorMessage: 'Account rejected',
+            ipAddress: req.ip || 'unknown',
+            userAgent: req.get('user-agent') || 'unknown'
+          });
+          return errorResponse(
+            res,
+            'Your account has been rejected. Please contact the administrator for more information.',
+            403
+          );
+
+        case UserStatus.SUSPENDED:
+          await saveAuditLog({
+            actorUserId: user._id.toString(),
+            actorRole: user.role,
+            action: 'login',
+            targetType: 'auth',
+            targetId: user._id.toString(),
+            status: 'failure',
+            errorMessage: 'Account suspended',
+            ipAddress: req.ip || 'unknown',
+            userAgent: req.get('user-agent') || 'unknown'
+          });
+          return errorResponse(
+            res,
+            'Your account has been suspended. Please contact the administrator.',
+            403
+          );
+      }
+
+      // Generate a unique token ID for session tracking
+      const tokenId = crypto.randomUUID();
+
       const accessToken = jwt.sign(
         {
           userId: user._id,
           email: user.email,
           role: user.role,
-          departmentId: user.departmentId
+          departmentId: user.departmentId,
+          status: user.status,
+          jti: tokenId // JWT ID for session tracking
         },
         process.env.JWT_SECRET || 'your-secret-key',
-        { expiresIn: '1h', issuer: 'erp-api', audience: 'erp-frontend' }
+        { expiresIn: '1h', issuer: 'erp-api', audience: 'erp-frontend', jwtid: tokenId }
       );
 
       const refreshToken = jwt.sign(
@@ -94,18 +132,40 @@ export class AuthController {
           userId: user._id,
           email: user.email,
           role: user.role,
-          departmentId: user.departmentId
+          departmentId: user.departmentId,
+          jti: tokenId
         },
         process.env.JWT_SECRET || 'your-secret-key',
-        { expiresIn: '30d', issuer: 'erp-api', audience: 'erp-frontend' }
+        { expiresIn: '30d', issuer: 'erp-api', audience: 'erp-frontend', jwtid: tokenId }
       );
 
+      // Hash the token for storage (we don't store the actual token)
+      const tokenHash = await bcrypt.hash(accessToken, 10);
+
+      // Create session record for tracking
+      // Calculate expiration time (1 hour from now for access token)
+      const expiresAt = new Date(Date.now() + 60 * 60 * 1000);
+
+      try {
+        await UserSession.create({
+          userId: user._id,
+          token: tokenHash,
+          tokenId: tokenId,
+          ipAddress: req.ip || 'unknown',
+          userAgent: req.get('user-agent') || 'unknown',
+          expiresAt: expiresAt
+        });
+      } catch (sessionError) {
+        // Log session creation error but don't fail the login
+        console.error('[Login] Failed to create session record:', sessionError);
+      }
+
       await saveAuditLog({
-        actorUserId: user._id,
+        actorUserId: user._id.toString(),
         actorRole: user.role,
         action: 'login',
         targetType: 'auth',
-        targetId: user._id,
+        targetId: user._id.toString(),
         status: 'success',
         ipAddress: req.ip || 'unknown',
         userAgent: req.get('user-agent') || 'unknown'
@@ -119,6 +179,7 @@ export class AuthController {
           name: user.name,
           email: user.email,
           role: user.role,
+          status: user.status,
           departmentId: user.departmentId,
           mustChangePassword: user.mustChangePassword
         }
@@ -142,51 +203,47 @@ export class AuthController {
         return errorResponse(res, 'Password must be at least 8 characters long', 400);
       }
 
-      // Map frontend roles to backend UserRole enum
-      const roleMapping: { [key: string]: string } = {
-        'student': 'student',
-        'faculty': 'faculty',
-        'admin': 'admin'
-      };
-
-      const mappedRole = roleMapping[role];
-      if (!mappedRole) {
-        return errorResponse(res, 'Invalid role. Must be one of: student, faculty, admin', 400);
-      }
-
       // Check if user exists
-      // const existingUser = await User.findOne({ email });
-      // if (existingUser) {
-      //   return conflictResponse(res, 'User with this email already exists');
-      // }
+      const existingUser = await User.findOne({ email });
+      if (existingUser) {
+        await saveAuditLog({
+          actorUserId: null,
+          actorRole: 'anonymous',
+          action: 'register',
+          targetType: 'user',
+          targetId: email,
+          status: 'failure',
+          errorMessage: 'Email already exists',
+          ipAddress: req.ip || 'unknown',
+          userAgent: req.get('user-agent') || 'unknown'
+        });
+        return errorResponse(res, 'User with this email already exists', 409);
+      }
 
       const passwordHash = await bcrypt.hash(password, 12);
 
-      // Create user
-      // const user = await User.create({
-      //   name,
-      //   email,
-      //   passwordHash,
-      //   role: role || 'student',
-      //   departmentId,
-      //   mustChangePassword: true
-      // });
-
-      const user = {
-        _id: 'new-user-id',
+      // Create user with PENDING status - requires admin approval
+      const user = await User.create({
         name,
         email,
+        passwordHash,
         role: role || 'student',
-        departmentId
-      } as User;
+        departmentId,
+        mustChangePassword: false,
+        status: UserStatus.PENDING // New users start as pending
+      });
+
+      // TODO: Send notification email to admins about new registration
+      // This feature will be implemented when the email service is enhanced
 
       await saveAuditLog({
-        actorUserId: user._id,
+        actorUserId: user._id.toString(),
         actorRole: user.role,
         action: 'register',
         targetType: 'user',
-        targetId: user._id,
+        targetId: user._id.toString(),
         status: 'success',
+        metadata: { status: UserStatus.PENDING, requiresApproval: true },
         ipAddress: req.ip || 'unknown',
         userAgent: req.get('user-agent') || 'unknown'
       });
@@ -195,9 +252,14 @@ export class AuthController {
         id: user._id,
         name: user.name,
         email: user.email,
-        role: user.role
-      }, 'Registration successful. Please wait for admin approval.');
+        role: user.role,
+        status: user.status
+      }, 'Registration successful. Your account is pending admin approval. You will receive an email once your account is approved.');
     } catch (error: any) {
+      // Handle duplicate key error for email
+      if (error.code === 11000 && error.keyPattern?.email) {
+        return errorResponse(res, 'User with this email already exists', 409);
+      }
       return errorResponse(res, error.message, 500);
     }
   }
