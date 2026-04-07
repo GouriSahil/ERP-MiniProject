@@ -460,4 +460,64 @@ export class OfferingsController {
       return errorResponse(res, error.message, 500);
     }
   }
+
+  // Set schedule for offering
+  static async setSchedule(req: AuthRequest, res: Response) {
+    try {
+      const { id } = req.params;
+      const { days, startTime, endTime, location } = req.body;
+
+      // Validate time format
+      const timeRegex = /^([01]\d|2[0-3]):([0-5]\d)$/;
+      if (startTime && !timeRegex.test(startTime)) {
+        return errorResponse(res, 'Invalid startTime format. Use HH:mm', 400);
+      }
+      if (endTime && !timeRegex.test(endTime)) {
+        return errorResponse(res, 'Invalid endTime format. Use HH:mm', 400);
+      }
+
+      // Validate days
+      const validDays = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+      if (days) {
+        const invalidDays = days.filter((d: string) => !validDays.includes(d));
+        if (invalidDays.length > 0) {
+          return errorResponse(res, `Invalid days: ${invalidDays.join(', ')}`, 400);
+        }
+      }
+
+      const offering = await CourseOffering.findById(id);
+      if (!offering) {
+        return notFoundResponse(res, 'Course offering');
+      }
+
+      const updatedOffering = await CourseOffering.findByIdAndUpdate(
+        id,
+        {
+          schedule: {
+            days,
+            startTime,
+            endTime,
+            location
+          }
+        },
+        { new: true, runValidators: true }
+      ).populate('courseId').populate('termId').lean();
+
+      await saveAuditLog({
+        actorUserId: req.user!.userId,
+        actorRole: req.user!.role,
+        action: 'set_schedule',
+        targetType: 'offering',
+        targetId: id,
+        status: 'success',
+        metadata: { schedule: { days, startTime, endTime, location } },
+        ipAddress: req.ip || 'unknown',
+        userAgent: req.get('user-agent') || 'unknown'
+      });
+
+      return successResponse(res, updatedOffering, 'Schedule updated successfully');
+    } catch (error: any) {
+      return errorResponse(res, error.message, 500);
+    }
+  }
 }

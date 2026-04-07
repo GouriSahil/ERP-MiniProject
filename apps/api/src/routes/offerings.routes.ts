@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { OfferingsController } from '../controllers/offerings.controller';
-import { authenticate, checkPermission } from '../middleware/auth.middleware';
+import { authenticate, checkPermission, authorize } from '../middleware/auth.middleware';
 import { validateOfferingCreate, validateOfferingUpdate, validateUUIDParam, validatePagination } from '../middleware/validate.middleware';
 
 const router = Router();
@@ -71,6 +71,13 @@ router.patch(
   checkPermission('offerings', 'update'),
   validateUUIDParam(),
   OfferingsController.updateSchedule
+);
+
+// Set schedule for offering - admin roles only
+router.put(
+  '/:id/schedule',
+  authorize('super_admin', 'admin', 'dept_head'),
+  OfferingsController.setSchedule
 );
 
 export default router;
