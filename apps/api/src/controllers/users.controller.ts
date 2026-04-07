@@ -15,12 +15,13 @@ export class UsersController {
       const limit = paginationParams.limit || 10;
       const sortBy = paginationParams.sortBy || "createdAt";
       const sortOrder = paginationParams.sortOrder || "desc";
-      const { role, departmentId } = req.query;
+      const { role, departmentId, status } = req.query;
 
       // Build filter
       const filter: any = {};
       if (role) filter.role = role;
       if (departmentId) filter.departmentId = departmentId;
+      if (status) filter.status = status;
 
       // Add search filter
       if (paginationParams.search) {
