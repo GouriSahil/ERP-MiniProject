@@ -277,4 +277,84 @@ export class TermsController {
       return errorResponse(res, error.message, 500);
     }
   }
+
+  // Set term status (activate/deactivate/complete)
+  static async setStatus(req: AuthRequest, res: Response) {
+    try {
+      const { id } = req.params;
+      const { status } = req.body;
+
+      if (!['active', 'inactive', 'completed'].includes(status)) {
+        return errorResponse(res, 'Invalid status. Must be active, inactive, or completed', 400);
+      }
+
+      const term = await Term.findById(id);
+      if (!term) {
+        return notFoundResponse(res, 'Term');
+      }
+
+      // If setting to active, deactivate other active terms
+      if (status === 'active') {
+        await Term.updateMany(
+          { _id: { $ne: id }, status: 'active' },
+          { status: 'inactive' }
+        );
+      }
+
+      // Check for active enrollments if trying to deactivate
+      if (status === 'inactive' && term.status === 'active') {
+        const { Enrollment } = await import('../models');
+        const activeEnrollments = await Enrollment.countDocuments({
+          status: 'active'
+        });
+
+        if (activeEnrollments > 0) {
+          return errorResponse(
+            res,
+            'Cannot deactivate term with active enrollments',
+            400
+          );
+        }
+      }
+
+      const updatedTerm = await Term.findByIdAndUpdate(
+        id,
+        { status },
+        { new: true, runValidators: true }
+      ).lean();
+
+      await saveAuditLog({
+        actorUserId: req.user!.userId,
+        actorRole: req.user!.role,
+        action: 'set_status',
+        targetType: 'term',
+        targetId: id,
+        status: 'success',
+        metadata: { previousStatus: term.status, newStatus: status },
+        ipAddress: req.ip || 'unknown',
+        userAgent: req.get('user-agent') || 'unknown'
+      });
+
+      return successResponse(res, updatedTerm, `Term status updated to ${status}`);
+    } catch (error: any) {
+      return errorResponse(res, error.message, 500);
+    }
+  }
+
+  // Get current active term
+  static async getCurrentActive(req: AuthRequest, res: Response) {
+    try {
+      const term = await Term.findOne({ status: 'active' })
+        .sort({ startDate: -1 })
+        .lean();
+
+      if (!term) {
+        return notFoundResponse(res, 'Active term');
+      }
+
+      return successResponse(res, term);
+    } catch (error: any) {
+      return errorResponse(res, error.message, 500);
+    }
+  }
 }

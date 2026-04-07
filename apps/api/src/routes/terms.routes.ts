@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { TermsController } from '../controllers/terms.controller';
-import { authenticate, checkPermission } from '../middleware/auth.middleware';
+import { authenticate, checkPermission, authorize } from '../middleware/auth.middleware';
 import { validateTermCreate, validateTermUpdate, validateUUIDParam, validatePagination } from '../middleware/validate.middleware';
 
 const router: Router = Router();
@@ -70,6 +70,20 @@ router.get(
   checkPermission('terms', 'view'),
   validateUUIDParam(),
   TermsController.getStatistics
+);
+
+// Set term status
+router.put(
+  '/:id/status',
+  authorize('super_admin', 'admin'),
+  TermsController.setStatus
+);
+
+// Get current active term
+router.get(
+  '/current',
+  authenticate,
+  TermsController.getCurrentActive
 );
 
 export default router;
