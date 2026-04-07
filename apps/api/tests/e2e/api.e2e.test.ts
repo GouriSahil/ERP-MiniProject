@@ -9,6 +9,7 @@ import {
   teardownE2ETest,
   E2EApiClient,
 } from './helpers';
+import { seedTestFixtures } from './fixtures';
 
 describe('Core CRUD Operations E2E API Tests', () => {
   let client: E2EApiClient;
@@ -24,17 +25,10 @@ describe('Core CRUD Operations E2E API Tests', () => {
   });
 
   beforeEach(async () => {
-    // Create a fresh client for each test and login
+    // Create a fresh client for each test
     client = new E2EApiClient(serverUrl);
-    const loginResponse = await client.post('/api/auth/login', {
-      email: 'test@example.com',
-      password: 'password123',
-    });
-
-    if (loginResponse.status === 200 && loginResponse.data.data) {
-      const accessToken = loginResponse.data.data.accessToken;
-      client.setAccessToken(accessToken);
-    }
+    // Seed test fixtures and authenticate
+    await seedTestFixtures(client);
   });
 
   describe('Departments API', () => {
