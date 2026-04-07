@@ -1,3 +1,4 @@
 .ant-colony/
 node_modules
 .pi-lens
+.worktrees/
