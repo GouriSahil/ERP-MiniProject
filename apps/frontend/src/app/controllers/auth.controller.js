@@ -239,7 +239,6 @@
             var registrationData = {
                 name: vm.registerData.fullName.trim(),
                 email: vm.registerData.email.trim().toLowerCase(),
-                phone: vm.registerData.phone ? vm.registerData.phone.trim() : undefined,
                 password: vm.registerData.password,
                 role: vm.registerData.role
             };
