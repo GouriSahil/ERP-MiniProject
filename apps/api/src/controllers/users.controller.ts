@@ -5,6 +5,7 @@ import { getPaginationParams, buildPaginationMeta, buildSearchFilter, PaginatedR
 import { saveAuditLog } from '../middleware/audit.middleware';
 import { User, Student, Faculty, UserStatus } from "../models";
 import * as bcrypt from 'bcrypt';
+import { emailService } from '../services/email.service';
 
 export class UsersController {
   // List all users with pagination, search, and filters
@@ -397,7 +398,8 @@ export class UsersController {
         userAgent: req.get("user-agent") || "unknown",
       });
 
-      // TODO: Send approval email to user
+      // Send approval email to user
+      await emailService.sendUserApprovalEmail(user.email, user.name);
 
       return successResponse(res, updatedUser, "User approved successfully");
     } catch (error: any) {
@@ -452,7 +454,8 @@ export class UsersController {
         userAgent: req.get("user-agent") || "unknown",
       });
 
-      // TODO: Send rejection email to user
+      // Send rejection email to user
+      await emailService.sendUserRejectionEmail(user.email, reason, user.name);
 
       return successResponse(res, updatedUser, "User rejected successfully");
     } catch (error: any) {
