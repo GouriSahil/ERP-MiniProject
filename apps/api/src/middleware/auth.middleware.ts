@@ -1,19 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 
-declare global {
-  namespace Express {
-    interface User {
-      _id?: string;
-      userId?: string;
-      email: string;
-      role: string;
-      departmentId?: string;
-      name?: string;
-    }
-  }
-}
-
 export interface AuthRequest extends Request {}
 
 export const authenticate = async (req: AuthRequest, res: Response, next: NextFunction) => {

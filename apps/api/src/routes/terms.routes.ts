@@ -3,7 +3,7 @@ import { TermsController } from '../controllers/terms.controller';
 import { authenticate, checkPermission } from '../middleware/auth.middleware';
 import { validateTermCreate, validateTermUpdate, validateUUIDParam, validatePagination } from '../middleware/validate.middleware';
 
-const router = Router();
+const router: Router = Router();
 
 // All routes require authentication
 router.use(authenticate);
