@@ -96,8 +96,7 @@ const UserSessionSchema: Schema = new Schema(
     },
     expiresAt: {
       type: Date,
-      required: [true, 'Expiration time is required'],
-      index: true
+      required: [true, 'Expiration time is required']
     },
     lastActivityAt: {
       type: Date,
