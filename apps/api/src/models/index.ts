@@ -13,6 +13,7 @@ export { AttendanceRecord } from './AttendanceRecord';
 export { AuditLog } from './AuditLog';
 export { CustomRole } from './CustomRole';
 export { PasswordResetToken } from './PasswordResetToken';
+export { UserSession } from './UserSession';
 
 // Export all interfaces as types
 export type { IUser, UserRole } from './User';
@@ -29,12 +30,15 @@ export type { IAttendanceRecord } from './AttendanceRecord';
 export type { IAuditLog } from './AuditLog';
 export type { ICustomRole } from './CustomRole';
 export type { IPasswordResetToken } from './PasswordResetToken';
+export type { IUserSession } from './UserSession';
 
 // Export enums as runtime values (used in Object.values() and service comparisons)
 export { TermStatus } from './Term';
+export { UserStatus } from './User';
 export { FacultyRole } from './OfferingFaculty';
 export { SessionStatus } from './Session';
 export { EnrollmentStatus } from './Enrollment';
 export { AttendanceStatus } from './AttendanceRecord';
 export { AuditAction, AuditStatus } from './AuditLog';
 export { Permission } from './CustomRole';
+export { SessionStatus as UserSessionStatus } from './UserSession';
