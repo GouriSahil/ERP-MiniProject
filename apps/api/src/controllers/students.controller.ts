@@ -6,6 +6,7 @@ import { getPaginationParams, buildPaginationMeta, buildSearchFilter } from '../
 import { saveAuditLog } from '../middleware/audit.middleware';
 import { AppError } from '../utils/errors';
 import { Student, User, Enrollment } from '../models';
+import { parseCSVBuffer, validateStudentCSV, transformCSVRowToStudentData, STUDENT_CSV_COLUMNS } from '../utils/csv.util';
 
 export class StudentsController {
   // List all students
@@ -422,6 +423,148 @@ export class StudentsController {
       });
 
       return successResponse(res, results, `Imported ${results.success.length} of ${students.length} students`);
+    } catch (error: any) {
+      if (error instanceof AppError) {
+        return errorResponse(res, error.message, error.statusCode);
+      }
+      return errorResponse(res, error.message, 500);
+    }
+  }
+
+  // Import students from CSV file
+  static async importCSV(req: AuthRequest, res: Response) {
+    try {
+      if (!req.file) {
+        return errorResponse(res, 'No file uploaded', 400);
+      }
+
+      // Parse CSV
+      const records = parseCSVBuffer(req.file.buffer);
+
+      // Validate CSV structure
+      const validation = validateStudentCSV(records);
+      if (!validation.isValid) {
+        return res.status(400).json({
+          success: false,
+          error: 'CSV validation failed',
+          details: validation.errors
+        });
+      }
+
+      // Get department IDs for department codes
+      const Department = mongoose.model('Department');
+      const departmentCodes = Array.from(new Set(records.map(r => r.departmentCode)));
+      const departments = await Department.find({ code: { $in: departmentCodes } }).lean();
+      const departmentMap = new Map(departments.map((d: any) => [d.code, d._id.toString()]));
+
+      // Check for missing departments
+      const missingDepartments = departmentCodes.filter(code => !departmentMap.has(code));
+      if (missingDepartments.length > 0) {
+        return res.status(400).json({
+          success: false,
+          error: 'Departments not found',
+          details: missingDepartments.map(code => ({
+            field: 'departmentCode',
+            message: `Department with code "${code}" does not exist`
+          }))
+        });
+      }
+
+      // Process each row
+      const results = {
+        success: [] as Array<{ row: number; id: string; name: string; rollNumber: string }>,
+        failed: [] as Array<{ row: number; data: any; error: string }>
+      };
+
+      for (let i = 0; i < records.length; i++) {
+        const row = records[i];
+        const rowNum = i + 2; // +2 for header and 0-based index
+
+        try {
+          const studentData = transformCSVRowToStudentData(
+            row,
+            departmentMap.get(row.departmentCode)!
+          );
+
+          // Check for duplicate roll number in department
+          const existingStudent = await Student.findOne({
+            rollNumber: studentData.rollNumber,
+            departmentId: studentData.departmentId
+          });
+          if (existingStudent) {
+            results.failed.push({
+              row: rowNum,
+              data: row,
+              error: 'Roll number already exists in this department'
+            });
+            continue;
+          }
+
+          // Check for duplicate email
+          const existingUser = await User.findOne({ email: studentData.email });
+          if (existingUser) {
+            results.failed.push({
+              row: rowNum,
+              data: row,
+              error: 'Email already exists'
+            });
+            continue;
+          }
+
+          // Create user account
+          const bcrypt = require('bcrypt');
+          const passwordHash = await bcrypt.hash(studentData.password, 12);
+          const user = await User.create({
+            name: studentData.name,
+            email: studentData.email,
+            passwordHash,
+            role: 'student',
+            departmentId: studentData.departmentId,
+            mustChangePassword: true
+          });
+
+          // Create student
+          const student = await Student.create({
+            userId: user._id,
+            rollNumber: studentData.rollNumber,
+            departmentId: studentData.departmentId,
+            batch: studentData.batch,
+            semester: studentData.semester
+          });
+
+          results.success.push({
+            row: rowNum,
+            id: student._id.toString(),
+            name: studentData.name,
+            rollNumber: studentData.rollNumber
+          });
+        } catch (error: any) {
+          results.failed.push({
+            row: rowNum,
+            data: row,
+            error: error.message || 'Unknown error'
+          });
+        }
+      }
+
+      await saveAuditLog({
+        actorUserId: req.user!.userId,
+        actorRole: req.user!.role,
+        action: 'csv_import',
+        targetType: 'student',
+        targetId: 'csv_bulk',
+        status: 'success',
+        metadata: {
+          fileName: req.file.originalname,
+          total: records.length,
+          successCount: results.success.length,
+          failureCount: results.failed.length
+        },
+        ipAddress: req.ip || 'unknown',
+        userAgent: req.get('user-agent') || 'unknown'
+      });
+
+      return successResponse(res, results, `Imported ${results.success.length} of ${records.length} students`);
     } catch (error: any) {
       if (error instanceof AppError) {
         return errorResponse(res, error.message, error.statusCode);
