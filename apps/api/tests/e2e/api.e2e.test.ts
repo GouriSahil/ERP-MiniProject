@@ -3,38 +3,50 @@
  * Tests main CRUD endpoints with actual HTTP requests
  */
 
-import { describe, it, expect, beforeAll, afterAll, beforeEach, afterEach } from 'bun:test';
+import { describe, it, expect, beforeAll, afterAll } from 'bun:test';
 import {
   setupE2ETest,
   teardownE2ETest,
   clearDatabase,
   E2EApiClient,
 } from './helpers';
-import { seedTestFixtures } from './fixtures';
 
 describe('Core CRUD Operations E2E API Tests', () => {
   let client: E2EApiClient;
   let serverUrl: string;
+  // Test data IDs that can be used across tests
+  let testDepartmentId: string;
 
   beforeAll(async () => {
     const setup = await setupE2ETest();
     serverUrl = setup.serverUrl;
+    // Clear database at start for CRUD lifecycle tests
+    await clearDatabase();
+
+    // Create and authenticate test client
+    client = new E2EApiClient(serverUrl);
+    await client.post('/api/auth/register', {
+      name: 'Test Super Admin',
+      email: 'test@example.com',
+      password: 'password123',
+      role: 'super_admin',
+    });
+    const loginResponse = await client.post('/api/auth/login', {
+      email: 'test@example.com',
+      password: 'password123',
+    });
+    client.setAccessToken(loginResponse.data.data.accessToken);
+
+    // Create a test department for use in other tests
+    const deptResponse = await client.post('/api/departments', {
+      name: 'Engineering',
+      code: 'ENG',
+    });
+    testDepartmentId = deptResponse.data.data._id;
   });
 
   afterAll(async () => {
     await teardownE2ETest();
-  });
-
-  beforeEach(async () => {
-    // Create a fresh client for each test
-    client = new E2EApiClient(serverUrl);
-    // Seed test fixtures and authenticate
-    await seedTestFixtures(client);
-  });
-
-  afterEach(async () => {
-    // Clear database after each test
-    await clearDatabase();
   });
 
   describe('Departments API', () => {
@@ -130,23 +142,13 @@ describe('Core CRUD Operations E2E API Tests', () => {
 
   describe('Courses API', () => {
     let courseId: string;
-    let departmentId: string;
-
-    beforeAll(async () => {
-      // Create a department for courses
-      const deptResponse = await client.post('/api/departments', {
-        name: 'Engineering',
-        code: 'ENG',
-      });
-      departmentId = deptResponse.data.data._id;
-    });
 
     it('should create a new course', async () => {
       const response = await client.post('/api/courses', {
         name: 'Introduction to Programming',
         code: 'CS101',
         credits: 3,
-        departmentId,
+        departmentId: testDepartmentId,
         description: 'Basic programming concepts',
       });
 
@@ -169,7 +171,7 @@ describe('Core CRUD Operations E2E API Tests', () => {
     });
 
     it('should get courses by department', async () => {
-      const response = await client.get(`/api/courses?departmentId=${departmentId}`);
+      const response = await client.get(`/api/courses?departmentId=${testDepartmentId}`);
 
       expect(response.status).toBe(200);
       expect(response.data.success).toBe(true);
@@ -183,7 +185,7 @@ describe('Core CRUD Operations E2E API Tests', () => {
         name: 'Data Structures',
         code: 'CS201',
         credits: 4,
-        departmentId,
+        testDepartmentId,
       });
 
       const id = createResponse.data.data._id;
@@ -203,7 +205,7 @@ describe('Core CRUD Operations E2E API Tests', () => {
         name: 'Algorithms',
         code: 'CS301',
         credits: 4,
-        departmentId,
+        testDepartmentId,
       });
 
       const id = createResponse.data.data._id;
@@ -220,19 +222,12 @@ describe('Core CRUD Operations E2E API Tests', () => {
     let studentId: string;
 
     it('should create a new student', async () => {
-      // First create a department
-      const deptResponse = await client.post('/api/departments', {
-        name: 'Engineering',
-        code: 'ENG',
-      });
-      const departmentId = deptResponse.data.data._id;
-
       const response = await client.post('/api/students', {
         name: 'Jane Student',
         email: 'jane.student@example.com',
         password: 'password123',
         rollNumber: 'S2024001',
-        departmentId,
+        departmentId: testDepartmentId,
         batch: '2024',
         semester: 1,
       });
@@ -261,20 +256,13 @@ describe('Core CRUD Operations E2E API Tests', () => {
     });
 
     it('should update a student', async () => {
-      // Create a department first
-      const deptResponse = await client.post('/api/departments', {
-        name: 'Engineering',
-        code: 'ENG',
-      });
-      const departmentId = deptResponse.data.data._id;
-
       // Create a student first
       const createResponse = await client.post('/api/students', {
         name: 'John Student',
         email: 'john.student@example.com',
         password: 'password123',
         rollNumber: 'S2024002',
-        departmentId,
+        departmentId: testDepartmentId,
         batch: '2024',
         semester: 1,
       });
@@ -299,18 +287,11 @@ describe('Core CRUD Operations E2E API Tests', () => {
     let facultyId: string;
 
     it('should create a new faculty member', async () => {
-      // First create a department
-      const deptResponse = await client.post('/api/departments', {
-        name: 'Biology',
-        code: 'BIO',
-      });
-      const departmentId = deptResponse.data.data._id;
-
       const response = await client.post('/api/faculty', {
         name: 'Dr. Smith',
         email: 'dr.smith@example.com',
         password: 'password123',
-        departmentId,
+        departmentId: testDepartmentId,
         specialization: 'Biology',
         designation: 'Assistant Professor',
       });
@@ -332,15 +313,7 @@ describe('Core CRUD Operations E2E API Tests', () => {
     });
 
     it('should get faculty by department', async () => {
-      // Create a department first
-      const deptResponse = await client.post('/api/departments', {
-        name: 'Biology',
-        code: 'BIO',
-      });
-
-      const departmentId = deptResponse.data.data._id;
-
-      const response = await client.get(`/api/faculty?departmentId=${departmentId}`);
+      const response = await client.get(`/api/faculty?departmentId=${testDepartmentId}`);
 
       expect(response.status).toBe(200);
       expect(response.data.success).toBe(true);

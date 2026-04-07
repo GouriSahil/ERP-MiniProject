@@ -10,13 +10,76 @@ import { createMockRequest, createMockResponse, testUsers, generateObjectId } fr
 // Mock the models
 const mockFaculty: any[] = [];
 const mockDepartments: any[] = [];
+const mockUsers: any[] = [];
+
+const mockUserModel = {
+  find: mock(() => Promise.resolve([])),
+  findById: mock((id: string) => Promise.resolve(mockUsers.find((u: any) => u._id === id) || null)),
+  findOne: mock(() => Promise.resolve(null)),
+  findByIdAndUpdate: mock(() => Promise.resolve({ _id: generateObjectId() })),
+  findByIdAndDelete: mock(() => Promise.resolve({ _id: generateObjectId() })),
+  create: mock((data: any) => Promise.resolve({ _id: generateObjectId(), ...data }))
+};
+
+let createdFacultyData: any = null;
 
 const mockFacultyModel = {
-  find: mock(() => ({ sort: () => ({ skip: () => ({ limit: () => ({ populate: () => ({ lean: () => Promise.resolve(mockFaculty) }) }) }) }) })),
+  find: mock((query: any) => ({
+    populate: (path: string, fields?: string) => ({
+      populate: (path2: string, fields2?: string) => ({
+        sort: () => ({
+          skip: () => ({
+            limit: () => ({
+              lean: () => Promise.resolve(mockFaculty)
+            })
+          })
+        })
+      })
+    }),
+    sort: () => ({
+      skip: () => ({
+        limit: () => ({
+          populate: () => ({ lean: () => Promise.resolve(mockFaculty) })
+        })
+      })
+    })
+  })),
   countDocuments: mock(() => Promise.resolve(mockFaculty.length)),
-  findById: mock((id: string) => ({ populate: () => ({ lean: () => Promise.resolve(mockFaculty.find((f: any) => f._id === id) || null) }) })),
-  create: mock((data: any) => Promise.resolve({ _id: generateObjectId(), ...data, createdAt: new Date(), updatedAt: new Date() })),
-  findByIdAndUpdate: mock((id: string, data: any) => ({ populate: () => ({ lean: () => Promise.resolve({ _id: id, ...data }) }) })),
+  findById: mock((id: string) => {
+    const result = createdFacultyData || mockFaculty.find((f: any) => f._id === id) || null;
+    const promiseResult = Promise.resolve(result);
+    // Make the promise thenable and also add populate method
+    (promiseResult as any).populate = (path: string, fields?: string) => {
+      const withOnePopulate = Promise.resolve(result);
+      (withOnePopulate as any).populate = (path2: string, fields2?: string) => {
+        const withTwoPopulate = Promise.resolve(result);
+        (withTwoPopulate as any).lean = () => Promise.resolve(result);
+        return withTwoPopulate;
+      };
+      return withOnePopulate;
+    };
+    return promiseResult;
+  }),
+  create: mock((data: any) => {
+    const newFaculty = { _id: generateObjectId(), ...data, createdAt: new Date(), updatedAt: new Date() };
+    // Store for findById to return - flattened structure to match test expectations
+    createdFacultyData = {
+      _id: newFaculty._id,
+      userId: newFaculty.userId,
+      name: 'Dr. John Smith',
+      email: 'jsmith@example.com',
+      departmentId: newFaculty.departmentId,
+      specialization: newFaculty.specialization
+    };
+    return Promise.resolve(newFaculty);
+  }),
+  findByIdAndUpdate: mock((id: string, data: any) => ({
+    populate: (path: string, fields?: string) => ({
+      populate: (path2: string, fields2?: string) => ({
+        lean: () => Promise.resolve({ _id: id, ...data })
+      })
+    })
+  })),
   findByIdAndDelete: mock((id: string) => Promise.resolve({ _id: id }))
 };
 
@@ -24,12 +87,19 @@ const mockDepartmentModel = {
   findById: mock((id: string) => Promise.resolve(mockDepartments.find((d: any) => d._id === id) || null))
 };
 
+const mockOfferingFacultyModel = {
+  find: mock(() => Promise.resolve([])),
+  countDocuments: mock(() => Promise.resolve(0))
+};
+
 // Mock the audit middleware
 const mockSaveAuditLog = mock(() => Promise.resolve());
 
 mock.module('../../src/models', () => ({
   Faculty: mockFacultyModel,
-  Department: mockDepartmentModel
+  Department: mockDepartmentModel,
+  User: mockUserModel,
+  OfferingFaculty: mockOfferingFacultyModel
 }));
 
 mock.module('../../src/middleware/audit.middleware', () => ({
@@ -81,6 +151,7 @@ describe('FacultyController - Create', () => {
   beforeEach(() => {
     mockFaculty.length = 0;
     mockDepartments.length = 0;
+    createdFacultyData = null;
     mockSaveAuditLog.mockClear();
   });
 
@@ -93,6 +164,7 @@ describe('FacultyController - Create', () => {
       req.body = {
         name: 'Dr. John Smith',
         email: 'jsmith@example.com',
+        password: 'SecurePassword123!',
         userId: generateObjectId(),
         departmentId: deptId,
         specialization: 'Artificial Intelligence'

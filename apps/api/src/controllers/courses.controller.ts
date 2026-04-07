@@ -96,7 +96,7 @@ export class CoursesController {
         credits,
         departmentId,
         prerequisites: prerequisites || [],
-        level: level || 'undergraduate'
+        level: level || 'beginner'
       });
 
       await saveAuditLog({
@@ -163,9 +163,19 @@ export class CoursesController {
         }
       }
 
+      // Build update object with only provided fields
+      const updateData: any = {};
+      if (name !== undefined) updateData.name = name;
+      if (code !== undefined) updateData.code = code;
+      if (description !== undefined) updateData.description = description;
+      if (credits !== undefined) updateData.credits = credits;
+      if (departmentId !== undefined) updateData.departmentId = departmentId;
+      if (prerequisites !== undefined) updateData.prerequisites = prerequisites;
+      if (level !== undefined) updateData.level = level;
+
       const updatedCourse = await Course.findByIdAndUpdate(
         id,
-        { name, code, description, credits, departmentId, prerequisites, level },
+        updateData,
         { new: true, runValidators: true }
       ).populate('departmentId', 'name code').populate('prerequisites', 'name code');
 

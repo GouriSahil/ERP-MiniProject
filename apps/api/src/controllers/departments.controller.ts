@@ -126,9 +126,14 @@ export class DepartmentsController {
         }
       }
 
+      // Build update object with only provided fields
+      const updateData: { name?: string; code?: string } = {};
+      if (name !== undefined) updateData.name = name;
+      if (code !== undefined) updateData.code = code;
+
       const updatedDepartment = await Department.findByIdAndUpdate(
         id,
-        { name, code },
+        updateData,
         { new: true, runValidators: true }
       ).lean();
 

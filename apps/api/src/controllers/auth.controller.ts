@@ -5,7 +5,10 @@ import crypto from 'crypto';
 import { AuthRequest } from '../middleware/auth.middleware';
 import { successResponse, errorResponse, createdResponse } from '../utils/response.util';
 import { saveAuditLog, getAuditLogData } from '../middleware/audit.middleware';
-import { User, UserStatus, UserSession } from '../models';
+// Import User directly to avoid Mongoose v8 re-export issues with .select()
+import { User } from '../models/User';
+import { UserStatus } from '../models/User';
+import { UserSession } from '../models/UserSession';
 import { PasswordResetToken } from '../models/PasswordResetToken';
 import { emailService } from '../services/email.service';
 

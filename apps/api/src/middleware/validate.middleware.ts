@@ -25,16 +25,16 @@ export const validateUserCreate = [
   body('email').isEmail().withMessage('Valid email is required'),
   body('password').isLength({ min: 8 }).withMessage('Password must be at least 8 characters'),
   body('role').isIn(['super_admin', 'college_admin', 'department_head', 'faculty', 'support_staff', 'student']),
-  body('departmentId').optional().isUUID(),
+  body('departmentId').optional().custom(isObjectId),
   handleValidationErrors
 ];
 
 export const validateUserUpdate = [
-  param('id').isUUID(),
+  param('id').custom(isObjectId),
   body('name').optional().trim().notEmpty(),
   body('email').optional().isEmail(),
   body('role').optional().isIn(['super_admin', 'college_admin', 'department_head', 'faculty', 'support_staff', 'student']),
-  body('departmentId').optional().isUUID(),
+  body('departmentId').optional().custom(isObjectId),
   handleValidationErrors
 ];
 
@@ -90,7 +90,7 @@ export const validateDepartmentCreate = [
 ];
 
 export const validateDepartmentUpdate = [
-  param('id').isUUID(),
+  param('id').custom(isObjectId),
   body('name').optional().trim().notEmpty(),
   body('code').optional().trim().isLength({ max: 20 }),
   handleValidationErrors
@@ -102,17 +102,17 @@ export const validateCourseCreate = [
   body('code').trim().notEmpty().withMessage('Code is required'),
   body('description').optional().trim(),
   body('credits').isInt({ min: 1, max: 10 }).withMessage('Credits must be between 1 and 10'),
-  body('departmentId').isUUID().withMessage('Valid department ID is required'),
+  body('departmentId').custom(isObjectId).withMessage('Valid department ID is required'),
   handleValidationErrors
 ];
 
 export const validateCourseUpdate = [
-  param('id').isUUID(),
+  param('id').custom(isObjectId).withMessage('Valid course ID is required'),
   body('name').optional().trim().notEmpty(),
   body('code').optional().trim().notEmpty(),
   body('description').optional().trim(),
   body('credits').optional().isInt({ min: 1, max: 10 }),
-  body('departmentId').optional().isUUID(),
+  body('departmentId').optional().custom(isObjectId),
   handleValidationErrors
 ];
 
@@ -126,7 +126,7 @@ export const validateTermCreate = [
 ];
 
 export const validateTermUpdate = [
-  param('id').isUUID(),
+  param('id').custom(isObjectId),
   body('name').optional().trim().notEmpty(),
   body('startDate').optional().isISO8601(),
   body('endDate').optional().isISO8601(),
@@ -136,17 +136,17 @@ export const validateTermUpdate = [
 
 // Offering validation
 export const validateOfferingCreate = [
-  body('courseId').isUUID().withMessage('Valid course ID is required'),
-  body('termId').isUUID().withMessage('Valid term ID is required'),
+  body('courseId').custom(isObjectId).withMessage('Valid course ID is required'),
+  body('termId').custom(isObjectId).withMessage('Valid term ID is required'),
   body('capacity').isInt({ min: 1 }).withMessage('Capacity must be at least 1'),
   body('schedule').optional(),
   handleValidationErrors
 ];
 
 export const validateOfferingUpdate = [
-  param('id').isUUID(),
-  body('courseId').optional().isUUID(),
-  body('termId').optional().isUUID(),
+  param('id').custom(isObjectId),
+  body('courseId').optional().custom(isObjectId),
+  body('termId').optional().custom(isObjectId),
   body('capacity').optional().isInt({ min: 1 }),
   body('schedule').optional(),
   body('facultyIds').optional().isArray(),
@@ -155,7 +155,7 @@ export const validateOfferingUpdate = [
 
 // Session validation
 export const validateSessionCreate = [
-  body('offeringId').isUUID().withMessage('Valid offering ID is required'),
+  body('offeringId').custom(isObjectId).withMessage('Valid offering ID is required'),
   body('date').isISO8601().withMessage('Valid date is required'),
   body('startTime').matches(/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/).withMessage('Valid start time is required (HH:MM)'),
   body('endTime').matches(/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/).withMessage('Valid end time is required (HH:MM)'),
@@ -164,7 +164,7 @@ export const validateSessionCreate = [
 ];
 
 export const validateSessionUpdate = [
-  param('id').isUUID(),
+  param('id').custom(isObjectId),
   body('date').optional().isISO8601(),
   body('startTime').optional().matches(/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/),
   body('endTime').optional().matches(/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/),
@@ -175,22 +175,22 @@ export const validateSessionUpdate = [
 
 // Enrollment validation
 export const validateEnrollmentCreate = [
-  body('studentId').isUUID().withMessage('Valid student ID is required'),
-  body('offeringId').isUUID().withMessage('Valid offering ID is required'),
+  body('studentId').custom(isObjectId).withMessage('Valid student ID is required'),
+  body('offeringId').custom(isObjectId).withMessage('Valid offering ID is required'),
   handleValidationErrors
 ];
 
 export const validateEnrollmentUpdate = [
-  param('id').isUUID(),
+  param('id').custom(isObjectId),
   body('status').optional().isIn(['active', 'dropped', 'completed']),
   handleValidationErrors
 ];
 
 // Attendance validation
 export const validateAttendanceMark = [
-  body('sessionId').isUUID().withMessage('Valid session ID is required'),
+  body('sessionId').custom(isObjectId).withMessage('Valid session ID is required'),
   body('attendance').isArray().withMessage('Attendance must be an array'),
-  body('attendance.*.studentId').isUUID().withMessage('Valid student ID is required'),
+  body('attendance.*.studentId').custom(isObjectId).withMessage('Valid student ID is required'),
   body('attendance.*.status').isIn(['present', 'absent', 'late']).withMessage('Status must be present, absent, or late'),
   handleValidationErrors
 ];
