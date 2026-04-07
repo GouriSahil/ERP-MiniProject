@@ -16,7 +16,20 @@ export class FacultyController {
       const filter: any = {};
       if (departmentId) filter.departmentId = departmentId;
 
-      const faculty = await Faculty.find(filter)
+      // Add search filter for user fields
+      let searchFilter = {};
+      if (search) {
+        const users = await User.find({
+          $or: [
+            { name: { $regex: search, $options: 'i' } },
+            { email: { $regex: search, $options: 'i' } }
+          ]
+        }).select('_id');
+        const userIds = users.map(u => u._id);
+        searchFilter = { userId: { $in: userIds } };
+      }
+
+      const faculty = await Faculty.find({ ...filter, ...searchFilter })
         .populate('userId', 'name email')
         .populate('departmentId', 'name code')
         .sort({ [sortBy]: sortOrder })
@@ -24,7 +37,7 @@ export class FacultyController {
         .limit(limit)
         .lean();
 
-      const total = await Faculty.countDocuments(filter);
+      const total = await Faculty.countDocuments({ ...filter, ...searchFilter });
 
       return res.status(200).json({
         success: true,
