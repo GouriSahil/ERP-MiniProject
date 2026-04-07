@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { StudentsController } from '../controllers/students.controller';
 import { authenticate, authorize } from '../middleware/auth';
+import { uploadCSV, handleUploadError } from '../middleware/upload.middleware';
 import { validateStudentCreate, validateStudentUpdate, validateUUIDParam } from '../middleware/validate.middleware';
 
 const router = Router();
@@ -65,6 +66,15 @@ router.post(
   '/bulk-import',
   authorize('college_admin', 'department_head'),
   StudentsController.bulkImport
+);
+
+// Import students from CSV file (admin, dept_head only)
+router.post(
+  '/import',
+  authorize('college_admin', 'department_head'),
+  uploadCSV.single('file'),
+  handleUploadError,
+  StudentsController.importCSV
 );
 
 export default router;
