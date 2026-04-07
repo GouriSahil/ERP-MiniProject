@@ -10,11 +10,18 @@ import { createMockRequest, createMockResponse, testUsers, generateObjectId } fr
 // Mock the models
 const mockStudents: any[] = [];
 const mockDepartments: any[] = [];
+const mockEnrollments: any[] = [];
+const mockUsers: any[] = [];
+const mockOfferings: any[] = [];
+const mockSessions: any[] = [];
+const mockAttendanceRecords: any[] = [];
+
+let mockFindByIdImpl = (id: string) => ({ populate: () => ({ lean: () => Promise.resolve(mockStudents.find((s: any) => s._id === id) || null) }) });
 
 const mockStudentModel = {
   find: mock(() => ({ sort: () => ({ skip: () => ({ limit: () => ({ lean: () => Promise.resolve(mockStudents) }) }) }) })),
   countDocuments: mock(() => Promise.resolve(mockStudents.length)),
-  findById: mock((id: string) => ({ populate: () => ({ lean: () => Promise.resolve(mockStudents.find((s: any) => s._id === id) || null) }) })),
+  findById: mock((id: string) => mockFindByIdImpl(id)),
   findOne: mock(() => Promise.resolve(null)),
   create: mock((data: any) => Promise.resolve({ _id: generateObjectId(), ...data, createdAt: new Date(), updatedAt: new Date() })),
   findByIdAndUpdate: mock((id: string, data: any) => ({ populate: () => ({ lean: () => Promise.resolve({ _id: id, ...data }) }) })),
@@ -25,12 +32,57 @@ const mockDepartmentModel = {
   findById: mock((id: string) => Promise.resolve(mockDepartments.find((d: any) => d._id === id) || null))
 };
 
+const mockUserModel = {
+  find: mock(() => ({ select: () => Promise.resolve(mockUsers) })),
+  findOne: mock(() => Promise.resolve(null)),
+  create: mock((data: any) => Promise.resolve({ _id: generateObjectId(), ...data })),
+  findByIdAndUpdate: mock(() => Promise.resolve({ _id: generateObjectId(), name: 'Test User', email: 'test@example.com' })),
+  findByIdAndDelete: mock(() => Promise.resolve({ _id: generateObjectId() }))
+};
+
+const mockEnrollmentModel = {
+  find: mock(() => ({ populate: () => ({ lean: () => Promise.resolve(mockEnrollments) }) })),
+  countDocuments: mock(() => Promise.resolve(0))
+};
+
+const mockCourseOfferingModel = {
+  find: mock(() => Promise.resolve(mockOfferings))
+};
+
+const mockSessionModel = {
+  find: mock(() => Promise.resolve(mockSessions))
+};
+
+const mockAttendanceRecordModel = {
+  find: mock(() => Promise.resolve(mockAttendanceRecords))
+};
+
 // Mock the audit middleware
 const mockSaveAuditLog = mock(() => Promise.resolve());
 
 mock.module('../../src/models', () => ({
   Student: mockStudentModel,
-  Department: mockDepartmentModel
+  User: mockUserModel,
+  Department: mockDepartmentModel,
+  Enrollment: mockEnrollmentModel,
+  CourseOffering: mockCourseOfferingModel,
+  Session: mockSessionModel,
+  AttendanceRecord: mockAttendanceRecordModel
+}));
+
+// Mock mongoose module for model() calls
+mock.module('mongoose', () => ({
+  model: (name: string) => {
+    switch (name) {
+      case 'CourseOffering': return mockCourseOfferingModel;
+      case 'Session': return mockSessionModel;
+      case 'AttendanceRecord': return mockAttendanceRecordModel;
+      default: return {};
+    }
+  },
+  Types: {
+    ObjectId: () => generateObjectId()
+  }
 }));
 
 mock.module('../../src/middleware/audit.middleware', () => ({
@@ -201,6 +253,113 @@ describe('StudentsController - Delete', () => {
 
       expect(res._status).toBe(404);
       expect(res._json?.success).toBe(false);
+    });
+  });
+});
+
+describe('StudentsController - Enrollment History', () => {
+  beforeEach(() => {
+    mockStudents.length = 0;
+    mockEnrollments.length = 0;
+    // Reset findById to default implementation
+    mockStudentModel.findById = mock((id: string) => mockFindByIdImpl(id));
+  });
+
+  describe('GET /api/students/:id/enrollments', () => {
+    it('should return enrollment history for a student', async () => {
+      const studentId = generateObjectId();
+      const student = { _id: studentId, name: 'John Doe', rollNumber: 'CS001' };
+      mockStudents.push(student);
+
+      // Override findById to return student directly (no populate chain)
+      mockStudentModel.findById = mock(() => Promise.resolve(student));
+
+      const req = createMockRequest(testUsers.admin);
+      req.params = { id: studentId };
+      const res = createMockResponse();
+
+      await StudentsController.getEnrollments(req as any, res as any);
+
+      expect(res._status).toBe(200);
+      expect(res._json?.success).toBe(true);
+      expect(Array.isArray(res._json?.data)).toBe(true);
+    });
+
+    it('should return 404 for non-existent student', async () => {
+      mockStudentModel.findById = mock(() => Promise.resolve(null));
+
+      const req = createMockRequest(testUsers.admin);
+      req.params = { id: generateObjectId() };
+      const res = createMockResponse();
+
+      await StudentsController.getEnrollments(req as any, res as any);
+
+      expect(res._status).toBe(404);
+    });
+  });
+});
+
+describe('StudentsController - Attendance Summary', () => {
+  beforeEach(() => {
+    mockStudents.length = 0;
+    mockEnrollments.length = 0;
+    // Reset findById to default implementation
+    mockStudentModel.findById = mock((id: string) => mockFindByIdImpl(id));
+  });
+
+  describe('GET /api/students/:id/attendance', () => {
+    it('should return attendance summary for a student', async () => {
+      const studentId = generateObjectId();
+      const student = { _id: studentId, name: 'John Doe', rollNumber: 'CS001' };
+      mockStudents.push(student);
+
+      // Override findById to return student directly (no populate chain)
+      mockStudentModel.findById = mock(() => Promise.resolve(student));
+
+      const req = createMockRequest(testUsers.admin);
+      req.params = { id: studentId };
+      req.query = {};
+      const res = createMockResponse();
+
+      await StudentsController.getAttendance(req as any, res as any);
+
+      expect(res._status).toBe(200);
+      expect(res._json?.success).toBe(true);
+      expect(res._json?.data).toHaveProperty('totalSessions');
+      expect(res._json?.data).toHaveProperty('present');
+      expect(res._json?.data).toHaveProperty('absent');
+      expect(res._json?.data).toHaveProperty('percentage');
+    });
+
+    it('should return 0% for student with no attendance', async () => {
+      const studentId = generateObjectId();
+      const student = { _id: studentId, name: 'John Doe', rollNumber: 'CS001' };
+      mockStudents.push(student);
+
+      // Override findById to return student directly (no populate chain)
+      mockStudentModel.findById = mock(() => Promise.resolve(student));
+
+      const req = createMockRequest(testUsers.admin);
+      req.params = { id: studentId };
+      req.query = {};
+      const res = createMockResponse();
+
+      await StudentsController.getAttendance(req as any, res as any);
+
+      expect(res._status).toBe(200);
+      expect(res._json?.data?.percentage).toBe(0);
+    });
+
+    it('should return 404 for non-existent student', async () => {
+      mockStudentModel.findById = mock(() => Promise.resolve(null));
+
+      const req = createMockRequest(testUsers.admin);
+      req.params = { id: generateObjectId() };
+      const res = createMockResponse();
+
+      await StudentsController.getAttendance(req as any, res as any);
+
+      expect(res._status).toBe(404);
     });
   });
 });
