@@ -398,22 +398,7 @@
         <div class="profile-blob profile-blob-3"></div>
     </div>
 
-    <!-- Glassmorphic Navigation -->
-    <nav class="profile-glass-nav">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between h-16">
-                <div class="flex items-center">
-                    <a href="#!/dashboard" class="profile-nav-link">
-                        <i class="fas fa-arrow-left"></i>
-                        <span>Back to Dashboard</span>
-                    </a>
-                </div>
-                <div class="flex items-center gap-4">
-                    <span style="color: var(--text-secondary);">{{ dashboard.currentUser.name }}</span>
-                </div>
-            </div>
-        </div>
-    </nav>
+
 
     <!-- Profile Content -->
     <div class="profile-content-wrapper">
@@ -522,14 +507,69 @@
 
                     <!-- Quick Actions -->
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
-                        <button class="glass-btn">
-                            <i class="fas fa-lock"></i>
-                            <span>Change Password</span>
+                        <button class="glass-btn" ng-click="dashboard.toggleChangePassword()">
+                            <i class="fas" ng-class="dashboard.showChangePasswordForm ? 'fa-times' : 'fa-lock'"></i>
+                            <span>{{ dashboard.showChangePasswordForm ? 'Cancel Password Change' : 'Change Password' }}</span>
                         </button>
                         <button class="glass-btn glass-btn-secondary">
                             <i class="fas fa-download"></i>
                             <span>Download My Data</span>
                         </button>
+                    </div>
+
+                    <!-- Change Password Form -->
+                    <div class="profile-details-card mt-6" ng-if="dashboard.showChangePasswordForm" style="animation: slideDown 0.3s ease;">
+                        <div class="profile-details-header">
+                            <h5 class="profile-details-title">
+                                <i class="fas fa-key"></i>
+                                Update Password
+                            </h5>
+                        </div>
+                        <div class="profile-details-body">
+                            <!-- Alert Messages -->
+                            <div class="glass-info-alert mb-4" ng-if="dashboard.changePasswordMessage" ng-class="{'border-red-500 bg-red-500 bg-opacity-10 text-red-500': dashboard.changePasswordStatus === 'error', 'border-green-500 bg-green-500 bg-opacity-10 text-green-500': dashboard.changePasswordStatus === 'success'}" style="border-width: 1px;">
+                                <i class="fas" ng-class="dashboard.changePasswordStatus === 'error' ? 'fa-exclamation-circle' : 'fa-check-circle'" ng-style="{color: dashboard.changePasswordStatus === 'error' ? '#ef4444' : '#22c55e'}"></i>
+                                <div class="glass-info-alert-content">
+                                    <h4 ng-style="{color: dashboard.changePasswordStatus === 'error' ? '#ef4444' : '#22c55e'}">{{ dashboard.changePasswordStatus === 'error' ? 'Error' : 'Success' }}</h4>
+                                    <p ng-style="{color: dashboard.changePasswordStatus === 'error' ? '#fca5a5' : '#86efac'}">{{ dashboard.changePasswordMessage }}</p>
+                                </div>
+                            </div>
+
+                            <form ng-submit="dashboard.changePassword()">
+                                <div class="glass-form-group">
+                                    <label class="glass-form-label">Current Password</label>
+                                    <input type="password" 
+                                           class="glass-form-input"
+                                           ng-model="dashboard.changePasswordData.currentPassword"
+                                           placeholder="Enter current password"
+                                           required>
+                                </div>
+
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div class="glass-form-group">
+                                        <label class="glass-form-label">New Password</label>
+                                        <input type="password" 
+                                               class="glass-form-input"
+                                               ng-model="dashboard.changePasswordData.newPassword"
+                                               placeholder="Enter new password (min. 8 characters)"
+                                               required>
+                                    </div>
+                                    <div class="glass-form-group">
+                                        <label class="glass-form-label">Confirm New Password</label>
+                                        <input type="password" 
+                                               class="glass-form-input"
+                                               ng-model="dashboard.changePasswordData.confirmPassword"
+                                               placeholder="Confirm new password"
+                                               required>
+                                    </div>
+                                </div>
+
+                                <button type="submit" class="glass-btn mt-4" style="width: auto;">
+                                    <i class="fas fa-save"></i>
+                                    <span>Update Password</span>
+                                </button>
+                            </form>
+                        </div>
                     </div>
                 </div>
             </div>

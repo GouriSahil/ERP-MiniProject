@@ -5,16 +5,19 @@
         .module('erpApp')
         .controller('AuthController', AuthController);
 
-    AuthController.$inject = ['$scope', '$location', '$window', 'AuthService', 'APP_CONFIG'];
+    AuthController.$inject = ['$scope', '$location', '$window', '$routeParams', 'AuthService', 'APP_CONFIG'];
 
-    function AuthController($scope, $location, $window, AuthService, APP_CONFIG) {
+    function AuthController($scope, $location, $window, $routeParams, AuthService, APP_CONFIG) {
         var vm = this;
+
+        // Initialize Remember Me
+        var rememberedEmail = $window.localStorage.getItem('erp_remembered_email');
 
         // Login data
         vm.loginData = {
-            email: '',
+            email: rememberedEmail || '',
             password: '',
-            rememberMe: false
+            rememberMe: !!rememberedEmail
         };
 
         // Register data
@@ -28,16 +31,28 @@
             agreeTerms: false
         };
 
+        // Reset data
+        vm.resetData = {
+            password: '',
+            confirmPassword: '',
+            token: $routeParams.token || ''
+        };
+
         // Error states
         vm.loginError = null;
         vm.registerError = null;
+        vm.forgotPasswordError = null;
+        vm.resetError = null;
         vm.loginSuccessMessage = null;
         vm.registerSuccessMessage = null;
+        vm.forgotPasswordSuccessMessage = null;
+        vm.resetSuccessMessage = null;
 
         // Password visibility toggles
         vm.showPassword = {
             login: false,
-            register: false
+            register: false,
+            reset: false
         };
 
         // Password strength indicator
@@ -55,6 +70,8 @@
 
         vm.login = login;
         vm.register = register;
+        vm.forgotPassword = forgotPassword;
+        vm.resetPassword = resetPassword;
         vm.isLoginPage = isLoginPage;
         vm.isRegisterPage = isRegisterPage;
         vm.togglePasswordVisibility = togglePasswordVisibility;
@@ -71,9 +88,19 @@
         $scope.$watch(function() {
             return vm.registerData.password;
         }, function(newPassword) {
-            if (newPassword) {
+            if (newPassword && $location.path() === '/register') {
                 vm.updatePasswordStrength(newPassword);
-            } else {
+            } else if (!newPassword && $location.path() === '/register') {
+                vm.passwordStrength = { class: '', percent: 0, text: '' };
+            }
+        });
+
+        $scope.$watch(function() {
+            return vm.resetData.password;
+        }, function(newPassword) {
+            if (newPassword && $location.path().indexOf('/reset-password') === 0) {
+                vm.updatePasswordStrength(newPassword);
+            } else if (!newPassword && $location.path().indexOf('/reset-password') === 0) {
                 vm.passwordStrength = { class: '', percent: 0, text: '' };
             }
         });
@@ -105,33 +132,27 @@
         }
 
         function loginWithGoogle() {
-            // TODO: Implement Google OAuth
-            console.log('Google login not implemented yet');
+            vm.loginError = 'Google login is coming soon!';
         }
 
         function loginWithMicrosoft() {
-            // TODO: Implement Microsoft OAuth
-            console.log('Microsoft login not implemented yet');
+            vm.loginError = 'Microsoft login is coming soon!';
         }
 
         function loginWithApple() {
-            // TODO: Implement Apple OAuth
-            console.log('Apple login not implemented yet');
+            vm.loginError = 'Apple login is coming soon!';
         }
 
         function registerWithGoogle() {
-            // TODO: Implement Google OAuth registration
-            console.log('Google registration not implemented yet');
+            vm.registerError = 'Google registration is coming soon!';
         }
 
         function registerWithMicrosoft() {
-            // TODO: Implement Microsoft OAuth registration
-            console.log('Microsoft registration not implemented yet');
+            vm.registerError = 'Microsoft registration is coming soon!';
         }
 
         function registerWithApple() {
-            // TODO: Implement Apple OAuth registration
-            console.log('Apple registration not implemented yet');
+            vm.registerError = 'Apple registration is coming soon!';
         }
 
         function login() {
@@ -156,6 +177,13 @@
 
             AuthService.login(vm.loginData)
                 .then(function(response) {
+                    // Handle remember email
+                    if (vm.loginData.rememberMe) {
+                        $window.localStorage.setItem('erp_remembered_email', vm.loginData.email);
+                    } else {
+                        $window.localStorage.removeItem('erp_remembered_email');
+                    }
+
                     vm.isLoading = false;
                     vm.loginSuccessMessage = 'Welcome back, ' + response.user.name + '!';
                     $scope.$applyAsync(function() {
@@ -268,6 +296,82 @@
                     } else {
                         vm.registerError = error.data?.message || 'Failed to create account. Please try again.';
                     }
+                    $scope.$applyAsync();
+                });
+        }
+
+        function forgotPassword() {
+            // Clear previous messages
+            vm.forgotPasswordError = null;
+            vm.forgotPasswordSuccessMessage = null;
+
+            // Validate form
+            if (!vm.loginData.email) {
+                vm.forgotPasswordError = 'Please enter your email address';
+                return;
+            }
+
+            var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(vm.loginData.email)) {
+                vm.forgotPasswordError = 'Please enter a valid email address';
+                return;
+            }
+
+            vm.isLoading = true;
+
+            AuthService.forgotPassword(vm.loginData.email)
+                .then(function(response) {
+                    vm.isLoading = false;
+                    vm.forgotPasswordSuccessMessage = 'Password reset instructions have been sent to ' + vm.loginData.email;
+                })
+                .catch(function(error) {
+                    vm.isLoading = false;
+                    vm.forgotPasswordError = error.data?.message || 'Failed to process request. Please try again.';
+                    $scope.$applyAsync();
+                });
+        }
+
+        function resetPassword() {
+            // Clear previous messages
+            vm.resetError = null;
+            vm.resetSuccessMessage = null;
+
+            // Validate form
+            if (!vm.resetData.password || !vm.resetData.confirmPassword) {
+                vm.resetError = 'Please fill in all fields';
+                return;
+            }
+
+            if (vm.resetData.password !== vm.resetData.confirmPassword) {
+                vm.resetError = 'Passwords do not match';
+                return;
+            }
+
+            if (vm.resetData.password.length < 8) {
+                vm.resetError = 'Password must be at least 8 characters long';
+                return;
+            }
+
+            if (!vm.resetData.token) {
+                vm.resetError = 'Invalid reset token. Please try requesting a new link.';
+                return;
+            }
+
+            vm.isLoading = true;
+
+            AuthService.resetPassword(vm.resetData.token, vm.resetData.password)
+                .then(function(response) {
+                    vm.isLoading = false;
+                    vm.resetSuccessMessage = 'Your password has been reset successfully. Redirecting to login...';
+                    setTimeout(function() {
+                        $scope.$applyAsync(function() {
+                            $location.path('/login');
+                        });
+                    }, 2000);
+                })
+                .catch(function(error) {
+                    vm.isLoading = false;
+                    vm.resetError = error.data?.message || 'Failed to reset password. The link might be expired or invalid.';
                     $scope.$applyAsync();
                 });
         }

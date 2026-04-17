@@ -5,15 +5,32 @@
         .module('erpApp')
         .controller('DashboardController', DashboardController);
 
-    DashboardController.$inject = ['$scope', '$location', '$cookies', 'AuthService', '$timeout'];
+    DashboardController.$inject = ['$scope', '$location', '$cookies', 'AuthService', 'DashboardService', '$timeout'];
 
-    function DashboardController($scope, $location, $cookies, AuthService, $timeout) {
+    function DashboardController($scope, $location, $cookies, AuthService, DashboardService, $timeout) {
         var vm = this;
         
         vm.currentUser = null;
         vm.isLoading = true;
-        vm.dashboardStats = [];
-        vm.recentActivities = [];
+        vm.loadError = null;
+
+        vm.counts = { students: null, faculty: null, courses: null, departments: null };
+        vm.pendingApprovals = { blocked: true, users: [], total: null };
+        vm.upcomingSessions = { blocked: true, sessions: [] };
+        vm.recentActivity = { blocked: true, logs: [] };
+        vm.charts = { enrollmentTrends: { blocked: true, data: [] }, attendanceStats: { blocked: true, data: [] } };
+        vm.capabilities = {};
+        vm.quickActions = [];
+        vm.isApprovalsBusy = false;
+        
+        vm.showChangePasswordForm = false;
+        vm.changePasswordData = {
+            currentPassword: '',
+            newPassword: '',
+            confirmPassword: ''
+        };
+        vm.changePasswordStatus = null;
+        vm.changePasswordMessage = '';
         
         init();
 
@@ -26,53 +43,39 @@
                 return;
             }
             
-            // Load dashboard data based on role
             loadDashboardData();
+            buildQuickActions();
         }
 
         function loadDashboardData() {
-            // Simulate loading - in real app, fetch from API
-            $timeout(function() {
-                vm.isLoading = false;
+            vm.isLoading = true;
+            vm.loadError = null;
 
-                // Set dashboard stats based on user role
-                switch(vm.currentUser.role) {
-                    case 'admin':
-                        vm.dashboardStats = [
-                            { icon: 'fas fa-users', value: '1,234', label: 'Total Students', color: 'primary' },
-                            { icon: 'fas fa-chalkboard-teacher', value: '89', label: 'Total Faculty', color: 'success' },
-                            { icon: 'fas fa-book', value: '56', label: 'Active Courses', color: 'warning' },
-                            { icon: 'fas fa-building', value: '12', label: 'Departments', color: 'danger' }
-                        ];
-                        break;
-                    case 'faculty':
-                        vm.dashboardStats = [
-                            { icon: 'fas fa-users', value: '156', label: 'My Students', color: 'primary' },
-                            { icon: 'fas fa-book', value: '4', label: 'My Courses', color: 'success' },
-                            { icon: 'fas fa-calendar-check', value: '12', label: 'Sessions This Week', color: 'warning' },
-                            { icon: 'fas fa-clock', value: '24', label: 'Hours/Week', color: 'danger' }
-                        ];
-                        break;
-                    case 'student':
-                        vm.dashboardStats = [
-                            { icon: 'fas fa-book', value: '5', label: 'Enrolled Courses', color: 'primary' },
-                            { icon: 'fas fa-check-circle', value: '85%', label: 'Attendance Rate', color: 'success' },
-                            { icon: 'fas fa-tasks', value: '12', label: 'Pending Assignments', color: 'warning' },
-                            { icon: 'fas fa-star', value: '3.8', label: 'GPA', color: 'danger' }
-                        ];
-                        break;
-                    default:
-                        vm.dashboardStats = [
-                            { icon: 'fas fa-info-circle', value: 'N/A', label: 'No Data Available', color: 'primary' }
-                        ];
-                }
+            DashboardService.getOverview(vm.currentUser)
+                .then(function(overview) {
+                    vm.isLoading = false;
+                    vm.counts = overview.counts;
+                    vm.pendingApprovals = overview.pendingApprovals;
+                    vm.upcomingSessions = overview.upcomingSessions;
+                    vm.recentActivity = overview.recentActivity;
+                    vm.charts = overview.charts;
+                    vm.capabilities = overview.capabilities;
+                })
+                .catch(function(error) {
+                    vm.isLoading = false;
+                    vm.loadError = error && error.data && error.data.message ? error.data.message : 'Failed to load dashboard';
+                });
+        }
 
-                vm.recentActivities = [
-                    { icon: 'fas fa-sign-in-alt', text: 'Logged in to the system', time: 'Just now', color: 'text-success' },
-                    { icon: 'fas fa-user-edit', text: 'Profile updated', time: '2 hours ago', color: 'text-info' },
-                    { icon: 'fas fa-book-open', text: 'Course materials accessed', time: '1 day ago', color: 'text-warning' }
-                ];
-            }, 500);
+        function buildQuickActions() {
+            vm.quickActions = [
+                { label: 'Departments', icon: 'fas fa-building', path: '/departments' },
+                { label: 'Courses', icon: 'fas fa-book', path: '/courses' },
+                { label: 'Students', icon: 'fas fa-user-graduate', path: '/students' },
+                { label: 'Faculty', icon: 'fas fa-chalkboard-teacher', path: '/faculty' },
+                { label: 'Sessions', icon: 'fas fa-calendar-check', path: '/sessions' },
+                { label: 'Reports', icon: 'fas fa-chart-bar', path: '/reports' }
+            ];
         }
 
         vm.getGreeting = function() {
@@ -92,12 +95,131 @@
             $location.path(path);
         };
 
+        vm.approvePendingUser = function(user) {
+            if (!user || !user._id || vm.isApprovalsBusy) return;
+            vm.isApprovalsBusy = true;
+
+            DashboardService.approveUser(user._id)
+                .then(function() {
+                    vm.isApprovalsBusy = false;
+                    // Refresh approvals + counts quickly
+                    loadDashboardData();
+                })
+                .catch(function(error) {
+                    vm.isApprovalsBusy = false;
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Approve failed',
+                        text: (error && error.data && error.data.message) ? error.data.message : 'Could not approve user'
+                    });
+                });
+        };
+
+        vm.rejectPendingUser = function(user) {
+            if (!user || !user._id || vm.isApprovalsBusy) return;
+
+            Swal.fire({
+                title: 'Reject user?',
+                input: 'text',
+                inputLabel: 'Reason (optional)',
+                inputPlaceholder: 'Enter a reason for rejection',
+                showCancelButton: true,
+                confirmButtonText: 'Reject',
+                confirmButtonColor: '#ef4444'
+            }).then(function(result) {
+                if (!result.isConfirmed) return;
+
+                vm.isApprovalsBusy = true;
+                DashboardService.rejectUser(user._id, result.value || '')
+                    .then(function() {
+                        vm.isApprovalsBusy = false;
+                        loadDashboardData();
+                    })
+                    .catch(function(error) {
+                        vm.isApprovalsBusy = false;
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Reject failed',
+                            text: (error && error.data && error.data.message) ? error.data.message : 'Could not reject user'
+                        });
+                    });
+            });
+        };
+
+        vm.formatDate = function(dateValue) {
+            if (!dateValue) return '';
+            var d = new Date(dateValue);
+            if (isNaN(d.getTime())) return '';
+            return d.toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' });
+        };
+
+        vm.formatTimeRange = function(startTime, endTime) {
+            if (!startTime && !endTime) return '';
+            if (startTime && endTime) return startTime + ' - ' + endTime;
+            return startTime || endTime;
+        };
+
+        vm.getBarWidth = function(value, maxValue) {
+            var v = Number(value) || 0;
+            var max = Number(maxValue) || 0;
+            if (max <= 0) return '0%';
+            var pct = Math.max(0, Math.min(100, Math.round((v / max) * 100)));
+            return pct + '%';
+        };
+
         vm.logout = function() {
             AuthService.logout().then(function() {
                 $location.path('/login');
             }).catch(function() {
                 $location.path('/login');
             });
+        };
+
+        vm.toggleChangePassword = function() {
+            vm.showChangePasswordForm = !vm.showChangePasswordForm;
+            // Reset form on toggle
+            if (!vm.showChangePasswordForm) {
+                vm.changePasswordData = { currentPassword: '', newPassword: '', confirmPassword: '' };
+                vm.changePasswordStatus = null;
+            }
+        };
+
+        vm.changePassword = function() {
+            vm.changePasswordStatus = null;
+            
+            if (!vm.changePasswordData.currentPassword || !vm.changePasswordData.newPassword || !vm.changePasswordData.confirmPassword) {
+                vm.changePasswordStatus = 'error';
+                vm.changePasswordMessage = 'All fields are required';
+                return;
+            }
+
+            if (vm.changePasswordData.newPassword !== vm.changePasswordData.confirmPassword) {
+                vm.changePasswordStatus = 'error';
+                vm.changePasswordMessage = 'New passwords do not match';
+                return;
+            }
+
+            if (vm.changePasswordData.newPassword.length < 8) {
+                vm.changePasswordStatus = 'error';
+                vm.changePasswordMessage = 'New password must be at least 8 characters';
+                return;
+            }
+
+            AuthService.changePassword(vm.changePasswordData.currentPassword, vm.changePasswordData.newPassword)
+                .then(function() {
+                    vm.changePasswordStatus = 'success';
+                    vm.changePasswordMessage = 'Password updated successfully';
+                    vm.changePasswordData = { currentPassword: '', newPassword: '', confirmPassword: '' };
+                    
+                    $timeout(function() {
+                        vm.showChangePasswordForm = false;
+                        vm.changePasswordStatus = null;
+                    }, 3000);
+                })
+                .catch(function(error) {
+                    vm.changePasswordStatus = 'error';
+                    vm.changePasswordMessage = error.data?.message || error.data?.error || 'Failed to update password';
+                });
         };
     }
 })();

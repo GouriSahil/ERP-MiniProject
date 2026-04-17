@@ -1,575 +1,654 @@
-<!-- Modern Clean Dashboard with Professional Dark Theme -->
+<!-- Dashboard (Aurora Slate Theme) -->
 <style>
-    /* ===== Dashboard Container ===== */
-    .dashboard-glass-container {
-        position: relative;
+    .dash-aurora {
+        --dash-bg: #070A12;
+        --dash-surface: rgba(255, 255, 255, 0.06);
+        --dash-surface-2: rgba(255, 255, 255, 0.08);
+        --dash-border: rgba(255, 255, 255, 0.12);
+        --dash-text: #F5F7FF;
+        --dash-muted: rgba(245, 247, 255, 0.72);
+        --dash-dim: rgba(245, 247, 255, 0.55);
+        --dash-accent: #7C3AED;
+        --dash-accent-2: #22D3EE;
+        --dash-success: #22C55E;
+        --dash-warning: #F59E0B;
+        --dash-danger: #EF4444;
+        --dash-shadow: 0 20px 60px rgba(0, 0, 0, 0.45);
         min-height: 100vh;
-        background: var(--bg-dark);
+        background:
+            radial-gradient(800px 400px at 15% 0%, rgba(124, 58, 237, 0.35), transparent 60%),
+            radial-gradient(700px 380px at 85% 10%, rgba(34, 211, 238, 0.22), transparent 60%),
+            radial-gradient(600px 360px at 55% 90%, rgba(34, 197, 94, 0.14), transparent 65%),
+            var(--dash-bg);
+        color: var(--dash-text);
         overflow-x: hidden;
+        padding: 28px 0 36px;
     }
 
-    /* ===== Navigation ===== */
-    .dashboard-glass-nav {
-        background: var(--bg-card);
-        border-bottom: 1px solid var(--border-color);
-        position: sticky;
-        top: 0;
-        z-index: 50;
+    .dash-wrap {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 16px;
     }
 
-    /* ===== Standard Card ===== */
-    .glass-card {
-        background: var(--bg-card);
-        border: 1px solid var(--border-color);
-        border-radius: 12px;
-        padding: 1.5rem;
-        transition: all 0.2s ease;
-    }
-
-    .glass-card:hover {
-        background: var(--bg-card-hover);
-        border-color: var(--accent-color);
-        transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-    }
-
-    /* ===== Stat Card ===== */
-    .glass-stat-card {
-        background: var(--bg-card);
-        border: 1px solid var(--border-color);
-        border-left: 3px solid var(--accent-color);
-        border-radius: 12px;
-        padding: 1.5rem;
+    .dash-hero {
         display: flex;
         align-items: center;
         justify-content: space-between;
-        transition: all 0.2s ease;
+        gap: 16px;
+        padding: 18px 18px;
+        border: 1px solid var(--dash-border);
+        background: linear-gradient(180deg, rgba(255, 255, 255, 0.09), rgba(255, 255, 255, 0.05));
+        border-radius: 16px;
+        box-shadow: var(--dash-shadow);
+        margin-bottom: 18px;
     }
 
-    .glass-stat-card:hover {
-        background: var(--bg-card-hover);
-        border-color: var(--accent-color);
-        transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    .dash-hero-left {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        min-width: 0;
     }
 
-    .stat-value-glass {
-        font-size: 2.5rem;
-        font-weight: 700;
-        color: var(--text-primary);
-        line-height: 1;
-    }
-
-    .stat-label-glass {
-        font-size: 0.875rem;
-        font-weight: 500;
-        color: var(--text-secondary);
-        margin-top: 0.5rem;
-    }
-
-    .stat-icon-glass {
-        width: 56px;
-        height: 56px;
-        background: var(--bg-card-hover);
-        border-radius: 12px;
+    .dash-avatar {
+        width: 46px;
+        height: 46px;
+        border-radius: 14px;
+        background: linear-gradient(135deg, rgba(124, 58, 237, 1), rgba(34, 211, 238, 0.9));
         display: flex;
         align-items: center;
         justify-content: center;
+        flex: 0 0 auto;
+        box-shadow: 0 14px 38px rgba(124, 58, 237, 0.3);
     }
 
-    .stat-icon-glass i {
-        font-size: 1.5rem;
-        color: var(--accent-color);
+    .dash-avatar i {
+        color: #0b1020;
+        font-size: 1.1rem;
     }
 
-    /* ===== Section Card ===== */
-    .glass-section-card {
-        background: var(--bg-card);
-        border: 1px solid var(--border-color);
-        border-radius: 12px;
+    .dash-hero h2 {
+        margin: 0;
+        font-weight: 800;
+        font-size: 1.15rem;
+        letter-spacing: 0.2px;
+        white-space: nowrap;
         overflow: hidden;
-        margin-bottom: 1.5rem;
-        transition: all 0.2s ease;
+        text-overflow: ellipsis;
     }
 
-    .glass-section-card:hover {
-        border-color: var(--accent-color);
+    .dash-hero p {
+        margin: 4px 0 0;
+        color: var(--dash-muted);
+        font-size: 0.92rem;
     }
 
-    .glass-section-header {
-        background: var(--bg-card-hover);
-        padding: 1.25rem 1.5rem;
-        border-bottom: 1px solid var(--border-color);
+    .dash-hero-right {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        justify-content: flex-end;
     }
 
-    .glass-section-body {
-        padding: 1.5rem;
-    }
-
-    /* ===== Welcome Card ===== */
-    .glass-welcome-card {
-        background: var(--bg-card);
-        border: 1px solid var(--border-color);
-        border-radius: 16px;
-        padding: 2rem;
-        margin-bottom: 2rem;
+    .dash-pill {
+        padding: 8px 12px;
+        border: 1px solid var(--dash-border);
+        background: rgba(255, 255, 255, 0.06);
+        border-radius: 999px;
+        color: var(--dash-muted);
+        font-size: 0.86rem;
         display: flex;
         align-items: center;
-        gap: 1.5rem;
+        gap: 8px;
     }
 
-    .glass-welcome-icon {
-        width: 64px;
-        height: 64px;
-        background: var(--accent-color);
+    .dash-grid {
+        display: grid;
+        grid-template-columns: repeat(12, 1fr);
+        gap: 14px;
+    }
+
+    .dash-card {
+        border: 1px solid var(--dash-border);
+        background: linear-gradient(180deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0.04));
         border-radius: 16px;
+        box-shadow: 0 18px 45px rgba(0, 0, 0, 0.25);
+        overflow: hidden;
+    }
+
+    .dash-card-header {
+        padding: 14px 16px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
         display: flex;
         align-items: center;
-        justify-content: center;
-        flex-shrink: 0;
+        justify-content: space-between;
+        gap: 12px;
     }
 
-    .glass-welcome-icon i {
-        font-size: 2rem;
-        color: white;
-    }
-
-    .glass-welcome-title {
-        font-size: 1.75rem;
-        font-weight: 700;
-        color: var(--text-primary);
-        margin: 0 0 0.5rem 0;
-    }
-
-    .glass-welcome-subtitle {
-        color: var(--text-secondary);
-        font-size: 1rem;
+    .dash-card-title {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-weight: 800;
+        font-size: 0.98rem;
         margin: 0;
     }
 
-    /* ===== Stats Grid ===== */
-    .dashboard-stats {
+    .dash-card-title i {
+        color: var(--dash-accent-2);
+    }
+
+    .dash-card-body {
+        padding: 14px 16px 16px;
+    }
+
+    .stat-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-        gap: 1.5rem;
-        margin-bottom: 2rem;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 12px;
+        margin-bottom: 14px;
     }
 
-    /* ===== Dashboard Grid ===== */
-    .dashboard-grid {
+    .stat {
+        border: 1px solid rgba(255, 255, 255, 0.10);
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 16px;
+        padding: 14px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .stat:before {
+        content: '';
+        position: absolute;
+        inset: -40px -40px auto auto;
+        width: 140px;
+        height: 140px;
+        background: radial-gradient(circle, rgba(124, 58, 237, 0.35), transparent 60%);
+        transform: rotate(25deg);
+        pointer-events: none;
+    }
+
+    .stat-top {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 10px;
+    }
+
+    .stat-label {
+        color: var(--dash-dim);
+        font-weight: 600;
+        font-size: 0.86rem;
+        margin: 0;
+    }
+
+    .stat-value {
+        font-size: 2.0rem;
+        font-weight: 900;
+        margin-top: 8px;
+        letter-spacing: -0.6px;
+    }
+
+    .stat-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 14px;
+        background: rgba(34, 211, 238, 0.12);
+        border: 1px solid rgba(34, 211, 238, 0.25);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex: 0 0 auto;
+    }
+
+    .stat-icon i {
+        color: var(--dash-accent-2);
+    }
+
+    .quick-actions {
         display: grid;
-        grid-template-columns: 2fr 1fr;
-        gap: 1.5rem;
+        grid-template-columns: repeat(6, 1fr);
+        gap: 10px;
     }
 
-    @media (max-width: 1024px) {
-        .dashboard-grid {
-            grid-template-columns: 1fr;
-        }
+    .qa-btn {
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        background: rgba(255, 255, 255, 0.06);
+        border-radius: 14px;
+        padding: 12px 12px;
+        color: var(--dash-text);
+        text-decoration: none;
+        cursor: pointer;
+        transition: transform 0.15s ease, background 0.15s ease, border-color 0.15s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        font-weight: 700;
+        font-size: 0.9rem;
+        user-select: none;
     }
 
-    /* ===== Table Styles ===== */
-    .glass-table {
-        width: 100%;
-        border-collapse: collapse;
+    .qa-btn:hover {
+        transform: translateY(-2px);
+        background: rgba(255, 255, 255, 0.09);
+        border-color: rgba(34, 211, 238, 0.35);
+        text-decoration: none;
+        color: var(--dash-text);
     }
 
-    .glass-table td {
-        padding: 0.875rem 0;
-        color: var(--text-secondary);
-        border-bottom: 1px solid var(--border-color);
+    .qa-btn i {
+        color: var(--dash-accent-2);
     }
 
-    .glass-table td:first-child {
-        color: var(--text-muted);
-        font-weight: 500;
-    }
-
-    .glass-table td:last-child {
-        color: var(--text-primary);
-        text-align: right;
-        font-weight: 600;
-    }
-
-    .glass-table tr:last-child td {
-        border-bottom: none;
-    }
-
-    /* ===== Badge Styles ===== */
-    .glass-badge {
-        display: inline-block;
-        padding: 0.25rem 0.75rem;
-        border-radius: 6px;
-        font-size: 0.75rem;
-        font-weight: 600;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-    }
-
-    .glass-badge-purple {
-        background: rgba(99, 102, 241, 0.15);
-        color: var(--accent-color);
-        border: 1px solid rgba(99, 102, 241, 0.3);
-    }
-
-    .glass-badge-green {
-        background: rgba(34, 197, 94, 0.15);
-        color: var(--success-color);
-        border: 1px solid rgba(34, 197, 94, 0.3);
-    }
-
-    .glass-badge-yellow {
-        background: rgba(234, 179, 8, 0.15);
-        color: var(--warning-color);
-        border: 1px solid rgba(234, 179, 8, 0.3);
-    }
-
-    .glass-badge-red {
-        background: rgba(239, 68, 68, 0.15);
-        color: var(--danger-color);
-        border: 1px solid rgba(239, 68, 68, 0.3);
-    }
-
-    .glass-badge-blue {
-        background: rgba(59, 130, 246, 0.15);
-        color: var(--info-color);
-        border: 1px solid rgba(59, 130, 246, 0.3);
-    }
-
-    /* ===== Activity List ===== */
-    .activity-list {
+    .list {
         list-style: none;
         padding: 0;
         margin: 0;
     }
 
-    .activity-item {
+    .list-item {
         display: flex;
         align-items: flex-start;
-        gap: 1rem;
-        padding: 1rem 0;
-        border-bottom: 1px solid var(--border-color);
+        justify-content: space-between;
+        gap: 12px;
+        padding: 12px 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
     }
 
-    .activity-item:last-child {
+    .list-item:last-child {
         border-bottom: none;
     }
 
-    .activity-icon {
-        width: 40px;
-        height: 40px;
-        background: var(--bg-card-hover);
+    .list-main {
+        min-width: 0;
+    }
+
+    .list-title {
+        margin: 0;
+        font-weight: 800;
+        font-size: 0.95rem;
+        color: var(--dash-text);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .list-sub {
+        margin: 4px 0 0;
+        color: var(--dash-muted);
+        font-size: 0.86rem;
+    }
+
+    .chip {
+        padding: 6px 10px;
+        border-radius: 999px;
+        font-size: 0.78rem;
+        font-weight: 800;
+        border: 1px solid rgba(255, 255, 255, 0.14);
+        background: rgba(255, 255, 255, 0.06);
+        color: var(--dash-muted);
+        white-space: nowrap;
+    }
+
+    .chip-success { border-color: rgba(34, 197, 94, 0.35); background: rgba(34, 197, 94, 0.10); color: rgba(225, 255, 238, 0.9); }
+    .chip-warn { border-color: rgba(245, 158, 11, 0.35); background: rgba(245, 158, 11, 0.10); color: rgba(255, 244, 222, 0.9); }
+    .chip-danger { border-color: rgba(239, 68, 68, 0.35); background: rgba(239, 68, 68, 0.10); color: rgba(255, 228, 228, 0.9); }
+
+    .bar-row {
+        display: grid;
+        grid-template-columns: 160px 1fr 56px;
+        gap: 10px;
+        align-items: center;
+        padding: 9px 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .bar-row:last-child { border-bottom: none; }
+
+    .bar-label {
+        color: var(--dash-muted);
+        font-weight: 700;
+        font-size: 0.86rem;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .bar-track {
+        width: 100%;
+        height: 10px;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.08);
+        border: 1px solid rgba(255, 255, 255, 0.10);
+        overflow: hidden;
+    }
+
+    .bar-fill {
+        height: 100%;
+        border-radius: 999px;
+        background: linear-gradient(90deg, rgba(34, 211, 238, 1), rgba(124, 58, 237, 1));
+        width: 0%;
+    }
+
+    .bar-value {
+        text-align: right;
+        color: var(--dash-text);
+        font-weight: 900;
+        font-size: 0.86rem;
+    }
+
+    .dash-actions {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        justify-content: flex-end;
+    }
+
+    .btn-mini {
+        border: 1px solid rgba(255, 255, 255, 0.14);
+        background: rgba(255, 255, 255, 0.06);
+        color: var(--dash-text);
+        font-weight: 800;
+        font-size: 0.78rem;
+        padding: 7px 10px;
         border-radius: 10px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        flex-shrink: 0;
+        cursor: pointer;
+        transition: transform 0.15s ease, background 0.15s ease, border-color 0.15s ease;
+        user-select: none;
     }
 
-    .activity-icon i {
-        color: var(--accent-color);
-    }
+    .btn-mini:hover { transform: translateY(-1px); background: rgba(255, 255, 255, 0.10); border-color: rgba(34, 211, 238, 0.35); }
+    .btn-mini-danger { border-color: rgba(239, 68, 68, 0.35); background: rgba(239, 68, 68, 0.10); }
+    .btn-mini-danger:hover { border-color: rgba(239, 68, 68, 0.6); }
 
-    .activity-content {
-        flex: 1;
-    }
-
-    .activity-text {
-        color: var(--text-primary);
-        font-size: 0.95rem;
-        margin-bottom: 0.25rem;
-    }
-
-    .activity-time {
-        color: var(--text-muted);
-        font-size: 0.8rem;
-    }
-
-    /* ===== Empty State ===== */
-    .glass-empty-state {
-        text-align: center;
-        padding: 3rem 1rem;
-        color: var(--text-muted);
-    }
-
-    .glass-empty-state i {
-        font-size: 3rem;
-        margin-bottom: 1rem;
-        opacity: 0.5;
-    }
-
-    .glass-empty-state p {
-        margin: 0;
-        font-size: 0.95rem;
-    }
-
-    /* ===== Info Alert ===== */
-    .glass-info-alert {
-        background: var(--bg-card);
-        border: 1px solid var(--border-color);
-        border-left: 3px solid var(--accent-color);
-        border-radius: 12px;
-        padding: 1.25rem 1.5rem;
-        display: flex;
-        align-items: flex-start;
-        gap: 1rem;
-        margin-top: 1.5rem;
-    }
-
-    .glass-info-alert i {
-        color: var(--accent-color);
-        font-size: 1.25rem;
-        margin-top: 0.15rem;
-    }
-
-    .glass-info-alert h4 {
-        color: var(--text-primary);
-        font-size: 1rem;
-        font-weight: 600;
-        margin: 0 0 0.25rem 0;
-    }
-
-    .glass-info-alert p {
-        color: var(--text-secondary);
+    .empty {
+        padding: 18px 0 4px;
+        color: var(--dash-muted);
         font-size: 0.9rem;
-        margin: 0;
+        text-align: center;
     }
 
-    /* ===== Link Styles ===== */
-    .glass-link {
-        color: var(--text-secondary);
-        text-decoration: none;
-        transition: all 0.2s ease;
-    }
-
-    .glass-link:hover {
-        color: var(--accent-color);
-    }
-
-    /* ===== Dashboard Navigation Links ===== */
-    .dashboard-user-link {
+    .dash-loading {
+        min-height: 60vh;
         display: flex;
-        align-items: center;
-        gap: 0.5rem;
-        color: var(--text-secondary);
-        cursor: pointer;
-        padding: 0.5rem 1rem;
-        background: var(--bg-card-hover);
-        border-radius: 8px;
-        transition: all 0.2s ease;
-        border: 1px solid var(--border-color);
-        text-decoration: none;
-    }
-
-    .dashboard-user-link:hover {
-        border-color: var(--accent-color);
-        color: var(--text-primary);
-    }
-
-    .dashboard-logout-link {
-        cursor: pointer;
-        padding: 0.5rem;
-        color: var(--text-secondary);
-        text-decoration: none;
-        transition: all 0.2s ease;
-    }
-
-    .dashboard-logout-link:hover {
-        color: var(--accent-color);
-    }
-
-    /* ===== Content Wrapper ===== */
-    .dashboard-content-wrapper {
-        position: relative;
-        z-index: 1;
-    }
-
-    /* ===== Loading State ===== */
-    .dashboard-loading {
-        display: flex;
-        flex-direction: column;
         align-items: center;
         justify-content: center;
-        min-height: 60vh;
-        color: var(--text-muted);
+        flex-direction: column;
+        gap: 10px;
+        color: var(--dash-muted);
     }
 
-    .dashboard-loading i {
-        font-size: 3rem;
-        margin-bottom: 1rem;
+    .dash-loading i {
+        font-size: 2.2rem;
         animation: spin 1s linear infinite;
     }
 
-    @keyframes spin {
-        from { transform: rotate(0deg); }
-        to { transform: rotate(360deg); }
+    @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+    @media (max-width: 1024px) {
+        .stat-grid { grid-template-columns: repeat(2, 1fr); }
+        .quick-actions { grid-template-columns: repeat(3, 1fr); }
+        .bar-row { grid-template-columns: 140px 1fr 56px; }
     }
 
-    /* ===== Responsive ===== */
-    @media (max-width: 768px) {
-        .dashboard-stats {
-            grid-template-columns: repeat(2, 1fr);
-            gap: 1rem;
-        }
-
-        .glass-welcome-card {
-            flex-direction: column;
-            text-align: center;
-            padding: 1.5rem;
-        }
-
-        .glass-welcome-title {
-            font-size: 1.5rem;
-        }
-
-        .stat-value-glass {
-            font-size: 2rem;
-        }
-
-        .dashboard-grid {
-            grid-template-columns: 1fr;
-        }
+    @media (max-width: 520px) {
+        .quick-actions { grid-template-columns: repeat(2, 1fr); }
+        .bar-row { grid-template-columns: 1fr; }
+        .bar-value { text-align: left; }
     }
 </style>
 
-<!-- Dashboard Container -->
-<div class="dashboard-glass-container" ng-if="!dashboard.isLoading">
-    <!-- Navigation -->
-    <nav class="dashboard-glass-nav">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between h-16">
-                <div class="flex items-center">
-                    <a href="#!/" class="flex items-center gap-2 text-white font-bold text-xl">
-                        <i class="fas fa-graduation-cap" style="color: var(--accent-color);"></i>
-                        <span>College ERP</span>
-                    </a>
+<div class="dash-aurora" ng-if="!dashboard.isLoading">
+    <div class="dash-wrap">
+        <!-- Hero -->
+        <div class="dash-hero">
+            <div class="dash-hero-left">
+                <div class="dash-avatar">
+                    <i class="fas fa-sparkles"></i>
                 </div>
-                <div class="flex items-center gap-4">
-                    <a href="" ng-click="dashboard.navigateTo('/profile')" class="dashboard-user-link">
-                        <i class="fas fa-user-circle text-lg"></i>
-                        <span>{{ dashboard.currentUser.name }}</span>
-                    </a>
-                    <a href="" ng-click="dashboard.logout()" class="dashboard-logout-link">
-                        <i class="fas fa-sign-out-alt text-xl"></i>
+                <div style="min-width: 0;">
+                    <h2>{{ dashboard.getGreeting() }}, {{ dashboard.currentUser.name }}.</h2>
+                    <p>Overview of key metrics, upcoming sessions, and system activity.</p>
+                </div>
+            </div>
+
+            <div class="dash-hero-right">
+                <div class="dash-pill">
+                    <i class="fas fa-user-shield" style="color: var(--dash-accent-2);"></i>
+                    <span style="color: var(--dash-muted);">Role:</span>
+                    <span style="font-weight: 900; color: var(--dash-text); text-transform: uppercase;">{{ dashboard.currentUser.role }}</span>
+                </div>
+                <div class="dash-pill">
+                    <i class="fas fa-circle" style="color: var(--dash-success); font-size: 0.7rem;"></i>
+                    Active
+                </div>
+            </div>
+        </div>
+
+        <!-- Load error -->
+        <div class="dash-card" ng-if="dashboard.loadError" style="margin-bottom: 14px;">
+            <div class="dash-card-body">
+                <div style="display:flex; gap:12px; align-items:flex-start;">
+                    <i class="fas fa-exclamation-triangle" style="color: var(--dash-warning); margin-top: 2px;"></i>
+                    <div>
+                        <div style="font-weight:900; margin-bottom:4px;">Couldn’t load dashboard data</div>
+                        <div style="color: var(--dash-muted);">{{ dashboard.loadError }}</div>
+                        <div style="margin-top:10px;">
+                            <button class="btn-mini" ng-click="dashboard.navigateTo('/dashboard')">Refresh</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Stats -->
+        <div class="stat-grid">
+            <div class="stat">
+                <div class="stat-top">
+                    <div>
+                        <p class="stat-label">Total Students</p>
+                        <div class="stat-value">{{ dashboard.counts.students !== null ? dashboard.counts.students : '--' }}</div>
+                    </div>
+                    <div class="stat-icon"><i class="fas fa-user-graduate"></i></div>
+                </div>
+            </div>
+            <div class="stat">
+                <div class="stat-top">
+                    <div>
+                        <p class="stat-label">Total Faculty</p>
+                        <div class="stat-value">{{ dashboard.counts.faculty !== null ? dashboard.counts.faculty : '--' }}</div>
+                    </div>
+                    <div class="stat-icon"><i class="fas fa-chalkboard-teacher"></i></div>
+                </div>
+            </div>
+            <div class="stat">
+                <div class="stat-top">
+                    <div>
+                        <p class="stat-label">Courses</p>
+                        <div class="stat-value">{{ dashboard.counts.courses !== null ? dashboard.counts.courses : '--' }}</div>
+                    </div>
+                    <div class="stat-icon"><i class="fas fa-book"></i></div>
+                </div>
+            </div>
+            <div class="stat">
+                <div class="stat-top">
+                    <div>
+                        <p class="stat-label">Departments</p>
+                        <div class="stat-value">{{ dashboard.counts.departments !== null ? dashboard.counts.departments : '--' }}</div>
+                    </div>
+                    <div class="stat-icon"><i class="fas fa-building"></i></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick actions -->
+        <div class="dash-card" style="margin-top: 14px;">
+            <div class="dash-card-header">
+                <h3 class="dash-card-title"><i class="fas fa-bolt"></i> Quick actions</h3>
+                <span class="chip">Jump to a module</span>
+            </div>
+            <div class="dash-card-body">
+                <div class="quick-actions">
+                    <a class="qa-btn" ng-repeat="action in dashboard.quickActions" ng-click="dashboard.navigateTo(action.path)">
+                        <i class="{{ action.icon }}"></i>
+                        <span>{{ action.label }}</span>
                     </a>
                 </div>
             </div>
         </div>
-    </nav>
 
-    <!-- Dashboard Content -->
-    <div class="dashboard-content-wrapper">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-            
-            <!-- Welcome Section -->
-            <div class="glass-welcome-card mb-8">
-                <div class="glass-welcome-icon">
-                    <i class="fas fa-user"></i>
+        <!-- Main grid -->
+        <div class="dash-grid" style="margin-top: 14px;">
+            <!-- Recent activity -->
+            <div class="dash-card" style="grid-column: span 7;">
+                <div class="dash-card-header">
+                    <h3 class="dash-card-title"><i class="fas fa-clock"></i> Recent activity</h3>
+                    <span class="chip" ng-if="dashboard.recentActivity.blocked">Restricted</span>
                 </div>
-                <div>
-                    <h2 class="glass-welcome-title">{{ dashboard.getGreeting() }}, {{ dashboard.currentUser.name }}!</h2>
-                    <p class="glass-welcome-subtitle">Welcome to your dashboard. Here's what's happening today.</p>
-                </div>
-            </div>
-
-            <!-- Stats Grid -->
-            <div class="dashboard-stats">
-                <div class="glass-stat-card" ng-repeat="stat in dashboard.dashboardStats">
-                    <div>
-                        <div class="stat-value-glass">{{ stat.value }}</div>
-                        <div class="stat-label-glass">{{ stat.label }}</div>
+                <div class="dash-card-body">
+                    <div class="empty" ng-if="dashboard.recentActivity.blocked">
+                        Audit activity is only available to authorized admin roles.
                     </div>
-                    <div class="stat-icon-glass">
-                        <i class="{{ stat.icon }}" ng-class="{
-                            'text-success': stat.color === 'success',
-                            'text-warning': stat.color === 'warning',
-                            'text-danger': stat.color === 'danger',
-                            'text-info': stat.color === 'info'
-                        }"></i>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Dashboard Grid -->
-            <div class="dashboard-grid">
-                <!-- Left Column -->
-                <div>
-                    <!-- Recent Activity -->
-                    <div class="glass-section-card">
-                        <div class="glass-section-header">
-                            <h5 style="color: var(--text-primary); font-weight: 700; margin: 0; font-size: 1.125rem;">
-                                <i class="fas fa-clock mr-2" style="color: var(--accent-color);"></i>Recent Activity
-                            </h5>
-                        </div>
-                        <div class="glass-section-body">
-                            <ul class="activity-list">
-                                <li class="activity-item" ng-repeat="activity in dashboard.recentActivities">
-                                    <div class="activity-icon">
-                                        <i class="{{ activity.icon }}"></i>
-                                    </div>
-                                    <div class="activity-content">
-                                        <div class="activity-text">{{ activity.text }}</div>
-                                        <div class="activity-time">{{ activity.time }}</div>
-                                    </div>
-                                </li>
-                            </ul>
-                            <div class="glass-empty-state" ng-if="dashboard.recentActivities.length === 0">
-                                <i class="fas fa-inbox"></i>
-                                <p>No recent activity</p>
+                    <ul class="list" ng-if="!dashboard.recentActivity.blocked">
+                        <li class="list-item" ng-repeat="log in dashboard.recentActivity.logs">
+                            <div class="list-main">
+                                <p class="list-title">{{ log.action | uppercase }} · {{ log.targetType }}</p>
+                                <p class="list-sub">{{ log.status }} · {{ log.occurredAt | date:'medium' }}</p>
                             </div>
-                        </div>
+                            <span class="chip" ng-class="{
+                                'chip-success': log.status === 'success',
+                                'chip-danger': log.status === 'failure'
+                            }">{{ log.status }}</span>
+                        </li>
+                    </ul>
+                    <div class="empty" ng-if="!dashboard.recentActivity.blocked && dashboard.recentActivity.logs.length === 0">
+                        No recent activity found.
                     </div>
                 </div>
+            </div>
 
-                <!-- Right Column -->
-                <div>
-                    <!-- Account Info -->
-                    <div class="glass-section-card">
-                        <div class="glass-section-header">
-                            <h5 style="color: var(--text-primary); font-weight: 700; margin: 0; font-size: 1.125rem;">
-                                <i class="fas fa-user-circle mr-2" style="color: var(--accent-color);"></i>Account Information
-                            </h5>
+            <!-- Pending approvals -->
+            <div class="dash-card" style="grid-column: span 5;">
+                <div class="dash-card-header">
+                    <h3 class="dash-card-title"><i class="fas fa-user-check"></i> Pending approvals</h3>
+                    <span class="chip" ng-if="!dashboard.pendingApprovals.blocked && dashboard.pendingApprovals.total !== null">
+                        {{ dashboard.pendingApprovals.total }} pending
+                    </span>
+                    <span class="chip" ng-if="dashboard.pendingApprovals.blocked">Restricted</span>
+                </div>
+                <div class="dash-card-body">
+                    <div class="empty" ng-if="dashboard.pendingApprovals.blocked">
+                        You don’t have permission to approve users.
+                    </div>
+                    <ul class="list" ng-if="!dashboard.pendingApprovals.blocked">
+                        <li class="list-item" ng-repeat="u in dashboard.pendingApprovals.users">
+                            <div class="list-main">
+                                <p class="list-title">{{ u.name }}</p>
+                                <p class="list-sub">{{ u.email }} · {{ u.role }}</p>
+                            </div>
+                            <div class="dash-actions">
+                                <button class="btn-mini" ng-disabled="dashboard.isApprovalsBusy" ng-click="dashboard.approvePendingUser(u)">Approve</button>
+                                <button class="btn-mini btn-mini-danger" ng-disabled="dashboard.isApprovalsBusy" ng-click="dashboard.rejectPendingUser(u)">Reject</button>
+                            </div>
+                        </li>
+                    </ul>
+                    <div class="empty" ng-if="!dashboard.pendingApprovals.blocked && dashboard.pendingApprovals.users.length === 0">
+                        No pending users right now.
+                    </div>
+                </div>
+            </div>
+
+            <!-- Upcoming sessions -->
+            <div class="dash-card" style="grid-column: span 7;">
+                <div class="dash-card-header">
+                    <h3 class="dash-card-title"><i class="fas fa-calendar-check"></i> Upcoming sessions</h3>
+                    <span class="chip" ng-if="dashboard.upcomingSessions.blocked">Restricted</span>
+                </div>
+                <div class="dash-card-body">
+                    <div class="empty" ng-if="dashboard.upcomingSessions.blocked">
+                        Sessions are not available for your current role/permissions.
+                    </div>
+                    <ul class="list" ng-if="!dashboard.upcomingSessions.blocked">
+                        <li class="list-item" ng-repeat="s in dashboard.upcomingSessions.sessions">
+                            <div class="list-main">
+                                <p class="list-title">{{ s.topic || 'Session' }}</p>
+                                <p class="list-sub">
+                                    {{ dashboard.formatDate(s.date) }} · {{ dashboard.formatTimeRange(s.startTime, s.endTime) }}
+                                </p>
+                            </div>
+                            <span class="chip chip-warn" ng-if="s.status">{{ s.status }}</span>
+                        </li>
+                    </ul>
+                    <div class="empty" ng-if="!dashboard.upcomingSessions.blocked && dashboard.upcomingSessions.sessions.length === 0">
+                        No upcoming sessions in the next 30 days.
+                    </div>
+                </div>
+            </div>
+
+            <!-- Charts -->
+            <div class="dash-card" style="grid-column: span 5;">
+                <div class="dash-card-header">
+                    <h3 class="dash-card-title"><i class="fas fa-chart-line"></i> Enrollment trends</h3>
+                    <span class="chip" ng-if="dashboard.charts.enrollmentTrends.blocked">Restricted</span>
+                </div>
+                <div class="dash-card-body">
+                    <div class="empty" ng-if="dashboard.charts.enrollmentTrends.blocked">
+                        Reports are not available for your current role/permissions.
+                    </div>
+                    <div ng-if="!dashboard.charts.enrollmentTrends.blocked">
+                        <div class="bar-row" ng-repeat="p in dashboard.charts.enrollmentTrends.data"
+                             ng-init="maxEnroll = (dashboard.charts.enrollmentTrends.data | orderBy:'-value')[0].value">
+                            <div class="bar-label">{{ p.label }}</div>
+                            <div class="bar-track">
+                                <div class="bar-fill" style="width: {{ dashboard.getBarWidth(p.value, maxEnroll) }}"></div>
+                            </div>
+                            <div class="bar-value">{{ p.value }}</div>
                         </div>
-                        <div class="glass-section-body">
-                            <table class="glass-table">
-                                <tbody>
-                                    <tr>
-                                        <td>Name:</td>
-                                        <td>{{ dashboard.currentUser.name }}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Email:</td>
-                                        <td>{{ dashboard.currentUser.email }}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Role:</td>
-                                        <td><span class="glass-badge glass-badge-purple">{{ dashboard.currentUser.role | uppercase }}</span></td>
-                                    </tr>
-                                    <tr>
-                                        <td>Status:</td>
-                                        <td><span class="glass-badge glass-badge-green">Active</span></td>
-                                    </tr>
-                                </tbody>
-                            </table>
+                        <div class="empty" ng-if="dashboard.charts.enrollmentTrends.data.length === 0">
+                            No chart data available.
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Info Banner -->
-            <div class="glass-info-alert">
-                <i class="fas fa-info-circle"></i>
-                <div>
-                    <h4>More features coming soon!</h4>
-                    <p>This dashboard will be expanded with role-specific modules for Students, Faculty, and Administrators.</p>
+            <div class="dash-card" style="grid-column: span 12;">
+                <div class="dash-card-header">
+                    <h3 class="dash-card-title"><i class="fas fa-chart-bar"></i> Attendance overview</h3>
+                    <span class="chip" ng-if="dashboard.charts.attendanceStats.blocked">Restricted</span>
+                </div>
+                <div class="dash-card-body">
+                    <div class="empty" ng-if="dashboard.charts.attendanceStats.blocked">
+                        Attendance charts are available via Reports permissions.
+                    </div>
+                    <div ng-if="!dashboard.charts.attendanceStats.blocked">
+                        <div class="bar-row" ng-repeat="c in dashboard.charts.attendanceStats.data"
+                             ng-init="maxPct = 100">
+                            <div class="bar-label">{{ c.label }}</div>
+                            <div class="bar-track">
+                                <div class="bar-fill" style="width: {{ dashboard.getBarWidth(c.percentage, maxPct) }}"></div>
+                            </div>
+                            <div class="bar-value">{{ c.percentage }}%</div>
+                        </div>
+                        <div class="empty" ng-if="dashboard.charts.attendanceStats.data.length === 0">
+                            No attendance data available.
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
 
-<!-- Loading State -->
-<div class="dashboard-loading" ng-if="dashboard.isLoading">
-    <i class="fas fa-circle-notch"></i>
-    <p>Loading dashboard...</p>
+<!-- Loading -->
+<div class="dash-aurora" ng-if="dashboard.isLoading">
+    <div class="dash-wrap">
+        <div class="dash-loading">
+            <i class="fas fa-circle-notch"></i>
+            <div style="font-weight: 800;">Loading dashboard…</div>
+            <div style="color: var(--dash-muted); font-size: 0.9rem;">Fetching latest metrics and modules.</div>
+        </div>
+    </div>
 </div>

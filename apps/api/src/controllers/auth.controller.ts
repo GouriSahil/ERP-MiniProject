@@ -474,15 +474,19 @@ export class AuthController {
         return errorResponse(res, 'New password must be at least 8 characters');
       }
 
-      // const userRecord = await User.findById(userId);
-      // const isValidPassword = await bcrypt.compare(currentPassword, user.passwordHash);
+      const userRecord = await User.findById(userId).select('+passwordHash');
+      if (!userRecord) {
+        return errorResponse(res, 'User not found', 404);
+      }
 
-      // if (!isValidPassword) {
-      //   return errorResponse(res, 'Current password is incorrect', 401);
-      // }
+      const isValidPassword = await bcrypt.compare(currentPassword, userRecord.passwordHash);
 
-      // const passwordHash = await bcrypt.hash(newPassword, 12);
-      // await User.findByIdAndUpdate(userId, { passwordHash, mustChangePassword: false });
+      if (!isValidPassword) {
+        return errorResponse(res, 'Current password is incorrect', 401);
+      }
+
+      const passwordHash = await bcrypt.hash(newPassword, 12);
+      await User.findByIdAndUpdate(userId, { passwordHash, mustChangePassword: false });
 
       await saveAuditLog({
         actorUserId: userId || null,

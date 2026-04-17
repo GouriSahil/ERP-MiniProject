@@ -1,0 +1,6 @@
+/* Make sidebar push content over */
+@media (min-width: 768px) {
+    .auth-main-content {
+        margin-left: 250px;
+    }
+}

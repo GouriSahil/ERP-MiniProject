@@ -40,10 +40,10 @@ AngularJS SPA consuming REST API
 - [x] Form submission handling
 - [x] JWT token storage (localStorage)
 - [x] Redirect after login
-- [ ] Password visibility toggle
-- [ ] Social login buttons (UI mockup)
-- [ ] Remember email in localStorage
-- [ ] Login failure error display
+- [x] Password visibility toggle
+- [x] Social login buttons (UI mockup)
+- [x] Remember email in localStorage
+- [x] Login failure error display
 
 ### Registration Page
 - [x] Registration form
@@ -56,24 +56,24 @@ AngularJS SPA consuming REST API
 - [x] Email validation
 - [x] Form submission handling
 - [x] Success/error message display
-- [ ] Terms & conditions checkbox
-- [ ] Email verification flow
-- [ ] Auto-redirect on success
+- [x] Terms & conditions checkbox
+- [x] Email verification flow (Note: System uses Admin Approval instead)
+- [x] Auto-redirect on success
 
 ### Forgot Password Page
-- [ ] Forgot password form
-- [ ] Email input
-- [ ] Submit button
-- [ ] Success message
-- [ ] Resend link
+- [x] Forgot password form
+- [x] Email input
+- [x] Submit button
+- [x] Success message
+- [x] Resend link
 
 ### Reset Password Page
-- [ ] Reset password form
-- [ ] New password input
-- [ ] Confirm password input
-- [ ] Password strength indicator
-- [ ] Token validation
-- [ ] Submit handling
+- [x] Reset password form
+- [x] New password input
+- [x] Confirm password input
+- [x] Password strength indicator
+- [x] Token validation
+- [x] Submit handling
 
 ---
 
@@ -81,31 +81,31 @@ AngularJS SPA consuming REST API
 
 ### Main Layout
 - [x] Responsive navbar
-- [ ] Sidebar navigation
-- [ ] User dropdown menu
+- [x] Sidebar navigation
+- [x] User dropdown menu
   - [x] User name display
-  - [ ] Profile link
-  - [ ] Settings link
+  - [x] Profile link
+  - [x] Settings link
   - [x] Logout button
-- [ ] Mobile hamburger menu
-- [ ] Breadcrumb navigation
-- [ ] Footer
+- [x] Mobile hamburger menu
+- [x] Breadcrumb navigation
+- [x] Footer
 
 ### Navigation Menu Items
 - [x] Home / Landing
 - [x] Dashboard
-- [ ] Departments
-- [ ] Courses
-- [ ] Terms
-- [ ] Course Offerings
-- [ ] Sessions
-- [ ] Students
-- [ ] Faculty
-- [ ] Enrollments
-- [ ] Attendance
-- [ ] Reports
-- [ ] Audit Logs
-- [ ] Settings
+- [x] Departments
+- [x] Courses
+- [x] Terms
+- [x] Course Offerings
+- [x] Sessions
+- [x] Students
+- [x] Faculty
+- [x] Enrollments
+- [x] Attendance
+- [x] Reports
+- [x] Audit Logs
+- [x] Settings
 
 ---
 
@@ -113,21 +113,21 @@ AngularJS SPA consuming REST API
 
 ### Dashboard Widgets
 - [x] Statistics cards
-  - [ ] Total students
-  - [ ] Total faculty
-  - [ ] Active courses
-  - [ ] Total departments
-- [ ] Quick action buttons
-- [ ] Recent activity feed
-- [ ] Upcoming sessions
-- [ ] Pending approvals
-- [ ] Attendance overview chart
-- [ ] Enrollment trend chart
+  - [x] Total students
+  - [x] Total faculty
+  - [x] Active courses
+  - [x] Total departments
+- [x] Quick action buttons
+- [x] Recent activity feed
+- [x] Upcoming sessions
+- [x] Pending approvals
+- [x] Attendance overview chart
+- [x] Enrollment trend chart
 
 ### Dashboard Actions
-- [ ] Navigate to student list
-- [ ] Navigate to faculty list
-- [ ] Navigate to courses
+- [x] Navigate to student list
+- [x] Navigate to faculty list
+- [x] Navigate to courses
 - [ ] Quick attendance mark
 - [ ] Quick enrollment
 
@@ -379,10 +379,10 @@ AngularJS SPA consuming REST API
   - [x] Email display
   - [x] Role display
 - [ ] Edit profile form
-- [ ] Change password form
-  - [ ] Current password
-  - [ ] New password
-  - [ ] Confirm password
+- [x] Change password form
+  - [x] Current password
+  - [x] New password
+  - [x] Confirm password
 - [ ] Profile picture upload
 
 ### Settings Page

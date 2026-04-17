@@ -51,6 +51,16 @@
                 controller: 'AuthController',
                 controllerAs: 'auth'
             })
+            .when('/forgot-password', {
+                templateUrl: 'src/app/views/auth/forgot-password.html',
+                controller: 'AuthController',
+                controllerAs: 'auth'
+            })
+            .when('/reset-password/:token', {
+                templateUrl: 'src/app/views/auth/reset-password.html',
+                controller: 'AuthController',
+                controllerAs: 'auth'
+            })
             .when('/dashboard', {
                 templateUrl: 'src/app/views/dashboard/dashboard.html',
                 controller: 'DashboardController',
@@ -61,6 +71,78 @@
                 templateUrl: 'src/app/views/dashboard/profile.html',
                 controller: 'DashboardController',
                 controllerAs: 'dashboard',
+                authenticate: true
+            })
+            .when('/departments', {
+                templateUrl: 'src/app/views/shared/section-placeholder.html',
+                controller: 'NavigationController',
+                controllerAs: 'navigation',
+                authenticate: true
+            })
+            .when('/courses', {
+                templateUrl: 'src/app/views/shared/section-placeholder.html',
+                controller: 'NavigationController',
+                controllerAs: 'navigation',
+                authenticate: true
+            })
+            .when('/terms', {
+                templateUrl: 'src/app/views/shared/section-placeholder.html',
+                controller: 'NavigationController',
+                controllerAs: 'navigation',
+                authenticate: true
+            })
+            .when('/course-offerings', {
+                templateUrl: 'src/app/views/shared/section-placeholder.html',
+                controller: 'NavigationController',
+                controllerAs: 'navigation',
+                authenticate: true
+            })
+            .when('/sessions', {
+                templateUrl: 'src/app/views/shared/section-placeholder.html',
+                controller: 'NavigationController',
+                controllerAs: 'navigation',
+                authenticate: true
+            })
+            .when('/students', {
+                templateUrl: 'src/app/views/shared/section-placeholder.html',
+                controller: 'NavigationController',
+                controllerAs: 'navigation',
+                authenticate: true
+            })
+            .when('/faculty', {
+                templateUrl: 'src/app/views/shared/section-placeholder.html',
+                controller: 'NavigationController',
+                controllerAs: 'navigation',
+                authenticate: true
+            })
+            .when('/enrollments', {
+                templateUrl: 'src/app/views/shared/section-placeholder.html',
+                controller: 'NavigationController',
+                controllerAs: 'navigation',
+                authenticate: true
+            })
+            .when('/attendance', {
+                templateUrl: 'src/app/views/shared/section-placeholder.html',
+                controller: 'NavigationController',
+                controllerAs: 'navigation',
+                authenticate: true
+            })
+            .when('/reports', {
+                templateUrl: 'src/app/views/shared/section-placeholder.html',
+                controller: 'NavigationController',
+                controllerAs: 'navigation',
+                authenticate: true
+            })
+            .when('/audit-logs', {
+                templateUrl: 'src/app/views/shared/section-placeholder.html',
+                controller: 'NavigationController',
+                controllerAs: 'navigation',
+                authenticate: true
+            })
+            .when('/settings', {
+                templateUrl: 'src/app/views/shared/section-placeholder.html',
+                controller: 'NavigationController',
+                controllerAs: 'navigation',
                 authenticate: true
             })
             .otherwise({
@@ -74,8 +156,9 @@
         // Track current user
         $rootScope.$on('$routeChangeStart', function(event, next) {
             // Skip if it's the landing page
-            var publicPages = ['/', '/login', '/register'];
-            var restrictedPage = publicPages.indexOf($location.path()) === -1;
+            var publicPages = ['/', '/login', '/register', '/forgot-password'];
+            var isPublicPage = publicPages.indexOf($location.path()) !== -1 || $location.path().indexOf('/reset-password') === 0;
+            var restrictedPage = !isPublicPage;
             
             if (restrictedPage && !AuthService.isAuthenticated()) {
                 $location.path('/login');
