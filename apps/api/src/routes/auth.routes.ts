@@ -43,7 +43,7 @@ const router = Router();
  *                 example: Doe
  *               role:
  *                 type: string
- *                 enum: [super_admin, college_admin, department_admin, faculty, student]
+ *                 enum: [super_admin, admin, department_admin, faculty, student]
  *                 example: student
  *     responses:
  *       201:

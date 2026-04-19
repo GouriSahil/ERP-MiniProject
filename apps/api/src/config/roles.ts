@@ -22,10 +22,10 @@ export interface RoleDefinition {
 /**
  * Role hierarchy (highest to lowest):
  * 1. super_admin - Full system access
- * 2. college_admin - College-wide management
- * 3. department_head - Department-level management
+ * 2. admin - College-wide management
+ * 3. dept_head - Department-level management
  * 4. faculty - Teaching and grading
- * 5. support_staff - Administrative support
+ * 5. staff - Administrative support
  * 6. student - Self-service access
  */
 export const ROLE_DEFINITIONS: Record<string, RoleDefinition> = {
@@ -35,7 +35,7 @@ export const ROLE_DEFINITIONS: Record<string, RoleDefinition> = {
     permissions: ['*'], // Wildcard grants all permissions
   },
 
-  college_admin: {
+  admin: {
     name: 'College Administrator',
     description: 'College-wide administrative access',
     permissions: [
@@ -127,7 +127,7 @@ export const ROLE_DEFINITIONS: Record<string, RoleDefinition> = {
     ],
   },
 
-  department_head: {
+  dept_head: {
     name: 'Department Head',
     description: 'Department-level management and oversight',
     permissions: [
@@ -223,7 +223,7 @@ export const ROLE_DEFINITIONS: Record<string, RoleDefinition> = {
     ],
   },
 
-  support_staff: {
+  staff: {
     name: 'Support Staff',
     description: 'Administrative support and data entry',
     permissions: [
@@ -287,10 +287,10 @@ export const ROLE_DEFINITIONS: Record<string, RoleDefinition> = {
  * Each role inherits permissions from roles listed in their inherits array
  */
 export const ROLE_HIERARCHY: Record<string, string[]> = {
-  college_admin: ['support_staff'], // Inherits all support_staff permissions
-  department_head: ['faculty', 'support_staff'], // Inherits faculty and support_staff permissions
-  faculty: ['support_staff'], // Inherits support_staff permissions
-  support_staff: ['student'], // Inherits student permissions
+  admin: ['staff'], // Inherits all staff permissions
+  dept_head: ['faculty', 'staff'], // Inherits faculty and staff permissions
+  faculty: ['staff'], // Inherits staff permissions
+  staff: ['student'], // Inherits student permissions
   student: [], // Base role, no inheritance
   super_admin: [], // Top-level, no inheritance needed (has wildcard)
 };

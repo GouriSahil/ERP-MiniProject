@@ -1,17 +1,19 @@
 <!DOCTYPE html>
 <html lang="en" ng-app="erpApp">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>College ERP System</title>
-    
+
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-    
+
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
 
     <!-- Modern Styles Shared CSS -->
     <link rel="stylesheet" href="src/app/views/shared/modern-styles.css">
@@ -41,7 +43,7 @@
             }
         }
     </script>
-    
+
     <style>
         /* Custom gradient text */
         .gradient-text {
@@ -50,58 +52,60 @@
             -webkit-text-fill-color: transparent;
             background-clip: text;
         }
-        
+
         /* Smooth transitions */
         .transition-all-300 {
             transition: all 0.3s ease;
         }
     </style>
 </head>
-<body class="bg-gray-50 text-gray-900 font-sans antialiased" ng-controller="MainController as main">
-    
+
+<body class="bg-[#070A12] text-gray-900 font-sans antialiased dash-aurora" style="padding: 0; min-height: 100vh; overflow-x: hidden;" ng-controller="MainController as main">
+
     <!-- Navigation -->
-    <nav class="bg-gradient-to-r from-primary-600 to-primary-800 shadow-lg sticky top-0 z-50" ng-if="!main.isAuthPage()">
+    <nav class="bg-gradient-to-r from-primary-600 to-primary-800 shadow-lg sticky top-0 z-50"
+        ng-if="!main.isAuthPage()">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center h-16">
                 <!-- Logo -->
                 <div class="flex-shrink-0">
-                    <a href="#!/" class="flex items-center gap-2 text-white font-bold text-xl hover:scale-105 transition-transform">
+                    <a href="#!/"
+                        class="flex items-center gap-2 text-white font-bold text-xl hover:scale-105 transition-transform">
                         <i class="fas fa-graduation-cap text-2xl"></i>
                         <span>College ERP</span>
                     </a>
                 </div>
-                
+
                 <!-- Desktop Menu -->
                 <div class="hidden md:block">
                     <div class="ml-10 flex items-center space-x-4">
                         <a class="text-white hover:bg-white/10 px-3 py-2 rounded-md text-sm font-medium transition-all-300"
-                           href="#!/dashboard"
-                           ng-if="main.isAuthenticated() && main.getCurrentUser()">
+                            href="#!/dashboard" ng-if="main.isAuthenticated() && main.getCurrentUser()">
                             Dashboard
                         </a>
                         <a class="text-white hover:bg-white/10 px-3 py-2 rounded-md text-sm font-medium transition-all-300"
-                           href="#!/login"
-                           ng-if="!main.isAuthenticated()">
+                            href="#!/login" ng-if="!main.isAuthenticated()">
                             Login
                         </a>
                         <a class="bg-white text-primary-600 hover:bg-gray-100 px-4 py-2 rounded-md text-sm font-semibold transition-all-300"
-                           href="#!/register"
-                           ng-if="!main.isAuthenticated()">
+                            href="#!/register" ng-if="!main.isAuthenticated()">
                             Register
                         </a>
 
                         <!-- User Dropdown -->
-                        <div class="relative user-dropdown-container" ng-if="main.isAuthenticated() && main.getCurrentUser()">
-                            <button class="flex items-center gap-2 text-white hover:bg-white/10 px-3 py-2 rounded-md text-sm font-medium transition-all-300"
-                                    ng-click="main.toggleUserDropdown()"
-                                    aria-expanded="{{ main.userDropdownOpen }}">
+                        <div class="relative user-dropdown-container"
+                            ng-if="main.isAuthenticated() && main.getCurrentUser()">
+                            <button
+                                class="flex items-center gap-2 text-white hover:bg-white/10 px-3 py-2 rounded-md text-sm font-medium transition-all-300"
+                                ng-click="main.toggleUserDropdown()" aria-expanded="{{ main.userDropdownOpen }}">
                                 <i class="fas fa-user-circle text-lg"></i>
                                 <span>{{ main.getCurrentUser().name || 'User' }}</span>
-                                <i class="fas fa-chevron-down text-xs" ng-class="{'fa-chevron-up': main.userDropdownOpen, 'fa-chevron-down': !main.userDropdownOpen}"></i>
+                                <i class="fas fa-chevron-down text-xs"
+                                    ng-class="{'fa-chevron-up': main.userDropdownOpen, 'fa-chevron-down': !main.userDropdownOpen}"></i>
                             </button>
                             <!-- Dropdown Menu -->
                             <div class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1"
-                                 ng-show="main.userDropdownOpen">
+                                ng-show="main.userDropdownOpen">
                                 <a href="#!/profile" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                                     <i class="fas fa-user mr-2"></i>Profile
                                 </a>
@@ -109,7 +113,8 @@
                                     <i class="fas fa-tachometer-alt mr-2"></i>Dashboard
                                 </a>
                                 <div class="border-t border-gray-100"></div>
-                                <a href="" ng-click="main.logout()" class="block px-4 py-2 text-sm text-red-600 hover:bg-gray-100">
+                                <a href="" ng-click="main.logout()"
+                                    class="block px-4 py-2 text-sm text-red-600 hover:bg-gray-100">
                                     <i class="fas fa-sign-out-alt mr-2"></i>Logout
                                 </a>
                             </div>
@@ -119,10 +124,8 @@
 
                 <!-- Mobile menu button -->
                 <div class="md:hidden mobile-menu-container">
-                    <button type="button"
-                            class="text-white hover:bg-white/10 p-2 rounded-md"
-                            ng-click="main.toggleMobileMenu()"
-                            aria-expanded="{{ main.mobileMenuOpen }}">
+                    <button type="button" class="text-white hover:bg-white/10 p-2 rounded-md"
+                        ng-click="main.toggleMobileMenu()" aria-expanded="{{ main.mobileMenuOpen }}">
                         <i class="fas" ng-class="main.mobileMenuOpen ? 'fa-times' : 'fa-bars'"></i>
                     </button>
                 </div>
@@ -133,33 +136,23 @@
         <div class="md:hidden" ng-show="main.mobileMenuOpen">
             <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-gradient-to-b from-primary-800 to-primary-900">
                 <a class="text-white hover:bg-white/10 block px-3 py-2 rounded-md text-base font-medium"
-                   href="#!/dashboard"
-                   ng-if="main.isAuthenticated()"
-                   ng-click="main.closeDropdowns()">
+                    href="#!/dashboard" ng-if="main.isAuthenticated()" ng-click="main.closeDropdowns()">
                     <i class="fas fa-tachometer-alt mr-2"></i>Dashboard
                 </a>
                 <a class="text-white hover:bg-white/10 block px-3 py-2 rounded-md text-base font-medium"
-                   href="#!/profile"
-                   ng-if="main.isAuthenticated()"
-                   ng-click="main.closeDropdowns()">
+                    href="#!/profile" ng-if="main.isAuthenticated()" ng-click="main.closeDropdowns()">
                     <i class="fas fa-user mr-2"></i>Profile
                 </a>
-                <a class="text-white hover:bg-white/10 block px-3 py-2 rounded-md text-base font-medium"
-                   href="#!/login"
-                   ng-if="!main.isAuthenticated()"
-                   ng-click="main.closeDropdowns()">
+                <a class="text-white hover:bg-white/10 block px-3 py-2 rounded-md text-base font-medium" href="#!/login"
+                    ng-if="!main.isAuthenticated()" ng-click="main.closeDropdowns()">
                     <i class="fas fa-sign-in-alt mr-2"></i>Login
                 </a>
                 <a class="bg-white text-primary-600 hover:bg-gray-100 block px-3 py-2 rounded-md text-base font-medium"
-                   href="#!/register"
-                   ng-if="!main.isAuthenticated()"
-                   ng-click="main.closeDropdowns()">
+                    href="#!/register" ng-if="!main.isAuthenticated()" ng-click="main.closeDropdowns()">
                     <i class="fas fa-user-plus mr-2"></i>Register
                 </a>
-                <a class="text-red-300 hover:bg-white/10 block px-3 py-2 rounded-md text-base font-medium"
-                   href=""
-                   ng-if="main.isAuthenticated()"
-                   ng-click="main.logout()">
+                <a class="text-red-300 hover:bg-white/10 block px-3 py-2 rounded-md text-base font-medium" href=""
+                    ng-if="main.isAuthenticated()" ng-click="main.logout()">
                     <i class="fas fa-sign-out-alt mr-2"></i>Logout
                 </a>
             </div>
@@ -167,82 +160,118 @@
     </nav>
 
     <!-- Authenticated Sidebar -->
-    <div class="fixed inset-y-0 left-0 w-[250px] bg-gray-900 border-r border-gray-800 text-white transition-transform duration-300 z-40 transform md:translate-x-0"
-         ng-class="main.mobileMenuOpen ? 'translate-x-0' : '-translate-x-full'"
-         ng-if="main.isAuthenticated() && !main.isPublicAuthPage()">
-        <div class="p-6 border-b border-gray-800">
+    <style>
+        .dash-layout-sidebar { background: rgba(7, 10, 18, 0.65); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); border-right: 1px solid rgba(255, 255, 255, 0.08); }
+        .dash-nav-item { color: rgba(245, 247, 255, 0.72); border: 1px solid transparent; }
+        .dash-nav-item:hover { background: rgba(255, 255, 255, 0.06); color: #F5F7FF; }
+        .dash-nav-item.active { background: rgba(124, 58, 237, 0.2); color: #F5F7FF; border: 1px solid rgba(124, 58, 237, 0.3); }
+        .dash-nav-item.active i { color: #22D3EE; }
+        .dash-layout-topnav { background: rgba(7, 10, 18, 0.65); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); border-bottom: 1px solid rgba(255, 255, 255, 0.08); }
+        .dash-dropdown { background: rgba(15, 20, 30, 0.95); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.12); }
+        .dash-dropdown-item { color: rgba(245, 247, 255, 0.8); transition: all 0.2s; }
+        .dash-dropdown-item:hover { background: rgba(255, 255, 255, 0.08); color: #F5F7FF; }
+    </style>
+    <div class="fixed inset-y-0 left-0 w-[250px] dash-layout-sidebar text-white transition-transform duration-300 z-40 transform md:translate-x-0"
+        ng-class="main.mobileMenuOpen ? 'translate-x-0' : '-translate-x-full'"
+        ng-if="main.isAuthenticated() && !main.isPublicAuthPage()">
+        <div class="p-6 border-b" style="border-color: rgba(255,255,255,0.08);">
             <h2 class="text-xl font-bold flex items-center gap-2">
-                <i class="fas fa-graduation-cap text-primary-500"></i> College ERP
+                <div style="width: 32px; height: 32px; border-radius: 8px; background: linear-gradient(135deg, #7C3AED, #22D3EE); display: flex; align-items: center; justify-content: center; font-size: 14px;">
+                    <i class="fas fa-graduation-cap text-white"></i>
+                </div>
+                College ERP
             </h2>
         </div>
         <nav class="p-4 space-y-2">
-            <a href="#!/dashboard" class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-gray-800 transition-colors" ng-class="{'bg-primary-600 text-white': main.isActive('/dashboard'), 'text-gray-400': !main.isActive('/dashboard')}">
+            <a href="#!/dashboard"
+                class="flex items-center gap-3 px-4 py-3 rounded-lg transition-colors dash-nav-item"
+                ng-class="{'active': main.isActive('/dashboard')}">
                 <i class="fas fa-home w-5"></i> Dashboard
             </a>
-            <a href="#!/profile" class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-gray-800 transition-colors" ng-class="{'bg-primary-600 text-white': main.isActive('/profile'), 'text-gray-400': !main.isActive('/profile')}">
+            <a href="#!/profile"
+                class="flex items-center gap-3 px-4 py-3 rounded-lg transition-colors dash-nav-item"
+                ng-class="{'active': main.isActive('/profile')}">
                 <i class="fas fa-user-circle w-5"></i> Profile
             </a>
-            <a href="#!/departments" class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-gray-800 transition-colors" ng-class="{'bg-primary-600 text-white': main.isActive('/departments'), 'text-gray-400': !main.isActive('/departments')}">
+            <a href="#!/departments"
+                class="flex items-center gap-3 px-4 py-3 rounded-lg transition-colors dash-nav-item"
+                ng-class="{'active': main.isActive('/departments')}"
+                ng-if="main.getCurrentUser().role !== 'student' && main.getCurrentUser().role !== 'faculty'">
                 <i class="fas fa-building w-5"></i> Departments
             </a>
-            <a href="#!/courses" class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-gray-800 transition-colors" ng-class="{'bg-primary-600 text-white': main.isActive('/courses'), 'text-gray-400': !main.isActive('/courses')}">
+            <a href="#!/courses"
+                class="flex items-center gap-3 px-4 py-3 rounded-lg transition-colors dash-nav-item"
+                ng-class="{'active': main.isActive('/courses')}">
                 <i class="fas fa-book w-5"></i> Courses
             </a>
-            <a href="#!/students" class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-gray-800 transition-colors" ng-class="{'bg-primary-600 text-white': main.isActive('/students'), 'text-gray-400': !main.isActive('/students')}">
+            <a href="#!/students"
+                class="flex items-center gap-3 px-4 py-3 rounded-lg transition-colors dash-nav-item"
+                ng-class="{'active': main.isActive('/students')}">
                 <i class="fas fa-user-graduate w-5"></i> Students
             </a>
-            <a href="#!/faculty" class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-gray-800 transition-colors" ng-class="{'bg-primary-600 text-white': main.isActive('/faculty'), 'text-gray-400': !main.isActive('/faculty')}">
+            <a href="#!/faculty"
+                class="flex items-center gap-3 px-4 py-3 rounded-lg transition-colors dash-nav-item"
+                ng-class="{'active': main.isActive('/faculty')}">
                 <i class="fas fa-chalkboard-teacher w-5"></i> Faculty
             </a>
-            
-            <div class="pt-4 mt-4 border-t border-gray-800"></div>
-            <a href="#!/settings" class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-gray-800 transition-colors" ng-class="{'bg-primary-600 text-white': main.isActive('/settings'), 'text-gray-400': !main.isActive('/settings')}">
+
+            <div class="pt-4 mt-4 border-t" style="border-color: rgba(255,255,255,0.08);"></div>
+            <a href="#!/settings"
+                class="flex items-center gap-3 px-4 py-3 rounded-lg transition-colors dash-nav-item"
+                ng-class="{'active': main.isActive('/settings')}">
                 <i class="fas fa-cog w-5"></i> Settings
             </a>
-            <a href="" ng-click="main.logout()" class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-red-900/30 text-red-400 transition-colors">
+            <a href="" ng-click="main.logout()"
+                class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-red-900/30 text-red-400 transition-colors">
                 <i class="fas fa-sign-out-alt w-5"></i> Logout
             </a>
         </nav>
     </div>
 
     <!-- Overlay for mobile sidebar -->
-    <div class="fixed inset-0 bg-black/50 z-30 md:hidden transition-opacity" 
-         ng-show="main.mobileMenuOpen" 
-         ng-click="main.closeDropdowns()"
-         ng-if="main.isAuthenticated() && !main.isPublicAuthPage()">
+    <div class="fixed inset-0 bg-black/50 z-30 md:hidden transition-opacity" ng-show="main.mobileMenuOpen"
+        ng-click="main.closeDropdowns()" ng-if="main.isAuthenticated() && !main.isPublicAuthPage()">
     </div>
 
     <!-- Authenticated Top Navigation -->
-    <header class="bg-gray-900 border-b border-gray-800 sticky top-0 z-30 transition-all duration-300"
-            ng-class="{'md:ml-[250px]': main.isAuthenticated() && !main.isPublicAuthPage()}"
-            ng-if="main.isAuthenticated() && !main.isPublicAuthPage()">
+    <header class="dash-layout-topnav sticky top-0 z-30 transition-all duration-300"
+        ng-class="{'md:ml-[250px]': main.isAuthenticated() && !main.isPublicAuthPage()}"
+        ng-if="main.isAuthenticated() && !main.isPublicAuthPage()">
         <div class="flex items-center justify-between px-4 sm:px-6 lg:px-8 h-16">
             <div class="flex items-center gap-4">
                 <button ng-click="main.toggleMobileMenu()" class="text-gray-400 hover:text-white md:hidden">
                     <i class="fas fa-bars text-xl"></i>
                 </button>
                 <div class="hidden sm:block text-gray-400">
-                    <span class="text-xs font-semibold uppercase tracking-wider text-gray-500">App</span>
-                    <span class="mx-2 text-gray-700">/</span>
-                    <span class="text-white capitalize">{{ main.getCurrentPageName() }}</span>
+                    <span class="text-xs font-semibold uppercase tracking-wider" style="color: rgba(245, 247, 255, 0.4);">App</span>
+                    <span class="mx-2" style="color: rgba(245, 247, 255, 0.2);">/</span>
+                    <span class="text-white capitalize" style="color: rgba(245, 247, 255, 0.9);">{{ main.getCurrentPageName() }}</span>
                 </div>
             </div>
-            
+
             <div class="flex items-center gap-4">
                 <div class="relative user-dropdown-container">
-                    <button class="flex items-center gap-3 hover:bg-gray-800 rounded-lg p-2 transition-colors outline-none" ng-click="main.toggleUserDropdown()">
-                        <i class="fas fa-user-circle text-gray-400 text-xl"></i>
-                        <span class="text-sm font-medium text-white hidden sm:block">{{ main.getCurrentUser() ? main.getCurrentUser().name : 'User' }}</span>
-                        <i class="fas fa-chevron-down text-gray-500 text-xs"></i>
+                    <button
+                        class="flex items-center gap-3 hover:bg-white/5 rounded-lg p-2 transition-colors outline-none"
+                        ng-click="main.toggleUserDropdown()">
+                        <div style="width: 28px; height: 28px; border-radius: 50%; background: linear-gradient(135deg, #7C3AED, #22D3EE); display: flex; align-items: center; justify-content: center; font-size: 12px; color: #0b1020;">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <span class="text-sm font-medium text-white hidden sm:block">{{ main.getCurrentUser() ?
+                            main.getCurrentUser().name : 'User' }}</span>
+                        <i class="fas fa-chevron-down text-xs" style="color: rgba(245, 247, 255, 0.4);"></i>
                     </button>
                     <!-- Dropdown -->
-                    <div ng-show="main.userDropdownOpen" class="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-lg shadow-xl py-1 z-50 overflow-hidden">
-                        <a href="#!/profile" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-primary-600 flex items-center gap-2">
-                            <i class="fas fa-user text-gray-400 w-4"></i> Profile
+                    <div ng-show="main.userDropdownOpen"
+                        class="absolute right-0 mt-2 w-48 rounded-lg shadow-xl py-1 z-50 overflow-hidden dash-dropdown">
+                        <a href="#!/profile"
+                            class="block px-4 py-2 text-sm dash-dropdown-item flex items-center gap-2">
+                            <i class="fas fa-user-circle" style="color: rgba(245, 247, 255, 0.5); width: 16px;"></i> Profile
                         </a>
-                        <div class="border-t border-gray-100 my-1"></div>
-                        <a href="" ng-click="main.logout()" class="block px-4 py-2 text-sm text-red-600 hover:bg-red-50 flex items-center gap-2">
-                            <i class="fas fa-sign-out-alt text-red-400 w-4"></i> Sign out
+                        <div class="border-t my-1" style="border-color: rgba(255,255,255,0.08);"></div>
+                        <a href="" ng-click="main.logout()"
+                            class="block px-4 py-2 text-sm text-red-400 hover:bg-red-500/10 flex items-center gap-2">
+                            <i class="fas fa-sign-out-alt w-4"></i> Sign out
                         </a>
                     </div>
                 </div>
@@ -252,13 +281,14 @@
 
     <!-- Main Content Wrapper -->
     <div ng-class="{'md:ml-[250px]': main.isAuthenticated() && !main.isPublicAuthPage()}">
-        
+
         <!-- Angular Views -->
-        <div ng-view class="min-h-screen relative z-10 bg-[#0a0a0a]"></div>
+        <div ng-view class="min-h-screen relative z-10" style="background: #070A12;"></div>
 
         <!-- Authenticated Footer -->
-        <footer class="py-6 text-center text-gray-500 bg-[#0a0a0a] border-t border-gray-800" ng-if="main.isAuthenticated() && !main.isPublicAuthPage()">
-             <p class="text-sm">&copy; 2026 College ERP System. All rights reserved.</p>
+        <footer class="py-6 text-center" style="background: #070A12; border-top: 1px solid rgba(255,255,255,0.08); color: rgba(245, 247, 255, 0.4);"
+            ng-if="main.isAuthenticated() && !main.isPublicAuthPage()">
+            <p class="text-sm">&copy; 2026 College ERP System. All rights reserved.</p>
         </footer>
     </div>
 
@@ -273,17 +303,18 @@
                         A comprehensive Enterprise Resource Planning system for educational institutions.
                     </p>
                 </div>
-                
+
                 <!-- Quick Links -->
                 <div>
                     <h5 class="text-lg font-bold mb-4">Quick Links</h5>
                     <div class="space-y-2">
                         <a href="#!/" class="block text-gray-400 hover:text-white transition-all-300">Home</a>
-                        <a href="#!/features" class="block text-gray-400 hover:text-white transition-all-300">Features</a>
+                        <a href="#!/features"
+                            class="block text-gray-400 hover:text-white transition-all-300">Features</a>
                         <a href="#!/contact" class="block text-gray-400 hover:text-white transition-all-300">Contact</a>
                     </div>
                 </div>
-                
+
                 <!-- Contact Info -->
                 <div>
                     <h5 class="text-lg font-bold mb-4">Contact Info</h5>
@@ -293,9 +324,9 @@
                     </div>
                 </div>
             </div>
-            
+
             <hr class="border-gray-800 my-8">
-            
+
             <div class="text-center text-gray-400 text-sm">
                 <p>&copy; 2026 College ERP System. All rights reserved.</p>
             </div>
@@ -321,5 +352,23 @@
     <script src="src/app/services/auth.service.js"></script>
     <script src="src/app/services/dashboard.service.js"></script>
     <script src="src/app/services/user.service.js"></script>
+    <script src="src/app/services/department.service.js"></script>
+    <script src="src/app/services/course.service.js"></script>
+    <script src="src/app/services/faculty.service.js"></script>
+    <script src="src/app/services/student.service.js"></script>
+    <script src="src/app/services/term.service.js"></script>
+    <script src="src/app/services/offering.service.js"></script>
+    <script src="src/app/services/enrollment.service.js"></script>
+    <script src="src/app/services/session.service.js"></script>
+    <script src="src/app/services/attendance.service.js"></script>
+    <script src="src/app/controllers/department.controller.js"></script>
+    <script src="src/app/controllers/course.controller.js"></script>
+    <script src="src/app/controllers/faculty.controller.js"></script>
+    <script src="src/app/controllers/student.controller.js"></script>
+    <script src="src/app/controllers/term.controller.js"></script>
+    <script src="src/app/controllers/enrollment.controller.js"></script>
+    <script src="src/app/controllers/session.controller.js"></script>
+    <script src="src/app/controllers/attendance.controller.js"></script>
 </body>
+
 </html>

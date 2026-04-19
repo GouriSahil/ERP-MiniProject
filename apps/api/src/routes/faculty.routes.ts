@@ -38,7 +38,7 @@ router.get(
 // Create faculty (admin, dept_head, super_admin only)
 router.post(
   '/',
-  authorize('super_admin', 'college_admin', 'department_head'),
+  authorize('super_admin', 'admin', 'dept_head'),
   validateFacultyCreate,
   FacultyController.create
 );
@@ -46,7 +46,7 @@ router.post(
 // Update faculty (admin, dept_head, super_admin only)
 router.put(
   '/:id',
-  authorize('super_admin', 'college_admin', 'department_head'),
+  authorize('super_admin', 'admin', 'dept_head'),
   validateUUIDParam(),
   validateFacultyUpdate,
   FacultyController.update
@@ -55,7 +55,7 @@ router.put(
 // Delete faculty (admin only)
 router.delete(
   '/:id',
-  authorize('college_admin'),
+  authorize('admin'),
   validateUUIDParam(),
   FacultyController.delete
 );

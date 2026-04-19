@@ -39,7 +39,7 @@ router.get(
 // Create student (admin, dept_head, super_admin only)
 router.post(
   '/',
-  authorize('super_admin', 'college_admin', 'department_head'),
+  authorize('super_admin', 'admin', 'dept_head'),
   validateStudentCreate,
   StudentsController.create
 );
@@ -47,7 +47,7 @@ router.post(
 // Update student (admin, dept_head, super_admin only)
 router.put(
   '/:id',
-  authorize('super_admin', 'college_admin', 'department_head'),
+  authorize('super_admin', 'admin', 'dept_head'),
   validateUUIDParam(),
   validateStudentUpdate,
   StudentsController.update
@@ -56,7 +56,7 @@ router.put(
 // Delete student (admin only)
 router.delete(
   '/:id',
-  authorize('college_admin'),
+  authorize('admin'),
   validateUUIDParam(),
   StudentsController.delete
 );
@@ -64,7 +64,7 @@ router.delete(
 // Bulk import students (admin, dept_head only)
 router.post(
   '/bulk-import',
-  authorize('college_admin', 'department_head'),
+  authorize('admin', 'dept_head'),
   StudentsController.bulkImport
 );
 
@@ -153,7 +153,7 @@ router.post(
 // Import students from CSV file (admin, dept_head only)
 router.post(
   '/import',
-  authorize('college_admin', 'department_head'),
+  authorize('admin', 'dept_head'),
   uploadCSV.single('file'),
   handleUploadError,
   StudentsController.importCSV

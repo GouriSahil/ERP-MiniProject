@@ -1,407 +1,6 @@
 <!-- Dashboard (Aurora Slate Theme) -->
-<style>
-    .dash-aurora {
-        --dash-bg: #070A12;
-        --dash-surface: rgba(255, 255, 255, 0.06);
-        --dash-surface-2: rgba(255, 255, 255, 0.08);
-        --dash-border: rgba(255, 255, 255, 0.12);
-        --dash-text: #F5F7FF;
-        --dash-muted: rgba(245, 247, 255, 0.72);
-        --dash-dim: rgba(245, 247, 255, 0.55);
-        --dash-accent: #7C3AED;
-        --dash-accent-2: #22D3EE;
-        --dash-success: #22C55E;
-        --dash-warning: #F59E0B;
-        --dash-danger: #EF4444;
-        --dash-shadow: 0 20px 60px rgba(0, 0, 0, 0.45);
-        min-height: 100vh;
-        background:
-            radial-gradient(800px 400px at 15% 0%, rgba(124, 58, 237, 0.35), transparent 60%),
-            radial-gradient(700px 380px at 85% 10%, rgba(34, 211, 238, 0.22), transparent 60%),
-            radial-gradient(600px 360px at 55% 90%, rgba(34, 197, 94, 0.14), transparent 65%),
-            var(--dash-bg);
-        color: var(--dash-text);
-        overflow-x: hidden;
-        padding: 28px 0 36px;
-    }
 
-    .dash-wrap {
-        max-width: 1200px;
-        margin: 0 auto;
-        padding: 0 16px;
-    }
-
-    .dash-hero {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 16px;
-        padding: 18px 18px;
-        border: 1px solid var(--dash-border);
-        background: linear-gradient(180deg, rgba(255, 255, 255, 0.09), rgba(255, 255, 255, 0.05));
-        border-radius: 16px;
-        box-shadow: var(--dash-shadow);
-        margin-bottom: 18px;
-    }
-
-    .dash-hero-left {
-        display: flex;
-        align-items: center;
-        gap: 14px;
-        min-width: 0;
-    }
-
-    .dash-avatar {
-        width: 46px;
-        height: 46px;
-        border-radius: 14px;
-        background: linear-gradient(135deg, rgba(124, 58, 237, 1), rgba(34, 211, 238, 0.9));
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        flex: 0 0 auto;
-        box-shadow: 0 14px 38px rgba(124, 58, 237, 0.3);
-    }
-
-    .dash-avatar i {
-        color: #0b1020;
-        font-size: 1.1rem;
-    }
-
-    .dash-hero h2 {
-        margin: 0;
-        font-weight: 800;
-        font-size: 1.15rem;
-        letter-spacing: 0.2px;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-    }
-
-    .dash-hero p {
-        margin: 4px 0 0;
-        color: var(--dash-muted);
-        font-size: 0.92rem;
-    }
-
-    .dash-hero-right {
-        display: flex;
-        gap: 10px;
-        flex-wrap: wrap;
-        justify-content: flex-end;
-    }
-
-    .dash-pill {
-        padding: 8px 12px;
-        border: 1px solid var(--dash-border);
-        background: rgba(255, 255, 255, 0.06);
-        border-radius: 999px;
-        color: var(--dash-muted);
-        font-size: 0.86rem;
-        display: flex;
-        align-items: center;
-        gap: 8px;
-    }
-
-    .dash-grid {
-        display: grid;
-        grid-template-columns: repeat(12, 1fr);
-        gap: 14px;
-    }
-
-    .dash-card {
-        border: 1px solid var(--dash-border);
-        background: linear-gradient(180deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0.04));
-        border-radius: 16px;
-        box-shadow: 0 18px 45px rgba(0, 0, 0, 0.25);
-        overflow: hidden;
-    }
-
-    .dash-card-header {
-        padding: 14px 16px;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 12px;
-    }
-
-    .dash-card-title {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        font-weight: 800;
-        font-size: 0.98rem;
-        margin: 0;
-    }
-
-    .dash-card-title i {
-        color: var(--dash-accent-2);
-    }
-
-    .dash-card-body {
-        padding: 14px 16px 16px;
-    }
-
-    .stat-grid {
-        display: grid;
-        grid-template-columns: repeat(4, 1fr);
-        gap: 12px;
-        margin-bottom: 14px;
-    }
-
-    .stat {
-        border: 1px solid rgba(255, 255, 255, 0.10);
-        background: rgba(255, 255, 255, 0.05);
-        border-radius: 16px;
-        padding: 14px;
-        position: relative;
-        overflow: hidden;
-    }
-
-    .stat:before {
-        content: '';
-        position: absolute;
-        inset: -40px -40px auto auto;
-        width: 140px;
-        height: 140px;
-        background: radial-gradient(circle, rgba(124, 58, 237, 0.35), transparent 60%);
-        transform: rotate(25deg);
-        pointer-events: none;
-    }
-
-    .stat-top {
-        display: flex;
-        justify-content: space-between;
-        align-items: flex-start;
-        gap: 10px;
-    }
-
-    .stat-label {
-        color: var(--dash-dim);
-        font-weight: 600;
-        font-size: 0.86rem;
-        margin: 0;
-    }
-
-    .stat-value {
-        font-size: 2.0rem;
-        font-weight: 900;
-        margin-top: 8px;
-        letter-spacing: -0.6px;
-    }
-
-    .stat-icon {
-        width: 40px;
-        height: 40px;
-        border-radius: 14px;
-        background: rgba(34, 211, 238, 0.12);
-        border: 1px solid rgba(34, 211, 238, 0.25);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        flex: 0 0 auto;
-    }
-
-    .stat-icon i {
-        color: var(--dash-accent-2);
-    }
-
-    .quick-actions {
-        display: grid;
-        grid-template-columns: repeat(6, 1fr);
-        gap: 10px;
-    }
-
-    .qa-btn {
-        border: 1px solid rgba(255, 255, 255, 0.12);
-        background: rgba(255, 255, 255, 0.06);
-        border-radius: 14px;
-        padding: 12px 12px;
-        color: var(--dash-text);
-        text-decoration: none;
-        cursor: pointer;
-        transition: transform 0.15s ease, background 0.15s ease, border-color 0.15s ease;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 10px;
-        font-weight: 700;
-        font-size: 0.9rem;
-        user-select: none;
-    }
-
-    .qa-btn:hover {
-        transform: translateY(-2px);
-        background: rgba(255, 255, 255, 0.09);
-        border-color: rgba(34, 211, 238, 0.35);
-        text-decoration: none;
-        color: var(--dash-text);
-    }
-
-    .qa-btn i {
-        color: var(--dash-accent-2);
-    }
-
-    .list {
-        list-style: none;
-        padding: 0;
-        margin: 0;
-    }
-
-    .list-item {
-        display: flex;
-        align-items: flex-start;
-        justify-content: space-between;
-        gap: 12px;
-        padding: 12px 0;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-    }
-
-    .list-item:last-child {
-        border-bottom: none;
-    }
-
-    .list-main {
-        min-width: 0;
-    }
-
-    .list-title {
-        margin: 0;
-        font-weight: 800;
-        font-size: 0.95rem;
-        color: var(--dash-text);
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-    }
-
-    .list-sub {
-        margin: 4px 0 0;
-        color: var(--dash-muted);
-        font-size: 0.86rem;
-    }
-
-    .chip {
-        padding: 6px 10px;
-        border-radius: 999px;
-        font-size: 0.78rem;
-        font-weight: 800;
-        border: 1px solid rgba(255, 255, 255, 0.14);
-        background: rgba(255, 255, 255, 0.06);
-        color: var(--dash-muted);
-        white-space: nowrap;
-    }
-
-    .chip-success { border-color: rgba(34, 197, 94, 0.35); background: rgba(34, 197, 94, 0.10); color: rgba(225, 255, 238, 0.9); }
-    .chip-warn { border-color: rgba(245, 158, 11, 0.35); background: rgba(245, 158, 11, 0.10); color: rgba(255, 244, 222, 0.9); }
-    .chip-danger { border-color: rgba(239, 68, 68, 0.35); background: rgba(239, 68, 68, 0.10); color: rgba(255, 228, 228, 0.9); }
-
-    .bar-row {
-        display: grid;
-        grid-template-columns: 160px 1fr 56px;
-        gap: 10px;
-        align-items: center;
-        padding: 9px 0;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-    }
-
-    .bar-row:last-child { border-bottom: none; }
-
-    .bar-label {
-        color: var(--dash-muted);
-        font-weight: 700;
-        font-size: 0.86rem;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-    }
-
-    .bar-track {
-        width: 100%;
-        height: 10px;
-        border-radius: 999px;
-        background: rgba(255, 255, 255, 0.08);
-        border: 1px solid rgba(255, 255, 255, 0.10);
-        overflow: hidden;
-    }
-
-    .bar-fill {
-        height: 100%;
-        border-radius: 999px;
-        background: linear-gradient(90deg, rgba(34, 211, 238, 1), rgba(124, 58, 237, 1));
-        width: 0%;
-    }
-
-    .bar-value {
-        text-align: right;
-        color: var(--dash-text);
-        font-weight: 900;
-        font-size: 0.86rem;
-    }
-
-    .dash-actions {
-        display: flex;
-        gap: 8px;
-        flex-wrap: wrap;
-        justify-content: flex-end;
-    }
-
-    .btn-mini {
-        border: 1px solid rgba(255, 255, 255, 0.14);
-        background: rgba(255, 255, 255, 0.06);
-        color: var(--dash-text);
-        font-weight: 800;
-        font-size: 0.78rem;
-        padding: 7px 10px;
-        border-radius: 10px;
-        cursor: pointer;
-        transition: transform 0.15s ease, background 0.15s ease, border-color 0.15s ease;
-        user-select: none;
-    }
-
-    .btn-mini:hover { transform: translateY(-1px); background: rgba(255, 255, 255, 0.10); border-color: rgba(34, 211, 238, 0.35); }
-    .btn-mini-danger { border-color: rgba(239, 68, 68, 0.35); background: rgba(239, 68, 68, 0.10); }
-    .btn-mini-danger:hover { border-color: rgba(239, 68, 68, 0.6); }
-
-    .empty {
-        padding: 18px 0 4px;
-        color: var(--dash-muted);
-        font-size: 0.9rem;
-        text-align: center;
-    }
-
-    .dash-loading {
-        min-height: 60vh;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        flex-direction: column;
-        gap: 10px;
-        color: var(--dash-muted);
-    }
-
-    .dash-loading i {
-        font-size: 2.2rem;
-        animation: spin 1s linear infinite;
-    }
-
-    @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-
-    @media (max-width: 1024px) {
-        .stat-grid { grid-template-columns: repeat(2, 1fr); }
-        .quick-actions { grid-template-columns: repeat(3, 1fr); }
-        .bar-row { grid-template-columns: 140px 1fr 56px; }
-    }
-
-    @media (max-width: 520px) {
-        .quick-actions { grid-template-columns: repeat(2, 1fr); }
-        .bar-row { grid-template-columns: 1fr; }
-        .bar-value { text-align: left; }
-    }
-</style>
-
-<div class="dash-aurora" ng-if="!dashboard.isLoading">
+<div ng-if="!dashboard.isLoading" style="padding-top: 24px;">
     <div class="dash-wrap">
         <!-- Hero -->
         <div class="dash-hero">
@@ -419,7 +18,8 @@
                 <div class="dash-pill">
                     <i class="fas fa-user-shield" style="color: var(--dash-accent-2);"></i>
                     <span style="color: var(--dash-muted);">Role:</span>
-                    <span style="font-weight: 900; color: var(--dash-text); text-transform: uppercase;">{{ dashboard.currentUser.role }}</span>
+                    <span style="font-weight: 900; color: var(--dash-text); text-transform: uppercase;">{{
+                        dashboard.currentUser.role }}</span>
                 </div>
                 <div class="dash-pill">
                     <i class="fas fa-circle" style="color: var(--dash-success); font-size: 0.7rem;"></i>
@@ -446,40 +46,16 @@
 
         <!-- Stats -->
         <div class="stat-grid">
-            <div class="stat">
+            <div class="stat" ng-repeat="stat in dashboard.roleStats track by $index">
                 <div class="stat-top">
                     <div>
-                        <p class="stat-label">Total Students</p>
-                        <div class="stat-value">{{ dashboard.counts.students !== null ? dashboard.counts.students : '--' }}</div>
+                        <p class="stat-label">{{ stat.label }}</p>
+                        <div class="stat-value">
+                            {{ stat.value !== null ? stat.value : '--' }}<span ng-if="stat.suffix">{{ stat.suffix
+                                }}</span>
+                        </div>
                     </div>
-                    <div class="stat-icon"><i class="fas fa-user-graduate"></i></div>
-                </div>
-            </div>
-            <div class="stat">
-                <div class="stat-top">
-                    <div>
-                        <p class="stat-label">Total Faculty</p>
-                        <div class="stat-value">{{ dashboard.counts.faculty !== null ? dashboard.counts.faculty : '--' }}</div>
-                    </div>
-                    <div class="stat-icon"><i class="fas fa-chalkboard-teacher"></i></div>
-                </div>
-            </div>
-            <div class="stat">
-                <div class="stat-top">
-                    <div>
-                        <p class="stat-label">Courses</p>
-                        <div class="stat-value">{{ dashboard.counts.courses !== null ? dashboard.counts.courses : '--' }}</div>
-                    </div>
-                    <div class="stat-icon"><i class="fas fa-book"></i></div>
-                </div>
-            </div>
-            <div class="stat">
-                <div class="stat-top">
-                    <div>
-                        <p class="stat-label">Departments</p>
-                        <div class="stat-value">{{ dashboard.counts.departments !== null ? dashboard.counts.departments : '--' }}</div>
-                    </div>
-                    <div class="stat-icon"><i class="fas fa-building"></i></div>
+                    <div class="stat-icon"><i class="{{ stat.icon }}"></i></div>
                 </div>
             </div>
         </div>
@@ -488,11 +64,21 @@
         <div class="dash-card" style="margin-top: 14px;">
             <div class="dash-card-header">
                 <h3 class="dash-card-title"><i class="fas fa-bolt"></i> Quick actions</h3>
-                <span class="chip">Jump to a module</span>
+                <div class="dash-actions">
+                    <button class="btn-mini" ng-disabled="!dashboard.canQuickMarkAttendance()"
+                        ng-click="dashboard.quickMarkAttendance()">
+                        <i class="fas fa-user-check" style="margin-right: 6px;"></i> Quick attendance mark
+                    </button>
+                    <button class="btn-mini" ng-disabled="!dashboard.canQuickEnrollment()"
+                        ng-click="dashboard.quickCreateEnrollment()">
+                        <i class="fas fa-layer-group" style="margin-right: 6px;"></i> Quick enrollment
+                    </button>
+                </div>
             </div>
             <div class="dash-card-body">
                 <div class="quick-actions">
-                    <a class="qa-btn" ng-repeat="action in dashboard.quickActions" ng-click="dashboard.navigateTo(action.path)">
+                    <a class="qa-btn" ng-repeat="action in dashboard.quickActions"
+                        ng-click="dashboard.navigateTo(action.path)">
                         <i class="{{ action.icon }}"></i>
                         <span>{{ action.label }}</span>
                     </a>
@@ -503,7 +89,7 @@
         <!-- Main grid -->
         <div class="dash-grid" style="margin-top: 14px;">
             <!-- Recent activity -->
-            <div class="dash-card" style="grid-column: span 7;">
+            <div class="dash-card" style="grid-column: span 7;" ng-if="dashboard.shouldShowSection('recentActivity')">
                 <div class="dash-card-header">
                     <h3 class="dash-card-title"><i class="fas fa-clock"></i> Recent activity</h3>
                     <span class="chip" ng-if="dashboard.recentActivity.blocked">Restricted</span>
@@ -524,17 +110,19 @@
                             }">{{ log.status }}</span>
                         </li>
                     </ul>
-                    <div class="empty" ng-if="!dashboard.recentActivity.blocked && dashboard.recentActivity.logs.length === 0">
+                    <div class="empty"
+                        ng-if="!dashboard.recentActivity.blocked && dashboard.recentActivity.logs.length === 0">
                         No recent activity found.
                     </div>
                 </div>
             </div>
 
             <!-- Pending approvals -->
-            <div class="dash-card" style="grid-column: span 5;">
+            <div class="dash-card" style="grid-column: span 5;" ng-if="dashboard.shouldShowSection('pendingApprovals')">
                 <div class="dash-card-header">
                     <h3 class="dash-card-title"><i class="fas fa-user-check"></i> Pending approvals</h3>
-                    <span class="chip" ng-if="!dashboard.pendingApprovals.blocked && dashboard.pendingApprovals.total !== null">
+                    <span class="chip"
+                        ng-if="!dashboard.pendingApprovals.blocked && dashboard.pendingApprovals.total !== null">
                         {{ dashboard.pendingApprovals.total }} pending
                     </span>
                     <span class="chip" ng-if="dashboard.pendingApprovals.blocked">Restricted</span>
@@ -550,12 +138,15 @@
                                 <p class="list-sub">{{ u.email }} · {{ u.role }}</p>
                             </div>
                             <div class="dash-actions">
-                                <button class="btn-mini" ng-disabled="dashboard.isApprovalsBusy" ng-click="dashboard.approvePendingUser(u)">Approve</button>
-                                <button class="btn-mini btn-mini-danger" ng-disabled="dashboard.isApprovalsBusy" ng-click="dashboard.rejectPendingUser(u)">Reject</button>
+                                <button class="btn-mini" ng-disabled="dashboard.isApprovalsBusy"
+                                    ng-click="dashboard.approvePendingUser(u)">Approve</button>
+                                <button class="btn-mini btn-mini-danger" ng-disabled="dashboard.isApprovalsBusy"
+                                    ng-click="dashboard.rejectPendingUser(u)">Reject</button>
                             </div>
                         </li>
                     </ul>
-                    <div class="empty" ng-if="!dashboard.pendingApprovals.blocked && dashboard.pendingApprovals.users.length === 0">
+                    <div class="empty"
+                        ng-if="!dashboard.pendingApprovals.blocked && dashboard.pendingApprovals.users.length === 0">
                         No pending users right now.
                     </div>
                 </div>
@@ -576,13 +167,15 @@
                             <div class="list-main">
                                 <p class="list-title">{{ s.topic || 'Session' }}</p>
                                 <p class="list-sub">
-                                    {{ dashboard.formatDate(s.date) }} · {{ dashboard.formatTimeRange(s.startTime, s.endTime) }}
+                                    {{ dashboard.formatDate(s.date) }} · {{ dashboard.formatTimeRange(s.startTime,
+                                    s.endTime) }}
                                 </p>
                             </div>
                             <span class="chip chip-warn" ng-if="s.status">{{ s.status }}</span>
                         </li>
                     </ul>
-                    <div class="empty" ng-if="!dashboard.upcomingSessions.blocked && dashboard.upcomingSessions.sessions.length === 0">
+                    <div class="empty"
+                        ng-if="!dashboard.upcomingSessions.blocked && dashboard.upcomingSessions.sessions.length === 0">
                         No upcoming sessions in the next 30 days.
                     </div>
                 </div>
@@ -600,10 +193,11 @@
                     </div>
                     <div ng-if="!dashboard.charts.enrollmentTrends.blocked">
                         <div class="bar-row" ng-repeat="p in dashboard.charts.enrollmentTrends.data"
-                             ng-init="maxEnroll = (dashboard.charts.enrollmentTrends.data | orderBy:'-value')[0].value">
+                            ng-init="maxEnroll = (dashboard.charts.enrollmentTrends.data | orderBy:'-value')[0].value">
                             <div class="bar-label">{{ p.label }}</div>
                             <div class="bar-track">
-                                <div class="bar-fill" style="width: {{ dashboard.getBarWidth(p.value, maxEnroll) }}"></div>
+                                <div class="bar-fill" style="width: {{ dashboard.getBarWidth(p.value, maxEnroll) }}">
+                                </div>
                             </div>
                             <div class="bar-value">{{ p.value }}</div>
                         </div>
@@ -625,10 +219,11 @@
                     </div>
                     <div ng-if="!dashboard.charts.attendanceStats.blocked">
                         <div class="bar-row" ng-repeat="c in dashboard.charts.attendanceStats.data"
-                             ng-init="maxPct = 100">
+                            ng-init="maxPct = 100">
                             <div class="bar-label">{{ c.label }}</div>
                             <div class="bar-track">
-                                <div class="bar-fill" style="width: {{ dashboard.getBarWidth(c.percentage, maxPct) }}"></div>
+                                <div class="bar-fill" style="width: {{ dashboard.getBarWidth(c.percentage, maxPct) }}">
+                                </div>
                             </div>
                             <div class="bar-value">{{ c.percentage }}%</div>
                         </div>

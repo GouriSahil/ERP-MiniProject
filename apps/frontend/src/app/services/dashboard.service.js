@@ -39,6 +39,7 @@
         }
 
         function normalizeOverview(results, currentUser) {
+            var role = currentUser && currentUser.role ? String(currentUser.role).toLowerCase() : '';
             var studentTotal = extractPaginationTotal(results.students);
             var facultyTotal = extractPaginationTotal(results.faculty);
             var courseTotal = extractPaginationTotal(results.courses);
@@ -65,6 +66,12 @@
                 upcomingSessions: upcomingSessions,
                 recentActivity: recentActivity,
                 charts: charts,
+                roleStats: buildRoleStats(role, {
+                    students: studentTotal,
+                    faculty: facultyTotal,
+                    courses: courseTotal,
+                    departments: departmentTotal
+                }, pendingApproval, upcomingSessions, charts),
                 capabilities: {
                     canSeeApprovals: !pendingApproval.blocked,
                     canSeeSessions: !upcomingSessions.blocked,
@@ -72,6 +79,85 @@
                     canSeeAudit: !recentActivity.blocked
                 }
             };
+        }
+
+        function buildRoleStats(role, counts, pendingApproval, upcomingSessions, charts) {
+            var defaultStats = [
+                makeStatCard('Total Students', counts.students, 'fas fa-user-graduate'),
+                makeStatCard('Total Faculty', counts.faculty, 'fas fa-chalkboard-teacher'),
+                makeStatCard('Courses', counts.courses, 'fas fa-book'),
+                makeStatCard('Departments', counts.departments, 'fas fa-building')
+            ];
+
+            if (role === 'student') {
+                return [
+                    makeStatCard('My Attendance', getAverageAttendance(charts.attendanceStats), 'fas fa-chart-pie', '%'),
+                    makeStatCard('Upcoming Sessions', getUpcomingCount(upcomingSessions), 'fas fa-calendar-check'),
+                    makeStatCard('My Courses', counts.courses, 'fas fa-book-open'),
+                    makeStatCard('Enrollment Trend', getLatestEnrollmentCount(charts.enrollmentTrends), 'fas fa-chart-line')
+                ];
+            }
+
+            if (role === 'faculty') {
+                return [
+                    makeStatCard('My Students', counts.students, 'fas fa-user-graduate'),
+                    makeStatCard('Upcoming Classes', getUpcomingCount(upcomingSessions), 'fas fa-calendar-day'),
+                    makeStatCard('Attendance Avg', getAverageAttendance(charts.attendanceStats), 'fas fa-clipboard-check', '%'),
+                    makeStatCard('My Courses', counts.courses, 'fas fa-book-open')
+                ];
+            }
+
+            if (role === 'dept_head') {
+                return [
+                    makeStatCard('Department Students', counts.students, 'fas fa-user-graduate'),
+                    makeStatCard('Department Faculty', counts.faculty, 'fas fa-chalkboard-teacher'),
+                    makeStatCard('Department Courses', counts.courses, 'fas fa-book'),
+                    makeStatCard('Pending Approvals', pendingApproval.total, 'fas fa-user-check')
+                ];
+            }
+
+            return defaultStats;
+        }
+
+        function makeStatCard(label, value, icon, suffix) {
+            return {
+                label: label,
+                value: value,
+                icon: icon,
+                suffix: suffix || ''
+            };
+        }
+
+        function getUpcomingCount(upcomingSessions) {
+            if (!upcomingSessions || upcomingSessions.blocked) return null;
+            return (upcomingSessions.sessions || []).length;
+        }
+
+        function getLatestEnrollmentCount(enrollmentTrends) {
+            if (!enrollmentTrends || enrollmentTrends.blocked) return null;
+            var points = enrollmentTrends.data || [];
+            if (!points.length) return null;
+            var lastPoint = points[points.length - 1];
+            return (lastPoint && typeof lastPoint.value === 'number') ? lastPoint.value : null;
+        }
+
+        function getAverageAttendance(attendanceStats) {
+            if (!attendanceStats || attendanceStats.blocked) return null;
+            var rows = attendanceStats.data || [];
+            if (!rows.length) return null;
+
+            var total = 0;
+            var count = 0;
+
+            rows.forEach(function(row) {
+                if (row && typeof row.percentage === 'number') {
+                    total += row.percentage;
+                    count += 1;
+                }
+            });
+
+            if (count === 0) return null;
+            return Math.round(total / count);
         }
 
         function extractPaginationTotal(resp) {

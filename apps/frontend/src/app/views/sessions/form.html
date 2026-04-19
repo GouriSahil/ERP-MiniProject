@@ -1,0 +1,94 @@
+<!-- Session Form (Aurora Slate Theme) -->
+
+<div class="dash-wrap" style="padding-top: 24px; max-width: 600px; margin: 0 auto;">
+    
+    <!-- Hero / Header -->
+    <div class="dash-hero" style="margin-bottom: 24px;">
+        <div class="dash-hero-left">
+            <a href="#!/sessions" class="btn-mini" style="width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; text-decoration: none;">
+                <i class="fas fa-arrow-left"></i>
+            </a>
+            <div>
+                <h2>{{ vm.isEditing ? 'Edit Session' : 'Schedule Session' }}</h2>
+                <p>{{ vm.isEditing ? 'Update class details and timing.' : 'Define a new class session for an active course offering.' }}</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Form Card -->
+    <div class="dash-card">
+        <div class="dash-card-body">
+            <form ng-submit="vm.save()" name="sessionForm" novalidate>
+                
+                <!-- Offering Selection -->
+                <div style="margin-bottom: 24px;">
+                    <label style="display: block; margin-bottom: 8px; color: var(--dash-dim); font-size: 0.8rem; font-weight: 700; text-transform: uppercase;">Course Offering</label>
+                    <select ng-model="vm.session.offeringId" required name="offering"
+                            style="width: 100%; padding: 14px 16px; background: rgba(255, 255, 255, 0.05); border: 1px solid var(--dash-border); border-radius: 12px; color: var(--dash-text); outline: none;">
+                        <option value="">Choose Course Offering...</option>
+                        <option ng-repeat="o in vm.offerings" value="{{ o._id }}">{{ o.courseId.code }} - {{ o.courseId.name }} ({{ o.termId.name }})</option>
+                    </select>
+                </div>
+
+                <!-- Date -->
+                <div style="margin-bottom: 24px;">
+                    <label style="display: block; margin-bottom: 8px; color: var(--dash-dim); font-size: 0.8rem; font-weight: 700; text-transform: uppercase;">Session Date</label>
+                    <input type="date" ng-model="vm.session.date" required name="date"
+                           style="width: 100%; padding: 12px 16px; background: rgba(255, 255, 255, 0.05); border: 1px solid var(--dash-border); border-radius: 12px; color: var(--dash-text); outline: none;">
+                </div>
+
+                <!-- Timing -->
+                <div class="row">
+                    <div class="col-md-6">
+                        <div style="margin-bottom: 24px;">
+                            <label style="display: block; margin-bottom: 8px; color: var(--dash-dim); font-size: 0.8rem; font-weight: 700; text-transform: uppercase;">Start Time</label>
+                            <input type="time" ng-model="vm.session.startTime" required name="start"
+                                   style="width: 100%; padding: 12px 16px; background: rgba(255, 255, 255, 0.05); border: 1px solid var(--dash-border); border-radius: 12px; color: var(--dash-text); outline: none;">
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div style="margin-bottom: 24px;">
+                            <label style="display: block; margin-bottom: 8px; color: var(--dash-dim); font-size: 0.8rem; font-weight: 700; text-transform: uppercase;">End Time</label>
+                            <input type="time" ng-model="vm.session.endTime" required name="end"
+                                   style="width: 100%; padding: 12px 16px; background: rgba(255, 255, 255, 0.05); border: 1px solid var(--dash-border); border-radius: 12px; color: var(--dash-text); outline: none;">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Location & Type -->
+                <div class="row">
+                    <div class="col-md-8">
+                        <div style="margin-bottom: 24px;">
+                            <label style="display: block; margin-bottom: 8px; color: var(--dash-dim); font-size: 0.8rem; font-weight: 700; text-transform: uppercase;">Location / Classroom</label>
+                            <input type="text" ng-model="vm.session.location" required name="loc"
+                                   placeholder="e.g. Room 402, Lab B"
+                                   style="width: 100%; padding: 12px 16px; background: rgba(255, 255, 255, 0.05); border: 1px solid var(--dash-border); border-radius: 12px; color: var(--dash-text); outline: none;">
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div style="margin-bottom: 24px;">
+                            <label style="display: block; margin-bottom: 8px; color: var(--dash-dim); font-size: 0.8rem; font-weight: 700; text-transform: uppercase;">Type</label>
+                            <select ng-model="vm.session.type" required
+                                    style="width: 100%; padding: 12px 16px; background: rgba(255, 255, 255, 0.05); border: 1px solid var(--dash-border); border-radius: 12px; color: var(--dash-text); outline: none;">
+                                <option value="lecture">Lecture</option>
+                                <option value="lab">Lab</option>
+                                <option value="tutorial">Tutorial</option>
+                                <option value="exam">Exam</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Footer Actions -->
+                <div style="display: flex; gap: 12px; justify-content: flex-end; padding-top: 12px; border-top: 1px solid var(--dash-border);">
+                    <button type="button" class="btn-mini" style="padding: 10px 24px;" ng-click="vm.navigateBack()">Cancel</button>
+                    <button type="submit" class="dash-btn-primary" style="padding: 10px 32px;" ng-disabled="vm.isSaving || sessionForm.$invalid">
+                        <i class="fas fa-spinner fa-spin" ng-if="vm.isSaving" style="margin-right: 8px;"></i>
+                        {{ vm.isEditing ? 'Update Session' : 'Schedule Session' }}
+                    </button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,97 @@
+<!-- Term List (Aurora Slate Theme) -->
+
+<div ng-if="!vm.isLoading" style="padding-top: 24px;">
+    <div class="dash-wrap">
+
+        <!-- Hero header -->
+        <div class="dash-hero">
+            <div class="dash-hero-left">
+                <div class="dash-avatar" style="background: linear-gradient(135deg, #8B5CF6, #D946EF); color: #fff;">
+                    <i class="fas fa-calendar-alt"></i>
+                </div>
+                <div style="min-width: 0;">
+                    <h2>Academic Terms</h2>
+                    <p>Manage semesters and academic sessions.</p>
+                </div>
+            </div>
+            <div class="dash-hero-right">
+                <a href="#!/terms/create" class="dash-btn-primary"
+                   style="text-decoration: none; display: inline-flex; align-items: center; gap: 8px;">
+                    <i class="fas fa-plus"></i> Add Term
+                </a>
+            </div>
+        </div>
+
+        <!-- Empty State -->
+        <div class="dash-card" ng-if="vm.terms.length === 0" style="padding: 60px 20px; text-align: center;">
+            <div style="width: 64px; height: 64px; border-radius: 20px; background: rgba(255,255,255,0.05); display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; color: var(--dash-muted); font-size: 1.5rem;">
+                <i class="fas fa-calendar-times"></i>
+            </div>
+            <h3 style="font-size: 1.1rem; font-weight: 800; color: var(--dash-text); margin: 0 0 8px;">No academic terms found</h3>
+            <p style="color: var(--dash-muted); margin: 0 0 16px;">Define your first semester or term to get started.</p>
+            <a href="#!/terms/create"
+               style="color: var(--dash-accent-2); font-weight: 700; text-decoration: none; display: inline-flex; align-items: center; gap: 8px;">
+                <i class="fas fa-plus"></i> Create Term
+            </a>
+        </div>
+
+        <!-- Terms Table -->
+        <div class="dash-card" ng-if="vm.terms.length > 0" style="padding: 0; overflow: hidden;">
+            <div style="overflow-x: auto;">
+                <table style="width: 100%; border-collapse: collapse; text-align: left;">
+                    <thead>
+                        <tr style="border-bottom: 1px solid var(--dash-border); background: rgba(255, 255, 255, 0.02);">
+                            <th style="padding: 12px 16px; color: var(--dash-dim); font-weight: 700; font-size: 0.75rem; text-transform: uppercase;">Term Name</th>
+                            <th style="padding: 12px 16px; color: var(--dash-dim); font-weight: 700; font-size: 0.75rem; text-transform: uppercase;">Start Date</th>
+                            <th style="padding: 12px 16px; color: var(--dash-dim); font-weight: 700; font-size: 0.75rem; text-transform: uppercase;">End Date</th>
+                            <th style="padding: 12px 16px; color: var(--dash-dim); font-weight: 700; font-size: 0.75rem; text-transform: uppercase; text-align: center;">Status</th>
+                            <th style="padding: 12px 16px; color: var(--dash-dim); font-weight: 700; font-size: 0.75rem; text-transform: uppercase; text-align: right;">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="t in vm.terms"
+                            style="border-bottom: 1px solid var(--dash-border); transition: background 0.2s;"
+                            onmouseover="this.style.background='rgba(255,255,255,0.04)'"
+                            onmouseout="this.style.background='transparent'">
+                            <td style="padding: 16px;">
+                                <div style="font-weight: 800; color: var(--dash-text); font-size: 1rem;">{{ t.name }}</div>
+                            </td>
+                            <td style="padding: 16px; color: var(--dash-text); font-size: 0.9rem;">
+                                {{ vm.formatDate(t.startDate) }}
+                            </td>
+                            <td style="padding: 16px; color: var(--dash-text); font-size: 0.9rem;">
+                                {{ vm.formatDate(t.endDate) }}
+                            </td>
+                            <td style="padding: 16px; text-align: center;">
+                                <span class="badge" ng-class="vm.getStatusClass(t.status)" 
+                                      style="padding: 6px 12px; border-radius: 8px; font-weight: 800; text-transform: uppercase; font-size: 0.65rem; letter-spacing: 0.05em;">
+                                    {{ t.status }}
+                                </span>
+                            </td>
+                            <td style="padding: 16px; text-align: right;">
+                                <div style="display: flex; gap: 8px; justify-content: flex-end;">
+                                    <a href="#!/terms/{{ t._id }}/edit" class="btn-mini" style="text-decoration: none;" title="Edit">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <button class="btn-mini btn-mini-danger" ng-click="vm.confirmDelete(t._id, t.name)" title="Delete">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Loading State -->
+<div ng-if="vm.isLoading" style="padding-top: 24px;">
+    <div class="dash-wrap">
+        <div class="dash-loading">
+            <i class="fas fa-circle-notch"></i>
+            <div style="font-weight: 800;">Loading academic terms…</div>
+        </div>
+    </div>
+</div>

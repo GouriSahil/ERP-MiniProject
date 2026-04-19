@@ -1,0 +1,65 @@
+<!-- Single Enrollment Form (Aurora Slate Theme) -->
+
+<div class="dash-wrap" style="padding-top: 24px; max-width: 600px; margin: 0 auto;">
+    
+    <!-- Hero / Header -->
+    <div class="dash-hero" style="margin-bottom: 24px;">
+        <div class="dash-hero-left">
+            <a href="#!/enrollments" class="btn-mini" style="width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; text-decoration: none;">
+                <i class="fas fa-arrow-left"></i>
+            </a>
+            <div>
+                <h2>New Enrollment</h2>
+                <p>Associate a student with a course offering.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Form Card -->
+    <div class="dash-card">
+        <div class="dash-card-body">
+            <form ng-submit="vm.save()" name="enrollForm" novalidate>
+                
+                <!-- Offering Selection -->
+                <div style="margin-bottom: 24px;">
+                    <label style="display: block; margin-bottom: 8px; color: var(--dash-dim); font-size: 0.8rem; font-weight: 700; text-transform: uppercase;">Course Offering</label>
+                    <select ng-model="vm.enrollment.offeringId" required name="offering"
+                            style="width: 100%; padding: 14px 16px; background: rgba(255, 255, 255, 0.05); border: 1px solid var(--dash-border); border-radius: 12px; color: var(--dash-text); outline: none;">
+                        <option value="">Select Course Offering</option>
+                        <option ng-repeat="o in vm.offerings" value="{{ o._id }}">{{ o.courseId.code }} - {{ o.courseId.name }} ({{ o.termId.name }})</option>
+                    </select>
+                </div>
+
+                <!-- Student Selection -->
+                <div style="margin-bottom: 24px;">
+                    <label style="display: block; margin-bottom: 8px; color: var(--dash-dim); font-size: 0.8rem; font-weight: 700; text-transform: uppercase;">Student</label>
+                    <select ng-model="vm.enrollment.studentId" required name="student"
+                            style="width: 100%; padding: 14px 16px; background: rgba(255, 255, 255, 0.05); border: 1px solid var(--dash-border); border-radius: 12px; color: var(--dash-text); outline: none;">
+                        <option value="">Select Student</option>
+                        <option ng-repeat="s in vm.students" value="{{ s._id }}">{{ s.rollNumber }} - {{ s.userId.name }}</option>
+                    </select>
+                </div>
+
+                <!-- Status -->
+                <div style="margin-bottom: 32px;">
+                    <label style="display: block; margin-bottom: 8px; color: var(--dash-dim); font-size: 0.8rem; font-weight: 700; text-transform: uppercase;">Enrollment Status</label>
+                    <select ng-model="vm.enrollment.status" required
+                            style="width: 100%; padding: 12px 16px; background: rgba(255, 255, 255, 0.05); border: 1px solid var(--dash-border); border-radius: 12px; color: var(--dash-text); outline: none;">
+                        <option value="enrolled">Enrolled</option>
+                        <option value="waitlisted">Waitlisted</option>
+                    </select>
+                </div>
+
+                <!-- Footer Actions -->
+                <div style="display: flex; gap: 12px; justify-content: flex-end; padding-top: 12px; border-top: 1px solid var(--dash-border);">
+                    <button type="button" class="btn-mini" style="padding: 10px 24px;" ng-click="vm.navigateBack()">Cancel</button>
+                    <button type="submit" class="dash-btn-primary" style="padding: 10px 32px;" ng-disabled="vm.isSaving || enrollForm.$invalid">
+                        <i class="fas fa-spinner fa-spin" ng-if="vm.isSaving" style="margin-right: 8px;"></i>
+                        Confirm Enrollment
+                    </button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>

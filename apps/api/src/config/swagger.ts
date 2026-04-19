@@ -15,7 +15,7 @@ Most endpoints require a valid JWT token. Include it in the Authorization header
 
 ## Roles
 - **super_admin**: Full system access
-- **college_admin**: College-level management
+- **admin**: College-level management
 - **department_admin**: Department-level management
 - **faculty**: Faculty members
 - **student**: Students`,

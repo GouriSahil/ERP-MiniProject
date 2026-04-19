@@ -122,7 +122,7 @@ router.get(
 // Export attendance to CSV - authorized roles
 router.get(
   '/export',
-  authorize('super_admin', 'college_admin', 'department_head', 'faculty', 'support_staff'),
+  authorize('super_admin', 'admin', 'dept_head', 'faculty', 'staff'),
   AttendanceController.exportToCSV
 );
 

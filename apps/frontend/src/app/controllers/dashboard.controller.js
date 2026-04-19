@@ -15,6 +15,7 @@
         vm.loadError = null;
 
         vm.counts = { students: null, faculty: null, courses: null, departments: null };
+        vm.roleStats = [];
         vm.pendingApprovals = { blocked: true, users: [], total: null };
         vm.upcomingSessions = { blocked: true, sessions: [] };
         vm.recentActivity = { blocked: true, logs: [] };
@@ -22,6 +23,7 @@
         vm.capabilities = {};
         vm.quickActions = [];
         vm.isApprovalsBusy = false;
+        vm.quickActionState = { attendance: false, enrollment: false };
         
         vm.showChangePasswordForm = false;
         vm.changePasswordData = {
@@ -59,6 +61,7 @@
                     vm.upcomingSessions = overview.upcomingSessions;
                     vm.recentActivity = overview.recentActivity;
                     vm.charts = overview.charts;
+                    vm.roleStats = overview.roleStats || [];
                     vm.capabilities = overview.capabilities;
                 })
                 .catch(function(error) {
@@ -68,7 +71,7 @@
         }
 
         function buildQuickActions() {
-            vm.quickActions = [
+            var defaultActions = [
                 { label: 'Departments', icon: 'fas fa-building', path: '/departments' },
                 { label: 'Courses', icon: 'fas fa-book', path: '/courses' },
                 { label: 'Students', icon: 'fas fa-user-graduate', path: '/students' },
@@ -76,6 +79,33 @@
                 { label: 'Sessions', icon: 'fas fa-calendar-check', path: '/sessions' },
                 { label: 'Reports', icon: 'fas fa-chart-bar', path: '/reports' }
             ];
+
+            var role = (vm.currentUser && vm.currentUser.role) ? String(vm.currentUser.role).toLowerCase() : '';
+            if (role === 'student') {
+                vm.quickActions = [
+                    { label: 'My Courses', icon: 'fas fa-book-open', path: '/courses' },
+                    { label: 'My Attendance', icon: 'fas fa-clipboard-check', path: '/attendance' },
+                    { label: 'Enrollments', icon: 'fas fa-layer-group', path: '/enrollments' },
+                    { label: 'Sessions', icon: 'fas fa-calendar-check', path: '/sessions' },
+                    { label: 'Reports', icon: 'fas fa-chart-bar', path: '/reports' },
+                    { label: 'Profile', icon: 'fas fa-user-circle', path: '/profile' }
+                ];
+                return;
+            }
+
+            if (role === 'faculty') {
+                vm.quickActions = [
+                    { label: 'My Classes', icon: 'fas fa-chalkboard-teacher', path: '/sessions' },
+                    { label: 'Attendance', icon: 'fas fa-clipboard-check', path: '/attendance' },
+                    { label: 'Students', icon: 'fas fa-user-graduate', path: '/students' },
+                    { label: 'Courses', icon: 'fas fa-book-open', path: '/courses' },
+                    { label: 'Reports', icon: 'fas fa-chart-bar', path: '/reports' },
+                    { label: 'Profile', icon: 'fas fa-user-circle', path: '/profile' }
+                ];
+                return;
+            }
+
+            vm.quickActions = defaultActions;
         }
 
         vm.getGreeting = function() {
@@ -93,6 +123,48 @@
 
         vm.navigateTo = function(path) {
             $location.path(path);
+        };
+
+        vm.canQuickMarkAttendance = function() {
+            var role = (vm.currentUser && vm.currentUser.role) ? String(vm.currentUser.role).toLowerCase() : '';
+            return role === 'faculty' || role === 'dept_head' || role === 'admin' || role === 'super_admin' || role === 'admin';
+        };
+
+        vm.canQuickEnrollment = function() {
+            var role = (vm.currentUser && vm.currentUser.role) ? String(vm.currentUser.role).toLowerCase() : '';
+            return role !== 'student';
+        };
+
+        vm.quickMarkAttendance = function() {
+            if (!vm.canQuickMarkAttendance()) {
+                Swal.fire({
+                    icon: 'info',
+                    title: 'Attendance action unavailable',
+                    text: 'Your role does not allow quick attendance marking.'
+                });
+                return;
+            }
+
+            vm.quickActionState.attendance = true;
+            $location.search('quickAction', 'mark-attendance');
+            $location.search('from', 'dashboard');
+            $location.path('/attendance/history');
+        };
+
+        vm.quickCreateEnrollment = function() {
+            if (!vm.canQuickEnrollment()) {
+                Swal.fire({
+                    icon: 'info',
+                    title: 'Enrollment action unavailable',
+                    text: 'Your role does not allow quick enrollments.'
+                });
+                return;
+            }
+
+            vm.quickActionState.enrollment = true;
+            $location.search('quickAction', 'create-enrollment');
+            $location.search('from', 'dashboard');
+            $location.path('/enrollments/bulk');
         };
 
         vm.approvePendingUser = function(user) {
@@ -165,6 +237,17 @@
             if (max <= 0) return '0%';
             var pct = Math.max(0, Math.min(100, Math.round((v / max) * 100)));
             return pct + '%';
+        };
+
+        vm.shouldShowSection = function(section) {
+            var role = (vm.currentUser && vm.currentUser.role) ? String(vm.currentUser.role).toLowerCase() : '';
+            if (role === 'student') {
+                return section !== 'pendingApprovals' && section !== 'recentActivity';
+            }
+            if (role === 'faculty') {
+                return section !== 'pendingApprovals';
+            }
+            return true;
         };
 
         vm.logout = function() {

@@ -10,6 +10,135 @@
                     <p style="color: var(--text-secondary); margin-bottom: 0;">
                         Navigation item is ready. The {{ navigation.section.title }} module UI will be added in the next frontend tasks.
                     </p>
+
+                    <div ng-if="navigation.quickAction"
+                         style="margin-top: 1rem; padding: 0.9rem 1rem; border-radius: 10px; border: 1px solid var(--border-color); background: rgba(124, 58, 237, 0.08);">
+                        <div style="font-weight: 700; color: var(--text-primary); margin-bottom: 0.35rem;">
+                            <i class="{{ navigation.quickAction.icon }}" style="margin-right: 0.4rem; color: var(--accent-color);"></i>
+                            {{ navigation.quickAction.title }}
+                        </div>
+                        <div style="color: var(--text-secondary); margin-bottom: 0.75rem;">
+                            {{ navigation.quickAction.description }}
+                        </div>
+                        <button class="btn btn-sm btn-outline-primary" ng-click="navigation.clearQuickAction()">
+                            {{ navigation.quickAction.actionText }}
+                        </button>
+                    </div>
+
+                    <div ng-if="navigation.currentPath === '/attendance' && navigation.isQuickActionActive('mark-attendance')"
+                         style="margin-top: 1rem; padding: 1rem; border-radius: 10px; border: 1px solid var(--border-color); background: rgba(34, 211, 238, 0.06);">
+                        <h5 style="margin-bottom: 0.85rem; color: var(--text-primary); font-weight: 700;">
+                            <i class="fas fa-user-check" style="margin-right: 0.4rem; color: var(--accent-color);"></i>
+                            Quick Attendance Mark
+                        </h5>
+
+                        <div ng-if="navigation.quickForms.attendance.loading" style="color: var(--text-secondary);">
+                            Loading sessions and students...
+                        </div>
+
+                        <div ng-if="!navigation.quickForms.attendance.loading">
+                            <div class="form-group">
+                                <label>Session</label>
+                                <select class="form-control"
+                                        ng-model="navigation.quickForms.attendance.selectedSessionId"
+                                        ng-options="s._id as ((s.topic || 'Session') + ' • ' + (s.date | date:'mediumDate')) for s in navigation.quickForms.attendance.sessions">
+                                    <option value="">Select session</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Student</label>
+                                <select class="form-control"
+                                        ng-model="navigation.quickForms.attendance.selectedStudentId"
+                                        ng-options="st._id as ((st.userId.name || st.rollNumber || 'Student') + ' • ' + (st.rollNumber || 'N/A')) for st in navigation.quickForms.attendance.students">
+                                    <option value="">Select student</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Status</label>
+                                <select class="form-control" ng-model="navigation.quickForms.attendance.status">
+                                    <option value="present">Present</option>
+                                    <option value="absent">Absent</option>
+                                    <option value="late">Late</option>
+                                    <option value="excused">Excused</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Remarks (optional)</label>
+                                <input class="form-control"
+                                       ng-model="navigation.quickForms.attendance.remarks"
+                                       placeholder="Add note">
+                            </div>
+
+                            <div ng-if="navigation.quickForms.attendance.error"
+                                 style="color: #ef4444; font-size: 0.9rem; margin-bottom: 0.75rem;">
+                                {{ navigation.quickForms.attendance.error }}
+                            </div>
+
+                            <div style="display: flex; gap: 0.5rem; align-items: center;">
+                                <button class="btn btn-sm btn-primary"
+                                        ng-disabled="navigation.quickForms.attendance.submitting"
+                                        ng-click="navigation.submitQuickAttendance()">
+                                    {{ navigation.quickForms.attendance.submitting ? 'Submitting...' : 'Submit attendance' }}
+                                </button>
+                                <button class="btn btn-sm btn-outline-secondary"
+                                        ng-click="navigation.loadAttendanceQuickData()">
+                                    Reload data
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div ng-if="navigation.currentPath === '/enrollments' && navigation.isQuickActionActive('create-enrollment')"
+                         style="margin-top: 1rem; padding: 1rem; border-radius: 10px; border: 1px solid var(--border-color); background: rgba(34, 197, 94, 0.08);">
+                        <h5 style="margin-bottom: 0.85rem; color: var(--text-primary); font-weight: 700;">
+                            <i class="fas fa-layer-group" style="margin-right: 0.4rem; color: var(--accent-color);"></i>
+                            Quick Enrollment
+                        </h5>
+
+                        <div ng-if="navigation.quickForms.enrollment.loading" style="color: var(--text-secondary);">
+                            Loading offerings and students...
+                        </div>
+
+                        <div ng-if="!navigation.quickForms.enrollment.loading">
+                            <div class="form-group">
+                                <label>Course Offering</label>
+                                <select class="form-control"
+                                        ng-model="navigation.quickForms.enrollment.selectedOfferingId"
+                                        ng-options="o._id as (((o.courseId && o.courseId.code) || 'Course') + ' • ' + ((o.termId && o.termId.name) || 'Term')) for o in navigation.quickForms.enrollment.offerings">
+                                    <option value="">Select offering</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Student</label>
+                                <select class="form-control"
+                                        ng-model="navigation.quickForms.enrollment.selectedStudentId"
+                                        ng-options="st._id as ((st.userId.name || st.rollNumber || 'Student') + ' • ' + (st.rollNumber || 'N/A')) for st in navigation.quickForms.enrollment.students">
+                                    <option value="">Select student</option>
+                                </select>
+                            </div>
+
+                            <div ng-if="navigation.quickForms.enrollment.error"
+                                 style="color: #ef4444; font-size: 0.9rem; margin-bottom: 0.75rem;">
+                                {{ navigation.quickForms.enrollment.error }}
+                            </div>
+
+                            <div style="display: flex; gap: 0.5rem; align-items: center;">
+                                <button class="btn btn-sm btn-primary"
+                                        ng-disabled="navigation.quickForms.enrollment.submitting"
+                                        ng-click="navigation.submitQuickEnrollment()">
+                                    {{ navigation.quickForms.enrollment.submitting ? 'Submitting...' : 'Create enrollment' }}
+                                </button>
+                                <button class="btn btn-sm btn-outline-secondary"
+                                        ng-click="navigation.loadEnrollmentQuickData()">
+                                    Reload data
+                                </button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

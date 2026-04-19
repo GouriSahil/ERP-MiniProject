@@ -52,10 +52,10 @@ export const checkPermission = (resource: string, action: string) => {
 function checkUserPermission(role: string, resource: string, action: string): boolean {
   const permissions: Record<string, string[]> = {
     super_admin: ['*'],
-    college_admin: ['users:*', 'students:*', 'faculty:*', 'departments:*', 'courses:*', 'terms:*', 'offerings:*', 'sessions:*', 'enrollments:*', 'attendance:*', 'reports:view', 'audit:view'],
-    department_head: ['students:*', 'faculty:*', 'courses:view', 'offerings:*', 'sessions:*', 'enrollments:*', 'attendance:*', 'reports:view'],
+    admin: ['users:*', 'students:*', 'faculty:*', 'departments:*', 'courses:*', 'terms:*', 'offerings:*', 'sessions:*', 'enrollments:*', 'attendance:*', 'reports:view', 'audit:view'],
+    dept_head: ['students:*', 'faculty:*', 'courses:view', 'offerings:*', 'sessions:*', 'enrollments:*', 'attendance:*', 'reports:view'],
     faculty: ['students:view', 'offerings:view', 'sessions:view', 'enrollments:view', 'attendance:mark', 'attendance:view', 'reports:view'],
-    support_staff: ['students:view', 'faculty:view', 'courses:view', 'offerings:view', 'reports:view'],
+    staff: ['students:view', 'faculty:view', 'courses:view', 'offerings:view', 'reports:view'],
     student: ['offerings:view', 'enrollments:view', 'attendance:view', 'reports:view'],
   };
 
