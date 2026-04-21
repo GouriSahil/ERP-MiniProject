@@ -34,6 +34,28 @@
         vm.changePasswordStatus = null;
         vm.changePasswordMessage = '';
         
+        vm.activeTab = 'profile'; // 'profile' or 'settings'
+        vm.accordionState = {
+            notifications: true,
+            theme: false,
+            language: false
+        };
+
+        vm.toggleAccordion = function(section) {
+            vm.accordionState[section] = !vm.accordionState[section];
+        };
+        
+        vm.dateFilter = {
+            from: new Date(),
+            to: new Date()
+        };
+        // Initialize 'to' date to 30 days from now
+        vm.dateFilter.to.setDate(vm.dateFilter.to.getDate() + 30);
+
+        vm.refresh = function() {
+            loadDashboardData();
+        };
+
         init();
 
         function init() {
@@ -53,7 +75,7 @@
             vm.isLoading = true;
             vm.loadError = null;
 
-            DashboardService.getOverview(vm.currentUser)
+            DashboardService.getOverview(vm.currentUser, vm.dateFilter.from, vm.dateFilter.to)
                 .then(function(overview) {
                     vm.isLoading = false;
                     vm.counts = overview.counts;
@@ -237,6 +259,34 @@
             if (max <= 0) return '0%';
             var pct = Math.max(0, Math.min(100, Math.round((v / max) * 100)));
             return pct + '%';
+        };
+
+        vm.getChartColor = function(index) {
+            var colors = ['#6366f1', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#06b6d4', '#f97316', '#14b8a6', '#f43f5e', '#3b82f6'];
+            return colors[index % colors.length];
+        };
+
+        vm.getPieGradient = function(data) {
+            if (!data || data.length === 0) return 'transparent 0% 100%';
+            
+            var total = 0;
+            data.forEach(function(d) { total += (Number(d.value) || 0); });
+            
+            if (total === 0) return 'var(--dash-surface) 0% 100%';
+
+            var gradientString = [];
+            var currentPct = 0;
+            
+            for (var i = 0; i < data.length; i++) {
+                var value = Number(data[i].value) || 0;
+                var pct = (value / total) * 100;
+                var color = vm.getChartColor(i);
+                
+                gradientString.push(color + ' ' + currentPct + '% ' + (currentPct + pct) + '%');
+                currentPct += pct;
+            }
+            
+            return gradientString.join(', ');
         };
 
         vm.shouldShowSection = function(section) {

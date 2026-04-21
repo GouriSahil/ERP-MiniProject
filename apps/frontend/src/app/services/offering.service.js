@@ -12,7 +12,10 @@
 
         var service = {
             list: list,
-            getById: getById
+            getById: getById,
+            create: create,
+            update: update,
+            remove: remove
         };
 
         return service;
@@ -27,6 +30,30 @@
 
         function getById(id) {
             return $http.get(baseUrl + '/' + id)
+                .then(function(response) {
+                    return response.data;
+                })
+                .catch(handleError);
+        }
+
+        function create(data) {
+            return $http.post(baseUrl, data)
+                .then(function(response) {
+                    return response.data;
+                })
+                .catch(handleError);
+        }
+
+        function update(id, data) {
+            return $http.put(baseUrl + '/' + id, data)
+                .then(function(response) {
+                    return response.data;
+                })
+                .catch(handleError);
+        }
+
+        function remove(id) {
+            return $http.delete(baseUrl + '/' + id)
                 .then(function(response) {
                     return response.data;
                 })

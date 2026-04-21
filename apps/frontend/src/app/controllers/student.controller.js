@@ -222,7 +222,16 @@
                 };
                 promise = StudentService.update($routeParams.id, updateData);
             } else {
-                promise = StudentService.create(vm.student);
+                var createData = {
+                    name: vm.student.userId.name,
+                    email: vm.student.userId.email,
+                    password: vm.student.userId.password,
+                    rollNumber: vm.student.rollNumber,
+                    departmentId: vm.student.departmentId,
+                    batch: vm.student.batch,
+                    semester: vm.student.semester
+                };
+                promise = StudentService.create(createData);
             }
 
             promise
@@ -241,7 +250,15 @@
                 })
                 .catch(function(error) {
                     vm.isSaving = false;
-                    vm.error = (error && error.data && error.data.message) || 'Failed to save student';
+                    var errorMsg = (error && error.data && error.data.error) || (error && error.data && error.data.message) || 'Failed to save student';
+                    vm.error = errorMsg;
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Registration Failed',
+                        text: errorMsg,
+                        background: '#0f1425',
+                        color: '#F5F7FF'
+                    });
                 });
         }
 

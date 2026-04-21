@@ -218,7 +218,15 @@
                 };
                 promise = FacultyService.update($routeParams.id, updateData);
             } else {
-                promise = FacultyService.create(vm.faculty);
+                var createData = {
+                    name: vm.faculty.userId.name,
+                    email: vm.faculty.userId.email,
+                    password: vm.faculty.userId.password,
+                    departmentId: vm.faculty.departmentId,
+                    specialization: vm.faculty.specialization,
+                    designation: vm.faculty.designation
+                };
+                promise = FacultyService.create(createData);
             }
 
             promise
@@ -237,7 +245,15 @@
                 })
                 .catch(function(error) {
                     vm.isSaving = false;
-                    vm.error = (error && error.data && error.data.message) || 'Failed to save faculty member';
+                    var errorMsg = (error && error.data && error.data.error) || (error && error.data && error.data.message) || 'Failed to save faculty member';
+                    vm.error = errorMsg;
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Registration Failed',
+                        text: errorMsg,
+                        background: '#0f1425',
+                        color: '#F5F7FF'
+                    });
                 });
         }
 

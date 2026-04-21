@@ -101,7 +101,7 @@
                 <!-- Footer Actions -->
                 <div style="display: flex; gap: 12px; justify-content: flex-end; padding-top: 12px; border-top: 1px solid var(--dash-border);">
                     <button type="button" class="btn-mini" style="padding: 10px 24px;" ng-click="vm.navigateBack()">Cancel</button>
-                    <button type="submit" class="dash-btn-primary" style="padding: 10px 32px;" ng-disabled="vm.isSaving || facultyForm.$invalid">
+                    <button type="submit" class="dash-btn-primary" style="padding: 10px 32px;" ng-disabled="vm.isSaving">
                         <i class="fas fa-spinner fa-spin" ng-if="vm.isSaving" style="margin-right: 8px;"></i>
                         {{ vm.isEditing ? 'Update Faculty' : 'Register Faculty' }}
                     </button>

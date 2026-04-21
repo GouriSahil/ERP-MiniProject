@@ -140,9 +140,21 @@
                 authenticate: true
             })
             .when('/course-offerings', {
-                templateUrl: 'src/app/views/shared/section-placeholder.html',
-                controller: 'NavigationController',
-                controllerAs: 'navigation',
+                templateUrl: 'src/app/views/offerings/list.html',
+                controller: 'OfferingController',
+                controllerAs: 'vm',
+                authenticate: true
+            })
+            .when('/course-offerings/create', {
+                templateUrl: 'src/app/views/offerings/form.html',
+                controller: 'OfferingController',
+                controllerAs: 'vm',
+                authenticate: true
+            })
+            .when('/course-offerings/:id/edit', {
+                templateUrl: 'src/app/views/offerings/form.html',
+                controller: 'OfferingController',
+                controllerAs: 'vm',
                 authenticate: true
             })
             .when('/sessions', {
@@ -254,9 +266,9 @@
                 authenticate: true
             })
             .when('/reports', {
-                templateUrl: 'src/app/views/shared/section-placeholder.html',
-                controller: 'NavigationController',
-                controllerAs: 'navigation',
+                templateUrl: 'src/app/views/reports/dashboard.html',
+                controller: 'ReportController',
+                controllerAs: 'vm',
                 authenticate: true
             })
             .when('/audit-logs', {

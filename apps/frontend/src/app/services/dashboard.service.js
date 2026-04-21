@@ -16,10 +16,10 @@
 
         return service;
 
-        function getOverview(currentUser) {
+        function getOverview(currentUser, customDateFrom, customDateTo) {
             var today = new Date();
-            var dateFrom = new Date(today.getFullYear(), today.getMonth(), today.getDate()).toISOString();
-            var dateTo = new Date(today.getFullYear(), today.getMonth(), today.getDate() + 30).toISOString();
+            var dateFrom = customDateFrom ? new Date(customDateFrom).toISOString() : new Date(today.getFullYear(), today.getMonth(), today.getDate()).toISOString();
+            var dateTo = customDateTo ? new Date(customDateTo).toISOString() : new Date(today.getFullYear(), today.getMonth(), today.getDate() + 30).toISOString();
 
             var requests = {
                 students: safeGet(APP_CONFIG.API_BASE_URL + '/students', { page: 1, limit: 1 }),
@@ -30,6 +30,7 @@
                 sessions: safeGet(APP_CONFIG.API_BASE_URL + '/sessions', { page: 1, limit: 25, dateFrom: dateFrom, dateTo: dateTo }),
                 enrollmentTrends: safeGet(APP_CONFIG.API_BASE_URL + '/reports/charts/enrollment-trends', {}),
                 attendanceStats: safeGet(APP_CONFIG.API_BASE_URL + '/reports/charts/attendance-stats', {}),
+                coursePopularity: safeGet(APP_CONFIG.API_BASE_URL + '/reports/charts/course-popularity', {}),
                 audit: safeGet(APP_CONFIG.API_BASE_URL + '/audit', { page: 1, limit: 8, sortBy: 'occurredAt', sortOrder: 'desc' })
             };
 
@@ -51,7 +52,8 @@
 
             var charts = {
                 enrollmentTrends: extractCharts(results.enrollmentTrends),
-                attendanceStats: extractCharts(results.attendanceStats)
+                attendanceStats: extractCharts(results.attendanceStats),
+                coursePopularity: extractCharts(results.coursePopularity)
             };
 
             return {

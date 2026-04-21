@@ -1,0 +1,143 @@
+<!-- Reports Dashboard (Aurora Slate Theme) -->
+
+<div class="dash-wrap" style="padding-top: 24px;">
+    
+    <!-- Hero / Header -->
+    <div class="dash-hero">
+        <div class="dash-hero-left">
+            <div class="dash-avatar">
+                <i class="fas fa-chart-pie"></i>
+            </div>
+            <div>
+                <h2>System Reports</h2>
+                <p>Generate, view, and export analytics and data reports.</p>
+            </div>
+        </div>
+        <div class="dash-hero-right" ng-if="vm.isReportGenerated && vm.reportData.length > 0">
+            <button type="button" class="btn-mini" ng-click="vm.printReport()" style="margin-right: 8px;">
+                <i class="fas fa-print"></i> Print
+            </button>
+            <button type="button" class="dash-btn-primary" ng-click="vm.exportCsv()">
+                <i class="fas fa-download"></i> Export CSV
+            </button>
+        </div>
+    </div>
+
+    <!-- Filters Card -->
+    <div class="dash-card" style="margin-bottom: 24px;">
+        <div class="dash-card-body" style="padding: 24px;">
+            <form ng-submit="vm.generateReport()">
+                <div class="row">
+                    <!-- Report Type -->
+                    <div class="col-md-4" style="margin-bottom: 16px;">
+                        <label style="display: block; margin-bottom: 8px; color: var(--dash-dim); font-size: 0.8rem; font-weight: 700; text-transform: uppercase;">Report Type</label>
+                        <select ng-model="vm.filters.reportType" required
+                                style="width: 100%; padding: 12px 16px; background: rgba(255, 255, 255, 0.05); border: 1px solid var(--dash-border); border-radius: 12px; color: var(--dash-text); outline: none;">
+                            <option ng-repeat="type in vm.reportTypes" value="{{type.id}}">{{type.name}}</option>
+                        </select>
+                    </div>
+
+                    <!-- Term Filter -->
+                    <div class="col-md-3" style="margin-bottom: 16px;">
+                        <label style="display: block; margin-bottom: 8px; color: var(--dash-dim); font-size: 0.8rem; font-weight: 700; text-transform: uppercase;">Term (Optional)</label>
+                        <select ng-model="vm.filters.termId"
+                                style="width: 100%; padding: 12px 16px; background: rgba(255, 255, 255, 0.05); border: 1px solid var(--dash-border); border-radius: 12px; color: var(--dash-text); outline: none;">
+                            <option value="">All Terms</option>
+                            <option ng-repeat="term in vm.terms" value="{{term._id}}">{{term.name}}</option>
+                        </select>
+                    </div>
+
+                    <!-- Department Filter -->
+                    <div class="col-md-3" style="margin-bottom: 16px;">
+                        <label style="display: block; margin-bottom: 8px; color: var(--dash-dim); font-size: 0.8rem; font-weight: 700; text-transform: uppercase;">Department (Optional)</label>
+                        <select ng-model="vm.filters.departmentId"
+                                style="width: 100%; padding: 12px 16px; background: rgba(255, 255, 255, 0.05); border: 1px solid var(--dash-border); border-radius: 12px; color: var(--dash-text); outline: none;">
+                            <option value="">All Departments</option>
+                            <option ng-repeat="dept in vm.departments" value="{{dept._id}}">{{dept.code}} - {{dept.name}}</option>
+                        </select>
+                    </div>
+
+                    <!-- Generate Button -->
+                    <div class="col-md-2" style="margin-bottom: 16px; display: flex; align-items: flex-end;">
+                        <button type="submit" class="dash-btn-primary" style="width: 100%; padding: 12px;" ng-disabled="vm.isLoading">
+                            <i class="fas fa-sync fa-spin" ng-if="vm.isLoading" style="margin-right: 8px;"></i>
+                            <i class="fas fa-bolt" ng-if="!vm.isLoading" style="margin-right: 8px;"></i>
+                            Generate
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Conditional Filters -->
+                <div class="row" ng-if="vm.filters.reportType === 'low-attendance' || vm.filters.reportType === 'course-enrollment'">
+                    <div class="col-md-4" style="margin-bottom: 16px;" ng-if="vm.filters.reportType === 'course-enrollment'">
+                        <label style="display: block; margin-bottom: 8px; color: var(--dash-dim); font-size: 0.8rem; font-weight: 700; text-transform: uppercase;">Course (Optional)</label>
+                        <select ng-model="vm.filters.courseId"
+                                style="width: 100%; padding: 12px 16px; background: rgba(255, 255, 255, 0.05); border: 1px solid var(--dash-border); border-radius: 12px; color: var(--dash-text); outline: none;">
+                            <option value="">All Courses</option>
+                            <option ng-repeat="course in vm.courses" value="{{course._id}}">{{course.code}}</option>
+                        </select>
+                    </div>
+                    
+                    <div class="col-md-4" style="margin-bottom: 16px;" ng-if="vm.filters.reportType === 'low-attendance'">
+                        <label style="display: block; margin-bottom: 8px; color: var(--dash-dim); font-size: 0.8rem; font-weight: 700; text-transform: uppercase;">Threshold (%)</label>
+                        <input type="number" ng-model="vm.filters.threshold" min="1" max="100"
+                               style="width: 100%; padding: 12px 16px; background: rgba(255, 255, 255, 0.05); border: 1px solid var(--dash-border); border-radius: 12px; color: var(--dash-text); outline: none;">
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Error State -->
+    <div class="dash-alert dash-alert-danger" ng-if="vm.error && !vm.isLoading" style="margin-bottom: 24px;">
+        <i class="fas fa-exclamation-circle"></i>
+        <div>
+            <strong>Error:</strong> {{vm.error}}
+        </div>
+    </div>
+
+    <!-- Report Output Card -->
+    <div class="dash-card" ng-if="vm.isReportGenerated">
+        
+        <!-- Summary Section (if available) -->
+        <div class="dash-card-body border-b" style="border-color: var(--dash-border);" ng-if="vm.reportSummary">
+            <h4 style="color: var(--dash-text); margin: 0 0 16px; font-weight: 600;">Report Summary</h4>
+            <div class="row">
+                <div class="col-md-3 col-6" ng-repeat="(key, value) in vm.reportSummary" style="margin-bottom: 16px;">
+                    <div style="color: var(--dash-dim); font-size: 0.8rem; text-transform: uppercase; margin-bottom: 4px;">{{key | uppercase}}</div>
+                    <div style="color: var(--dash-text); font-size: 1.5rem; font-weight: 700;">{{value}}</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Table Section -->
+        <div class="dash-table-container">
+            <table class="dash-table" ng-if="vm.reportData && vm.reportData.length > 0">
+                <thead>
+                    <tr>
+                        <!-- Dynamically generate headers based on keys of the first object -->
+                        <th ng-repeat="(key, value) in vm.reportData[0]" ng-if="key !== '$$hashKey' && typeof value !== 'object'">
+                            {{key | uppercase}}
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="row in vm.reportData">
+                        <td ng-repeat="(key, value) in row" ng-if="key !== '$$hashKey' && typeof value !== 'object'">
+                            {{value}}
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <!-- Empty Data State -->
+            <div class="dash-empty" ng-if="!vm.reportData || vm.reportData.length === 0" style="padding: 40px 0;">
+                <div class="dash-empty-icon">
+                    <i class="fas fa-file-alt"></i>
+                </div>
+                <h3>No Data Available</h3>
+                <p>The selected report generated 0 results matching your filters.</p>
+            </div>
+        </div>
+    </div>
+</div>

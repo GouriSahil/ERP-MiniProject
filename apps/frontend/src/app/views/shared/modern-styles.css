@@ -84,6 +84,21 @@
   --error-color: #ef4444;
   --info-color: #3b82f6;
   --pink-accent: #ec4899;
+
+  /* Dashboard Variables Globally Applied to Fix Missing Text Colors */
+  --dash-bg: #070A12;
+  --dash-surface: rgba(255, 255, 255, 0.06);
+  --dash-surface-2: rgba(255, 255, 255, 0.08);
+  --dash-border: rgba(255, 255, 255, 0.12);
+  --dash-text: #F5F7FF;
+  --dash-muted: rgba(245, 247, 255, 0.72);
+  --dash-dim: rgba(245, 247, 255, 0.55);
+  --dash-accent: #7C3AED;
+  --dash-accent-2: #22D3EE;
+  --dash-success: #22C55E;
+  --dash-warning: #F59E0B;
+  --dash-danger: #EF4444;
+  --dash-shadow: 0 20px 60px rgba(0, 0, 0, 0.45);
 }
 
 /* ===== GLASSMORPHISM CLASSES ===== */
@@ -562,6 +577,65 @@
   z-index: 1;
 }
 
+/* ===== TABS & ACCORDION ===== */
+.dash-tabs {
+  display: flex;
+  gap: 16px;
+  border-bottom: 1px solid var(--dash-border);
+  margin-bottom: 24px;
+}
+
+.dash-tab {
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  color: var(--dash-muted);
+  font-weight: 600;
+  padding: 12px 16px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 0.95rem;
+}
+
+.dash-tab:hover {
+  color: var(--dash-text);
+  border-bottom-color: rgba(255,255,255,0.2);
+}
+
+.dash-tab.active {
+  color: var(--dash-accent);
+  border-bottom-color: var(--dash-accent);
+}
+
+.dash-accordion {
+  border: 1px solid var(--dash-border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  margin-bottom: 12px;
+}
+
+.dash-accordion-header {
+  background: rgba(255,255,255,0.02);
+  padding: 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  font-weight: 600;
+  color: var(--dash-text);
+  transition: background 0.3s ease;
+}
+
+.dash-accordion-header:hover {
+  background: rgba(255,255,255,0.05);
+}
+
+.dash-accordion-body {
+  padding: 16px;
+  border-top: 1px solid var(--dash-border);
+  background: rgba(0,0,0,0.1);
+}
+
 /* ===== STEP CARDS ===== */
 .step-card {
   text-align: center;
@@ -874,6 +948,7 @@
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
+        color: var(--dash-text);
     }
 
     .dash-hero p {

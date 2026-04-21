@@ -103,11 +103,20 @@
                 <!-- Prerequisites -->
                 <div style="margin-bottom: 24px;">
                     <label style="display: block; margin-bottom: 8px; color: var(--dash-dim); font-size: 0.8rem; font-weight: 700; text-transform: uppercase;">Prerequisites</label>
-                    <select ng-model="vm.course.prerequisites" multiple
-                            style="width: 100%; min-height: 120px; padding: 12px 16px; background: rgba(255, 255, 255, 0.05); border: 1px solid var(--dash-border); border-radius: 12px; color: var(--dash-text); outline: none;">
-                        <option ng-repeat="c in vm.allCourses" value="{{ c._id }}">{{ c.code }} - {{ c.name }}</option>
-                    </select>
-                    <p style="margin-top: 6px; font-size: 0.75rem; color: var(--dash-muted);">Hold Ctrl/Cmd to select multiple courses.</p>
+                    
+                    <div ng-if="vm.allCourses.length === 0" style="padding: 16px; background: rgba(255, 255, 255, 0.02); border: 1px dashed var(--dash-border); border-radius: 12px; color: var(--dash-muted); text-align: center; font-size: 0.9rem;">
+                        No other courses available to select as prerequisites. Create more courses first.
+                    </div>
+                    
+                    <div ng-if="vm.allCourses.length > 0">
+                        <select ng-model="vm.course.prerequisites" multiple
+                                style="width: 100%; min-height: 120px; padding: 12px 16px; background: rgba(255, 255, 255, 0.05); border: 1px solid var(--dash-border); border-radius: 12px; color: var(--dash-text); outline: none;">
+                            <option ng-repeat="c in vm.allCourses" value="{{ c._id }}">{{ c.code }} - {{ c.name }}</option>
+                        </select>
+                        <p style="margin-top: 6px; font-size: 0.8rem; color: var(--dash-muted);">
+                            <i class="fas fa-info-circle"></i> This is a selection list, not a text box. Hold <strong>Ctrl/Cmd</strong> and click to select multiple prerequisite courses.
+                        </p>
+                    </div>
                 </div>
 
                 <!-- Footer Actions -->

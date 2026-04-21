@@ -102,7 +102,21 @@
 
             SessionService.list(params)
                 .then(function(response) {
-                    vm.sessions = response.data || [];
+                    var allSessions = response.data || [];
+                    
+                    if (vm.currentUser.role === 'faculty' && vm.currentUser.departmentId) {
+                        var facDeptId = typeof vm.currentUser.departmentId === 'object' ? vm.currentUser.departmentId._id : vm.currentUser.departmentId;
+                        
+                        vm.sessions = allSessions.filter(function(session) {
+                            var offDeptId = null;
+                            if (session.offeringId && session.offeringId.courseId && session.offeringId.courseId.departmentId) {
+                                offDeptId = typeof session.offeringId.courseId.departmentId === 'object' ? session.offeringId.courseId.departmentId._id : session.offeringId.courseId.departmentId;
+                            }
+                            return String(offDeptId) === String(facDeptId);
+                        });
+                    } else {
+                        vm.sessions = allSessions;
+                    }
                     if (response.pagination) {
                         vm.pagination.total = response.pagination.total || 0;
                         vm.pagination.totalPages = response.pagination.totalPages || 0;

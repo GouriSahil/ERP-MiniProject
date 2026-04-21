@@ -36,12 +36,23 @@
                     <div>
                         <div style="font-weight:900; margin-bottom:4px;">Couldn’t load dashboard data</div>
                         <div style="color: var(--dash-muted);">{{ dashboard.loadError }}</div>
-                        <div style="margin-top:10px;">
-                            <button class="btn-mini" ng-click="dashboard.navigateTo('/dashboard')">Refresh</button>
-                        </div>
                     </div>
                 </div>
             </div>
+        </div>
+
+        <!-- Controls -->
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; gap: 16px; flex-wrap: wrap;">
+            <div style="display: flex; gap: 12px; align-items: center; background: rgba(255,255,255,0.05); padding: 8px 16px; border-radius: 12px; border: 1px solid var(--dash-border);">
+                <i class="fas fa-calendar-alt" style="color: var(--dash-muted);"></i>
+                <input type="date" ng-model="dashboard.dateFilter.from" style="background: transparent; border: none; color: var(--dash-text); outline: none; font-size: 0.9rem;">
+                <span style="color: var(--dash-muted);">to</span>
+                <input type="date" ng-model="dashboard.dateFilter.to" style="background: transparent; border: none; color: var(--dash-text); outline: none; font-size: 0.9rem;">
+            </div>
+            
+            <button class="dash-btn-primary" ng-click="dashboard.refresh()" ng-disabled="dashboard.isLoading">
+                <i class="fas fa-sync" ng-class="{'fa-spin': dashboard.isLoading}" style="margin-right: 8px;"></i> Refresh Dashboard
+            </button>
         </div>
 
         <!-- Stats -->
@@ -203,6 +214,36 @@
                         </div>
                         <div class="empty" ng-if="dashboard.charts.enrollmentTrends.data.length === 0">
                             No chart data available.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Course Popularity Pie Chart -->
+            <div class="dash-card" style="grid-column: span 7;">
+                <div class="dash-card-header">
+                    <h3 class="dash-card-title"><i class="fas fa-chart-pie"></i> Course popularity</h3>
+                    <span class="chip" ng-if="dashboard.charts.coursePopularity.blocked">Restricted</span>
+                </div>
+                <div class="dash-card-body">
+                    <div class="empty" ng-if="dashboard.charts.coursePopularity.blocked">
+                        Course popularity charts are available via Reports permissions.
+                    </div>
+                    <div ng-if="!dashboard.charts.coursePopularity.blocked" style="display: flex; gap: 24px; align-items: center; justify-content: center; flex-wrap: wrap; padding: 12px 0;">
+                        
+                        <div style="position: relative; width: 180px; height: 180px; border-radius: 50%; background: conic-gradient({{dashboard.getPieGradient(dashboard.charts.coursePopularity.data)}});">
+                        </div>
+                        
+                        <div style="display: flex; flex-direction: column; gap: 8px; max-width: 250px;">
+                            <div ng-repeat="item in dashboard.charts.coursePopularity.data" style="display: flex; align-items: center; gap: 8px;">
+                                <div style="width: 12px; height: 12px; border-radius: 50%; background-color: {{dashboard.getChartColor($index)}};"></div>
+                                <span style="color: var(--dash-text); font-size: 0.9rem; flex: 1;">{{item.label}}</span>
+                                <span style="font-weight: 700; color: var(--dash-text);">{{item.value}}</span>
+                            </div>
+                        </div>
+
+                        <div class="empty" ng-if="dashboard.charts.coursePopularity.data.length === 0" style="width: 100%;">
+                            No course popularity data available.
                         </div>
                     </div>
                 </div>

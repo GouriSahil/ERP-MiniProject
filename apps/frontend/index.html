@@ -201,8 +201,27 @@
             </a>
             <a href="#!/courses"
                 class="flex items-center gap-3 px-4 py-3 rounded-lg transition-colors dash-nav-item"
-                ng-class="{'active': main.isActive('/courses')}">
+                ng-class="{'active': main.isActive('/courses')}"
+                ng-if="main.getCurrentUser().role !== 'faculty' && main.getCurrentUser().role !== 'student'">
                 <i class="fas fa-book w-5"></i> Courses
+            </a>
+            <a href="#!/terms"
+                class="flex items-center gap-3 px-4 py-3 rounded-lg transition-colors dash-nav-item"
+                ng-class="{'active': main.isActive('/terms')}"
+                ng-if="main.getCurrentUser().role !== 'faculty' && main.getCurrentUser().role !== 'student'">
+                <i class="fas fa-calendar-alt w-5"></i> Terms
+            </a>
+            <a href="#!/course-offerings"
+                class="flex items-center gap-3 px-4 py-3 rounded-lg transition-colors dash-nav-item"
+                ng-class="{'active': main.isActive('/course-offerings')}"
+                ng-if="main.getCurrentUser().role !== 'faculty' && main.getCurrentUser().role !== 'student'">
+                <i class="fas fa-layer-group w-5"></i> Offerings
+            </a>
+            <a href="#!/sessions"
+                class="flex items-center gap-3 px-4 py-3 rounded-lg transition-colors dash-nav-item"
+                ng-class="{'active': main.isActive('/sessions')}"
+                ng-if="main.getCurrentUser().role === 'faculty'">
+                <i class="fas fa-chalkboard w-5"></i> Sessions
             </a>
             <a href="#!/students"
                 class="flex items-center gap-3 px-4 py-3 rounded-lg transition-colors dash-nav-item"
@@ -211,14 +230,34 @@
             </a>
             <a href="#!/faculty"
                 class="flex items-center gap-3 px-4 py-3 rounded-lg transition-colors dash-nav-item"
-                ng-class="{'active': main.isActive('/faculty')}">
+                ng-class="{'active': main.isActive('/faculty')}"
+                ng-if="main.getCurrentUser().role !== 'faculty' && main.getCurrentUser().role !== 'student'">
                 <i class="fas fa-chalkboard-teacher w-5"></i> Faculty
+            </a>
+            <a href="#!/enrollments"
+                class="flex items-center gap-3 px-4 py-3 rounded-lg transition-colors dash-nav-item"
+                ng-class="{'active': main.isActive('/enrollments')}"
+                ng-if="main.getCurrentUser().role !== 'student' && main.getCurrentUser().role !== 'faculty'">
+                <i class="fas fa-user-plus w-5"></i> Enrollments
+            </a>
+            <a href="#!/attendance/my"
+                class="flex items-center gap-3 px-4 py-3 rounded-lg transition-colors dash-nav-item"
+                ng-class="{'active': main.isActive('/attendance')}"
+                ng-if="main.getCurrentUser().role === 'faculty'">
+                <i class="fas fa-calendar-check w-5"></i> Attendance
+            </a>
+            <a href="#!/reports"
+                class="flex items-center gap-3 px-4 py-3 rounded-lg transition-colors dash-nav-item"
+                ng-class="{'active': main.isActive('/reports')}"
+                ng-if="main.getCurrentUser().role === 'admin' || main.getCurrentUser().role === 'super_admin' || main.getCurrentUser().role === 'dept_head'">
+                <i class="fas fa-chart-pie w-5"></i> Reports
             </a>
 
             <div class="pt-4 mt-4 border-t" style="border-color: rgba(255,255,255,0.08);"></div>
             <a href="#!/settings"
                 class="flex items-center gap-3 px-4 py-3 rounded-lg transition-colors dash-nav-item"
-                ng-class="{'active': main.isActive('/settings')}">
+                ng-class="{'active': main.isActive('/settings')}"
+                ng-if="main.getCurrentUser().role !== 'faculty' && main.getCurrentUser().role !== 'student'">
                 <i class="fas fa-cog w-5"></i> Settings
             </a>
             <a href="" ng-click="main.logout()"
@@ -361,6 +400,7 @@
     <script src="src/app/services/enrollment.service.js"></script>
     <script src="src/app/services/session.service.js"></script>
     <script src="src/app/services/attendance.service.js"></script>
+    <script src="src/app/services/report.service.js"></script>
     <script src="src/app/controllers/department.controller.js"></script>
     <script src="src/app/controllers/course.controller.js"></script>
     <script src="src/app/controllers/faculty.controller.js"></script>
@@ -369,6 +409,8 @@
     <script src="src/app/controllers/enrollment.controller.js"></script>
     <script src="src/app/controllers/session.controller.js"></script>
     <script src="src/app/controllers/attendance.controller.js"></script>
+    <script src="src/app/controllers/offering.controller.js"></script>
+    <script src="src/app/controllers/report.controller.js"></script>
 </body>
 
 </html>

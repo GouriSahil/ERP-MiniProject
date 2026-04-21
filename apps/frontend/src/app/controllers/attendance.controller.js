@@ -89,7 +89,21 @@
                     return EnrollmentService.getByOffering(vm.session.offeringId._id || vm.session.offeringId);
                 })
                 .then(function(response) {
-                    vm.enrolledStudents = response.data || [];
+                    var allEnrollments = response.data || [];
+                    
+                    if (vm.currentUser.role === 'faculty' && vm.currentUser.departmentId) {
+                        var facDeptId = typeof vm.currentUser.departmentId === 'object' ? vm.currentUser.departmentId._id : vm.currentUser.departmentId;
+                        
+                        vm.enrolledStudents = allEnrollments.filter(function(enrollment) {
+                            var stuDeptId = null;
+                            if (enrollment.studentId && enrollment.studentId.departmentId) {
+                                stuDeptId = typeof enrollment.studentId.departmentId === 'object' ? enrollment.studentId.departmentId._id : enrollment.studentId.departmentId;
+                            }
+                            return String(stuDeptId) === String(facDeptId);
+                        });
+                    } else {
+                        vm.enrolledStudents = allEnrollments;
+                    }
                     
                     // 3. Check for existing attendance
                     return AttendanceService.getBySession(sessionId);
