@@ -278,9 +278,9 @@
                 authenticate: true
             })
             .when('/settings', {
-                templateUrl: 'src/app/views/shared/section-placeholder.html',
-                controller: 'NavigationController',
-                controllerAs: 'navigation',
+                templateUrl: 'src/app/views/dashboard/profile.html',
+                controller: 'DashboardController',
+                controllerAs: 'dashboard',
                 authenticate: true
             })
             .otherwise({

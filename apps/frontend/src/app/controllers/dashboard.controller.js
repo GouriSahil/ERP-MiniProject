@@ -34,7 +34,7 @@
         vm.changePasswordStatus = null;
         vm.changePasswordMessage = '';
         
-        vm.activeTab = 'profile'; // 'profile' or 'settings'
+        vm.activeTab = $location.path() === '/settings' ? 'settings' : 'profile';
         vm.accordionState = {
             notifications: true,
             theme: false,
