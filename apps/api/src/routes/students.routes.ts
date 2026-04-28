@@ -74,7 +74,7 @@ router.post(
  *   post:
  *     tags: [Students]
  *     summary: Import students from CSV file
- *     description: Bulk import students from a CSV file. Required columns: name, email, password, rollNumber, departmentCode, batch, semester
+ *     description: "Bulk import students from a CSV file. Required columns: name, email, password, rollNumber, departmentCode, batch, semester"
  *     security:
  *       - bearerAuth: []
  *     requestBody:

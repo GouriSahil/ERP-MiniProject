@@ -21,8 +21,14 @@ const CORS_ORIGIN = process.env.CORS_ORIGIN || 'http://localhost:4200';
 
 // Middleware
 app.use(helmet()); // Security headers
+const allowedOrigins = CORS_ORIGIN.split(',').map(o => o.trim());
 app.use(cors({
-  origin: CORS_ORIGIN,
+  origin: (origin, callback) => {
+    // Allow requests with no origin (mobile apps, Postman, curl)
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.includes(origin)) return callback(null, true);
+    callback(null, true); // Allow all in development
+  },
   credentials: true
 }));
 app.use(morgan('dev')); // HTTP request logger
