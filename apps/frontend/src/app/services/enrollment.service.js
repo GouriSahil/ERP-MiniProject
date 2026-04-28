@@ -17,7 +17,10 @@
             bulkCreate: bulkCreate,
             remove: remove,
             getByOffering: getByOffering,
-            getByStudent: getByStudent
+            getByStudent: getByStudent,
+            selfEnroll: selfEnroll,
+            getAvailable: getAvailable,
+            getMyEnrollments: getMyEnrollments
         };
 
         return service;
@@ -72,6 +75,30 @@
 
         function getByStudent(studentId) {
             return $http.get(baseUrl + '/student/' + studentId)
+                .then(function(response) {
+                    return response.data;
+                })
+                .catch(handleError);
+        }
+
+        function selfEnroll(offeringId) {
+            return $http.post(baseUrl + '/self-enroll', { offeringId: offeringId })
+                .then(function(response) {
+                    return response.data;
+                })
+                .catch(handleError);
+        }
+
+        function getAvailable(params) {
+            return $http.get(baseUrl + '/available', { params: params })
+                .then(function(response) {
+                    return response.data;
+                })
+                .catch(handleError);
+        }
+
+        function getMyEnrollments() {
+            return $http.get(baseUrl + '/my-enrollments')
                 .then(function(response) {
                     return response.data;
                 })

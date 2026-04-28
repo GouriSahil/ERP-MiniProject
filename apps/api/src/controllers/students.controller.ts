@@ -17,33 +17,58 @@ export class StudentsController {
 
       // Build filter
       const filter: any = {};
+
+      // Students can only see their own record
+      if (req.user!.role === 'student') {
+        const StudentModel = mongoose.model('Student');
+        // Use _id from user object (passport authentication populates this)
+        const userId = req.user!._id || req.user!.userId;
+        const ownStudent = await StudentModel.findOne({ userId: userId }).select('_id');
+        if (ownStudent) {
+          filter._id = ownStudent._id;
+        } else {
+          // Student record not found, return empty
+          return res.status(200).json({
+            success: true,
+            data: [],
+            pagination: buildPaginationMeta(page, limit, 0)
+          });
+        }
+      }
+
       if (departmentId) filter.departmentId = departmentId;
 
       // Add search filter for user fields and roll number
       let searchFilter = {};
       if (search) {
-        // Search by roll number directly
-        const rollNumberStudents = await Student.find({
-          rollNumber: { $regex: search, $options: 'i' }
-        }).select('_id');
+        // Students can only search within their own record
+        if (req.user!.role === 'student') {
+          // For students, search is irrelevant - they only see their own record
+          searchFilter = {};
+        } else {
+          // Search by roll number directly
+          const rollNumberStudents = await Student.find({
+            rollNumber: { $regex: search, $options: 'i' }
+          }).select('_id');
 
-        // Search by user name/email
-        const users = await User.find({
-          $or: [
-            { name: { $regex: search, $options: 'i' } },
-            { email: { $regex: search, $options: 'i' } }
-          ]
-        }).select('_id');
+          // Search by user name/email
+          const users = await User.find({
+            $or: [
+              { name: { $regex: search, $options: 'i' } },
+              { email: { $regex: search, $options: 'i' } }
+            ]
+          }).select('_id');
 
-        const studentIds = rollNumberStudents.map(s => s._id);
-        const userIds = users.map(u => u._id);
+          const studentIds = rollNumberStudents.map(s => s._id);
+          const userIds = users.map(u => u._id);
 
-        const studentsByUser = await Student.find({ userId: { $in: userIds } }).select('_id');
-        const userIdStudentIds = studentsByUser.map(s => s._id);
+          const studentsByUser = await Student.find({ userId: { $in: userIds } }).select('_id');
+          const userIdStudentIds = studentsByUser.map(s => s._id);
 
-        // Combine both sets of student IDs
-        const allStudentIds = [...new Set([...studentIds, ...userIdStudentIds])];
-        searchFilter = { _id: { $in: allStudentIds } };
+          // Combine both sets of student IDs
+          const allStudentIds = [...new Set([...studentIds, ...userIdStudentIds])];
+          searchFilter = { _id: { $in: allStudentIds } };
+        }
       }
 
       // Populate with user data

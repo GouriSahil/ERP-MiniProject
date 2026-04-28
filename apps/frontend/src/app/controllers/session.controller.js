@@ -25,6 +25,12 @@
             return role === 'faculty' || role === 'admin' || role === 'super_admin' || role === 'dept_head' || role === 'admin';
         })();
 
+        // Get faculty's department ID for filtering
+        vm.facultyDepartmentId = (function() {
+            if (!vm.currentUser || !vm.currentUser.departmentId) return null;
+            return vm.currentUser.departmentId._id || vm.currentUser.departmentId;
+        })();
+
         // ── List view state ───────────────────────────────────
         vm.sessions = [];
         vm.filterOffering = '';
@@ -103,20 +109,32 @@
             SessionService.list(params)
                 .then(function(response) {
                     var allSessions = response.data || [];
-                    
-                    if (vm.currentUser.role === 'faculty' && vm.currentUser.departmentId) {
-                        var facDeptId = typeof vm.currentUser.departmentId === 'object' ? vm.currentUser.departmentId._id : vm.currentUser.departmentId;
-                        
-                        vm.sessions = allSessions.filter(function(session) {
-                            var offDeptId = null;
-                            if (session.offeringId && session.offeringId.courseId && session.offeringId.courseId.departmentId) {
-                                offDeptId = typeof session.offeringId.courseId.departmentId === 'object' ? session.offeringId.courseId.departmentId._id : session.offeringId.courseId.departmentId;
-                            }
-                            return String(offDeptId) === String(facDeptId);
-                        });
+
+                    // Filter sessions by faculty's department (unless admin/super_admin)
+                    if (vm.facultyDepartmentId) {
+                        var role = String(vm.currentUser.role).toLowerCase();
+                        if (role !== 'admin' && role !== 'super_admin') {
+                            vm.sessions = allSessions.filter(function(session) {
+                                var offeringDeptId = null;
+                                if (session.offeringId) {
+                                    // Check nested departmentId path: offeringId.courseId.departmentId
+                                    if (session.offeringId.courseId && session.offeringId.courseId.departmentId) {
+                                        offeringDeptId = session.offeringId.courseId.departmentId._id || session.offeringId.courseId.departmentId;
+                                    }
+                                    // Also check direct departmentId path (in case backend changes)
+                                    else if (session.offeringId.departmentId) {
+                                        offeringDeptId = session.offeringId.departmentId._id || session.offeringId.departmentId;
+                                    }
+                                }
+                                return offeringDeptId === vm.facultyDepartmentId;
+                            });
+                        } else {
+                            vm.sessions = allSessions;
+                        }
                     } else {
                         vm.sessions = allSessions;
                     }
+
                     if (response.pagination) {
                         vm.pagination.total = response.pagination.total || 0;
                         vm.pagination.totalPages = response.pagination.totalPages || 0;

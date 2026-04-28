@@ -1,0 +1,139 @@
+<!-- My Enrollments (Student View) -->
+
+<div ng-if="!vm.isLoading" style="padding-top: 24px;">
+    <div class="dash-wrap">
+
+        <!-- Hero header -->
+        <div class="dash-hero">
+            <div class="dash-hero-left">
+                <div class="dash-avatar" style="background: linear-gradient(135deg, #10B981, #059669); color: #fff;">
+                    <i class="fas fa-book-reader"></i>
+                </div>
+                <div style="min-width: 0;">
+                    <h2>My Enrollments</h2>
+                    <p>View and manage your course enrollments.</p>
+                </div>
+            </div>
+            <div class="dash-hero-right">
+                <a href="#!/course-registration" class="dash-btn-primary"
+                   style="text-decoration: none; display: inline-flex; align-items: center; gap: 8px;">
+                    <i class="fas fa-plus"></i> Register for Courses
+                </a>
+            </div>
+        </div>
+
+        <!-- Filters -->
+        <div style="margin-bottom: 24px; display: flex; gap: 12px; flex-wrap: wrap;">
+            <select ng-model="vm.filterTerm" ng-change="vm.loadMyEnrollments()"
+                    style="padding: 12px 16px; background: rgba(255, 255, 255, 0.05); border: 1px solid var(--dash-border); border-radius: 12px; color: var(--dash-text); outline: none; min-width: 200px;">
+                <option value="">All Terms</option>
+                <option ng-repeat="t in vm.terms" value="{{ t._id }}">{{ t.name }}</option>
+            </select>
+            <select ng-model="vm.filterStatus" ng-change="vm.loadMyEnrollments()"
+                    style="padding: 12px 16px; background: rgba(255, 255, 255, 0.05); border: 1px solid var(--dash-border); border-radius: 12px; color: var(--dash-text); outline: none; min-width: 150px;">
+                <option value="">All Statuses</option>
+                <option value="enrolled">Enrolled</option>
+                <option value="dropped">Dropped</option>
+                <option value="completed">Completed</option>
+            </select>
+        </div>
+
+        <!-- Empty State -->
+        <div class="dash-card" ng-if="vm.enrollments.length === 0" style="padding: 60px 20px; text-align: center;">
+            <div style="width: 64px; height: 64px; border-radius: 20px; background: rgba(255,255,255,0.05); display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; color: var(--dash-muted); font-size: 1.5rem;">
+                <i class="fas fa-book-open"></i>
+            </div>
+            <h3 style="font-size: 1.1rem; font-weight: 800; color: var(--dash-text); margin: 0 0 8px;">No enrollments found</h3>
+            <p style="color: var(--dash-muted); margin: 0 0 16px;">You haven't enrolled in any courses yet.</p>
+            <a href="#!/course-registration" class="dash-btn-primary" style="text-decoration: none;">
+                Browse Available Courses
+            </a>
+        </div>
+
+        <!-- Enrollments Table -->
+        <div class="dash-card" ng-if="vm.enrollments.length > 0" style="padding: 0; overflow: hidden;">
+            <div style="overflow-x: auto;">
+                <table style="width: 100%; border-collapse: collapse; text-align: left;">
+                    <thead>
+                        <tr style="border-bottom: 1px solid var(--dash-border); background: rgba(255, 255, 255, 0.02);">
+                            <th style="padding: 12px 16px; color: var(--dash-dim); font-weight: 700; font-size: 0.75rem; text-transform: uppercase;">Course</th>
+                            <th style="padding: 12px 16px; color: var(--dash-dim); font-weight: 700; font-size: 0.75rem; text-transform: uppercase;">Term</th>
+                            <th style="padding: 12px 16px; color: var(--dash-dim); font-weight: 700; font-size: 0.75rem; text-transform: uppercase;">Faculty</th>
+                            <th style="padding: 12px 16px; color: var(--dash-dim); font-weight: 700; font-size: 0.75rem; text-transform: uppercase;">Enrolled Date</th>
+                            <th style="padding: 12px 16px; color: var(--dash-dim); font-weight: 700; font-size: 0.75rem; text-transform: uppercase; text-align: center;">Status</th>
+                            <th style="padding: 12px 16px; color: var(--dash-dim); font-weight: 700; font-size: 0.75rem; text-transform: uppercase; text-align: right;">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="e in vm.enrollments"
+                            style="border-bottom: 1px solid var(--dash-border); transition: background 0.2s;"
+                            onmouseover="this.style.background='rgba(255,255,255,0.04)'"
+                            onmouseout="this.style.background='transparent'">
+                            <td style="padding: 16px;">
+                                <div style="font-weight: 700; color: var(--dash-text);">{{ e.offeringId.courseId.code }}</div>
+                                <div style="font-size: 0.85rem; color: var(--dash-muted);">{{ e.offeringId.courseId.name }}</div>
+                            </td>
+                            <td style="padding: 16px; color: var(--dash-muted); font-size: 0.85rem;">
+                                {{ e.offeringId.termId.name }}
+                            </td>
+                            <td style="padding: 16px;">
+                                <div style="font-size: 0.85rem; color: var(--dash-muted);" ng-repeat="f in e.offeringId.facultyId">
+                                    {{ f.userId.name }}{{ $last ? '' : ', ' }}
+                                </div>
+                                <div style="font-size: 0.75rem; color: var(--dash-dim);" ng-if="!e.offeringId.facultyId || e.offeringId.facultyId.length === 0">
+                                    TBA
+                                </div>
+                            </td>
+                            <td style="padding: 16px; color: var(--dash-muted); font-size: 0.85rem;">
+                                {{ vm.formatDate(e.enrollmentDate || e.createdAt) }}
+                            </td>
+                            <td style="padding: 16px; text-align: center;">
+                                <span class="chip" ng-class="{
+                                    'chip-success': e.status === 'enrolled',
+                                    'chip-warning': e.status === 'dropped',
+                                    'chip-info': e.status === 'completed'
+                                }" style="text-transform: capitalize; font-size: 0.7rem; font-weight: 800;">
+                                    {{ e.status }}
+                                </span>
+                            </td>
+                            <td style="padding: 16px; text-align: right;">
+                                <div style="display: flex; gap: 8px; justify-content: flex-end;" ng-if="e.status === 'enrolled'">
+                                    <button class="btn-mini btn-mini-danger" ng-click="vm.confirmDrop(e._id)" title="Drop Course">
+                                        <i class="fas fa-user-minus"></i> Drop
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Pagination -->
+            <div style="padding: 12px 16px; border-top: 1px solid var(--dash-border); display: flex; align-items: center; justify-content: space-between;"
+                 ng-if="vm.pagination.totalPages > 1">
+                <div style="color: var(--dash-muted); font-size: 0.85rem;">
+                    Page <span style="font-weight: 800; color: var(--dash-text);">{{ vm.pagination.page }}</span>
+                    of <span style="font-weight: 800; color: var(--dash-text);">{{ vm.pagination.totalPages }}</span>
+                </div>
+                <div style="display: flex; gap: 8px;">
+                    <button class="btn-mini" ng-click="vm.changePage(vm.pagination.page - 1)" ng-disabled="vm.pagination.page === 1">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                    <button class="btn-mini" ng-click="vm.changePage(vm.pagination.page + 1)" ng-disabled="vm.pagination.page === vm.pagination.totalPages">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Loading State -->
+<div ng-if="vm.isLoading" style="padding-top: 24px;">
+    <div class="dash-wrap">
+        <div class="dash-loading">
+            <i class="fas fa-circle-notch"></i>
+            <div style="font-weight: 800;">Loading your enrollments…</div>
+        </div>
+    </div>
+</div>

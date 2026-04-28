@@ -223,9 +223,34 @@
                 ng-if="main.getCurrentUser().role === 'faculty'">
                 <i class="fas fa-chalkboard w-5"></i> Sessions
             </a>
+            <a href="#!/course-registration"
+                class="flex items-center gap-3 px-4 py-3 rounded-lg transition-colors dash-nav-item"
+                ng-class="{'active': main.isActive('/course-registration')}"
+                ng-if="main.getCurrentUser().role === 'student'">
+                <i class="fas fa-plus-circle w-5"></i> Course Registration
+            </a>
+            <a href="#!/enrollments/my"
+                class="flex items-center gap-3 px-4 py-3 rounded-lg transition-colors dash-nav-item"
+                ng-class="{'active': main.isActive('/enrollments')}"
+                ng-if="main.getCurrentUser().role === 'student'">
+                <i class="fas fa-book-reader w-5"></i> My Enrollments
+            </a>
+            <a href="#!/courses"
+                class="flex items-center gap-3 px-4 py-3 rounded-lg transition-colors dash-nav-item"
+                ng-class="{'active': main.isActive('/courses')}"
+                ng-if="main.getCurrentUser().role === 'student'">
+                <i class="fas fa-book-open w-5"></i> Course Catalog
+            </a>
+            <a href="#!/attendance/my"
+                class="flex items-center gap-3 px-4 py-3 rounded-lg transition-colors dash-nav-item"
+                ng-class="{'active': main.isActive('/attendance')}"
+                ng-if="main.getCurrentUser().role === 'student'">
+                <i class="fas fa-calendar-check w-5"></i> My Attendance
+            </a>
             <a href="#!/students"
                 class="flex items-center gap-3 px-4 py-3 rounded-lg transition-colors dash-nav-item"
-                ng-class="{'active': main.isActive('/students')}">
+                ng-class="{'active': main.isActive('/students')}"
+                ng-if="main.getCurrentUser().role !== 'student'">
                 <i class="fas fa-user-graduate w-5"></i> Students
             </a>
             <a href="#!/faculty"
@@ -411,6 +436,7 @@
     <script src="src/app/controllers/attendance.controller.js"></script>
     <script src="src/app/controllers/offering.controller.js"></script>
     <script src="src/app/controllers/report.controller.js"></script>
+    <script src="src/app/controllers/course-registration.controller.js"></script>
 </body>
 
 </html>

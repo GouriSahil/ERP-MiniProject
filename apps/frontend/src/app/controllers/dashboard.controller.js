@@ -107,7 +107,7 @@
                 vm.quickActions = [
                     { label: 'My Courses', icon: 'fas fa-book-open', path: '/courses' },
                     { label: 'My Attendance', icon: 'fas fa-clipboard-check', path: '/attendance' },
-                    { label: 'Enrollments', icon: 'fas fa-layer-group', path: '/enrollments' },
+                    { label: 'Register for Courses', icon: 'fas fa-plus-circle', path: '/course-registration' },
                     { label: 'Sessions', icon: 'fas fa-calendar-check', path: '/sessions' },
                     { label: 'Reports', icon: 'fas fa-chart-bar', path: '/reports' },
                     { label: 'Profile', icon: 'fas fa-user-circle', path: '/profile' }

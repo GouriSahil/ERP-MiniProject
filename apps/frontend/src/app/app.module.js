@@ -241,6 +241,18 @@
                 controllerAs: 'vm',
                 authenticate: true
             })
+            .when('/enrollments/my', {
+                templateUrl: 'src/app/views/enrollments/my-enrollments.html',
+                controller: 'EnrollmentController',
+                controllerAs: 'vm',
+                authenticate: true
+            })
+            .when('/course-registration', {
+                templateUrl: 'src/app/views/course-registration/list.html',
+                controller: 'CourseRegistrationController',
+                controllerAs: 'vm',
+                authenticate: true
+            })
             .when('/enrollments/:id', {
                 templateUrl: 'src/app/views/enrollments/detail.html',
                 controller: 'EnrollmentController',

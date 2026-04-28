@@ -16,6 +16,19 @@ router.get(
   EnrollmentsController.list
 );
 
+// Get available offerings for student self-enrollment (must be before /:id)
+router.get(
+  '/available',
+  EnrollmentsController.getAvailableOfferings
+);
+
+// Get my enrollments - for authenticated student
+router.get(
+  '/my-enrollments',
+  checkPermission('enrollments', 'view'),
+  EnrollmentsController.getMyEnrollments
+);
+
 // Get enrollment by ID - view permission
 router.get(
   '/:id',
@@ -78,6 +91,13 @@ router.patch(
   checkPermission('enrollments', 'update'),
   validateUUIDParam(),
   EnrollmentsController.drop
+);
+
+// Self-enrollment endpoint for students
+router.post(
+  '/self-enroll',
+  checkPermission('enrollments', 'create'),
+  EnrollmentsController.selfEnroll
 );
 
 export default router;

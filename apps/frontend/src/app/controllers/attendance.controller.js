@@ -25,6 +25,12 @@
             return role === 'faculty' || role === 'admin' || role === 'super_admin' || role === 'dept_head' || role === 'admin';
         })();
 
+        // Get faculty's department ID for access control
+        vm.facultyDepartmentId = (function() {
+            if (!vm.currentUser || !vm.currentUser.departmentId) return null;
+            return vm.currentUser.departmentId._id || vm.currentUser.departmentId;
+        })();
+
         // ── Mark View state ───────────────────────────────────
         vm.session = null;
         vm.enrolledStudents = [];
@@ -84,46 +90,56 @@
             SessionService.getById(sessionId)
                 .then(function(response) {
                     vm.session = response.data;
-                    
+
+                    // Verify faculty has access to this session's offering (unless admin/super_admin)
+                    if (vm.facultyDepartmentId) {
+                        var role = String(vm.currentUser.role).toLowerCase();
+                        if (role !== 'admin' && role !== 'super_admin') {
+                            var offeringDeptId = null;
+                            if (vm.session.offeringId) {
+                                // Check nested departmentId path: offeringId.courseId.departmentId
+                                if (vm.session.offeringId.courseId && vm.session.offeringId.courseId.departmentId) {
+                                    offeringDeptId = vm.session.offeringId.courseId.departmentId._id || vm.session.offeringId.courseId.departmentId;
+                                }
+                                // Also check direct departmentId path (in case backend changes)
+                                else if (vm.session.offeringId.departmentId) {
+                                    offeringDeptId = vm.session.offeringId.departmentId._id || vm.session.offeringId.departmentId;
+                                }
+                            }
+                            if (offeringDeptId !== vm.facultyDepartmentId) {
+                                vm.isLoading = false;
+                                vm.error = 'You do not have permission to mark attendance for this course offering.';
+                                return $q.reject('Unauthorized');
+                            }
+                        }
+                    }
+
                     // 2. Load Enrolled Students for this Offering
                     return EnrollmentService.getByOffering(vm.session.offeringId._id || vm.session.offeringId);
                 })
                 .then(function(response) {
-                    var allEnrollments = response.data || [];
-                    
-                    if (vm.currentUser.role === 'faculty' && vm.currentUser.departmentId) {
-                        var facDeptId = typeof vm.currentUser.departmentId === 'object' ? vm.currentUser.departmentId._id : vm.currentUser.departmentId;
-                        
-                        vm.enrolledStudents = allEnrollments.filter(function(enrollment) {
-                            var stuDeptId = null;
-                            if (enrollment.studentId && enrollment.studentId.departmentId) {
-                                stuDeptId = typeof enrollment.studentId.departmentId === 'object' ? enrollment.studentId.departmentId._id : enrollment.studentId.departmentId;
-                            }
-                            return String(stuDeptId) === String(facDeptId);
-                        });
-                    } else {
-                        vm.enrolledStudents = allEnrollments;
-                    }
-                    
+                    // Use all enrolled students - faculty can mark attendance for any student in their assigned courses
+                    vm.enrolledStudents = response.data || [];
+
                     // 3. Check for existing attendance
                     return AttendanceService.getBySession(sessionId);
                 })
                 .then(function(response) {
                     var existing = response.data || [];
-                    
+
                     // Initialize records
                     vm.enrolledStudents.forEach(function(enrollment) {
                         var studentId = enrollment.studentId._id || enrollment.studentId;
-                        var existingRecord = existing.find(function(r) { 
-                            return (r.studentId._id || r.studentId) === studentId; 
+                        var existingRecord = existing.find(function(r) {
+                            return (r.studentId._id || r.studentId) === studentId;
                         });
-                        
+
                         vm.attendanceRecords[studentId] = {
                             status: existingRecord ? existingRecord.status : 'present',
                             remarks: existingRecord ? existingRecord.remarks : ''
                         };
                     });
-                    
+
                     vm.isLoading = false;
                 })
                 .catch(function(error) {
@@ -154,7 +170,7 @@
 
             var payload = {
                 sessionId: vm.session._id,
-                records: records
+                attendance: records
             };
 
             AttendanceService.markBulk(payload)

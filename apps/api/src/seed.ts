@@ -134,7 +134,47 @@ const users = [
   // Staff
   { name: 'Jennifer Allen', email: 'jennifer.allen@erp.edu', role: UserRole.STAFF },
   { name: 'Steven Young', email: 'steven.young@erp.edu', role: UserRole.STAFF },
-  { name: 'Maria Hernandez', email: 'maria.hernandez@erp.edu', role: UserRole.STAFF }
+  { name: 'Maria Hernandez', email: 'maria.hernandez@erp.edu', role: UserRole.STAFF },
+
+  // Students - CSE
+  { name: 'Amit Kumar', email: 'amit.kumar@erp.edu', role: UserRole.STUDENT, deptCode: 'CSE' },
+  { name: 'Priya Sharma', email: 'priya.sharma@erp.edu', role: UserRole.STUDENT, deptCode: 'CSE' },
+  { name: 'Rahul Singh', email: 'rahul.singh@erp.edu', role: UserRole.STUDENT, deptCode: 'CSE' },
+  { name: 'Sneha Patel', email: 'sneha.patel@erp.edu', role: UserRole.STUDENT, deptCode: 'CSE' },
+  { name: 'Vikram Reddy', email: 'vikram.reddy@erp.edu', role: UserRole.STUDENT, deptCode: 'CSE' },
+  { name: 'Anjali Mehta', email: 'anjali.mehta@erp.edu', role: UserRole.STUDENT, deptCode: 'CSE' },
+  { name: 'Karan Joshi', email: 'karan.joshi@erp.edu', role: UserRole.STUDENT, deptCode: 'CSE' },
+  { name: 'Ishita Gupta', email: 'ishita.gupta@erp.edu', role: UserRole.STUDENT, deptCode: 'CSE' },
+  { name: 'Rohit Nair', email: 'rohit.nair@erp.edu', role: UserRole.STUDENT, deptCode: 'CSE' },
+  { name: 'Pooja Verma', email: 'pooja.verma@erp.edu', role: UserRole.STUDENT, deptCode: 'CSE' },
+  { name: 'Arjun Kapoor', email: 'arjun.kapoor@erp.edu', role: UserRole.STUDENT, deptCode: 'CSE' },
+  { name: 'Diya Malhotra', email: 'diya.malhotra@erp.edu', role: UserRole.STUDENT, deptCode: 'CSE' },
+  { name: 'Aditya Khanna', email: 'aditya.khanna@erp.edu', role: UserRole.STUDENT, deptCode: 'CSE' },
+  { name: 'Siddharth Sharma', email: 'siddharth.sharma@erp.edu', role: UserRole.STUDENT, deptCode: 'CSE' },
+  { name: 'Kavya Nair', email: 'kavya.nair@erp.edu', role: UserRole.STUDENT, deptCode: 'CSE' },
+  { name: 'Rohan Das', email: 'rohan.das@erp.edu', role: UserRole.STUDENT, deptCode: 'CSE' },
+  { name: 'Ishani Sen', email: 'ishani.sen@erp.edu', role: UserRole.STUDENT, deptCode: 'CSE' },
+  { name: 'Arvind Patel', email: 'arvind.patel@erp.edu', role: UserRole.STUDENT, deptCode: 'CSE' },
+  { name: 'Preeti Mukherjee', email: 'preeti.mukherjee@erp.edu', role: UserRole.STUDENT, deptCode: 'CSE' },
+  { name: 'Kabir Khan', email: 'kabir.khan@erp.edu', role: UserRole.STUDENT, deptCode: 'CSE' },
+
+  // Students - ECE
+  { name: 'Neha Das', email: 'neha.das@erp.edu', role: UserRole.STUDENT, deptCode: 'ECE' },
+  { name: 'Sourav Ganguly', email: 'sourav.ganguly@erp.edu', role: UserRole.STUDENT, deptCode: 'ECE' },
+  { name: 'Priyanka Chakraborty', email: 'priyanka.chakraborty@erp.edu', role: UserRole.STUDENT, deptCode: 'ECE' },
+  { name: 'Rajesh Banerjee', email: 'rajesh.banerjee@erp.edu', role: UserRole.STUDENT, deptCode: 'ECE' },
+
+  // Students - ME
+  { name: 'Deepak Yadav', email: 'deepak.yadav@erp.edu', role: UserRole.STUDENT, deptCode: 'ME' },
+  { name: 'Sunita Rao', email: 'sunita.rao@erp.edu', role: UserRole.STUDENT, deptCode: 'ME' },
+  { name: 'Mohan Krishna', email: 'mohan.krishna@erp.edu', role: UserRole.STUDENT, deptCode: 'ME' },
+
+  // Students - Other Departments
+  { name: 'Kavita Iyer', email: 'kavita.iyer@erp.edu', role: UserRole.STUDENT, deptCode: 'CE' },
+  { name: 'Ramesh Kumar', email: 'ramesh.kumar@erp.edu', role: UserRole.STUDENT, deptCode: 'EE' },
+  { name: 'Swati Naidu', email: 'swati.naidu@erp.edu', role: UserRole.STUDENT, deptCode: 'IT' },
+  { name: 'Vikram Sarabhai', email: 'vikram.sarabhai@erp.edu', role: UserRole.STUDENT, deptCode: 'MNC' },
+  { name: 'Meera Srinivasan', email: 'meera.srinivasan@erp.edu', role: UserRole.STUDENT, deptCode: 'BA' }
 ];
 
 // Students by department
@@ -157,6 +197,13 @@ const studentData = [
   { name: 'Arjun Kapoor', email: 'arjun.kapoor@erp.edu', rollNumber: 'CSE2025001', deptCode: 'CSE', batch: '2025', semester: 1 },
   { name: 'Diya Malhotra', email: 'diya.malhotra@erp.edu', rollNumber: 'CSE2025002', deptCode: 'CSE', batch: '2025', semester: 1 },
   { name: 'Aditya Khanna', email: 'aditya.khanna@erp.edu', rollNumber: 'CSE2025003', deptCode: 'CSE', batch: '2025', semester: 1 },
+  { name: 'Siddharth Sharma', email: 'siddharth.sharma@erp.edu', rollNumber: 'CSE2025004', deptCode: 'CSE', batch: '2025', semester: 1 },
+  { name: 'Kavya Nair', email: 'kavya.nair@erp.edu', rollNumber: 'CSE2025005', deptCode: 'CSE', batch: '2025', semester: 1 },
+  { name: 'Rohan Das', email: 'rohan.das@erp.edu', rollNumber: 'CSE2025006', deptCode: 'CSE', batch: '2025', semester: 1 },
+  { name: 'Ishani Sen', email: 'ishani.sen@erp.edu', rollNumber: 'CSE2025007', deptCode: 'CSE', batch: '2025', semester: 1 },
+  { name: 'Arvind Patel', email: 'arvind.patel@erp.edu', rollNumber: 'CSE2025008', deptCode: 'CSE', batch: '2025', semester: 1 },
+  { name: 'Preeti Mukherjee', email: 'preeti.mukherjee@erp.edu', rollNumber: 'CSE2025009', deptCode: 'CSE', batch: '2025', semester: 1 },
+  { name: 'Kabir Khan', email: 'kabir.khan@erp.edu', rollNumber: 'CSE2025010', deptCode: 'CSE', batch: '2025', semester: 1 },
 
   // ECE Students
   { name: 'Neha Das', email: 'neha.das@erp.edu', rollNumber: 'ECE2023001', deptCode: 'ECE', batch: '2023', semester: 5 },
@@ -444,9 +491,16 @@ const seedEnrollments = async (
   );
 
   const enrollments = [];
+  const enrollmentMap = new Map<string, Set<string>>(); // offeringId -> Set of studentIds
 
+  // Initialize enrollment map
+  for (const offering of activeOfferings) {
+    enrollmentMap.set(offering._id.toString(), new Set());
+  }
+
+  // Pass 1: Enroll students in their own department courses
   for (const student of students) {
-    const studentDoc = await Student.findById(student.userId);
+    const studentDoc = student;
     if (!studentDoc) continue;
 
     // Find eligible offerings for the student's department
@@ -468,13 +522,75 @@ const seedEnrollments = async (
         ? (Math.random() > 0.15 ? EnrollmentStatus.COMPLETED : EnrollmentStatus.FAILED)
         : EnrollmentStatus.ENROLLED;
 
-      enrollments.push({
-        studentId: student._id,
-        offeringId: offering._id,
-        status,
-        enrolledAt: new Date('2025-08-01')
-      });
+      const offeringIdStr = offering._id.toString();
+      const studentIdStr = student._id.toString();
+
+      if (!enrollmentMap.get(offeringIdStr)?.has(studentIdStr)) {
+        enrollments.push({
+          studentId: student._id,
+          offeringId: offering._id,
+          status,
+          enrolledAt: new Date('2025-08-01')
+        });
+        enrollmentMap.get(offeringIdStr)?.add(studentIdStr);
+      }
     }
+  }
+
+  // Pass 2: Ensure each offering has at least 10 students (cross-department electives)
+  for (const offering of activeOfferings) {
+    const offeringIdStr = offering._id.toString();
+    const currentEnrollments = enrollmentMap.get(offeringIdStr) || new Set();
+    const course = await Course.findById(offering.courseId);
+
+    if (currentEnrollments.size < 10 && course) {
+      const needed = 10 - currentEnrollments.size;
+
+      // Find students from other departments to enroll as electives
+      const availableStudents: any[] = [];
+      for (const student of students) {
+        const studentDoc = student;
+        if (!studentDoc) continue;
+
+        // Skip if already enrolled or same department (already handled in pass 1)
+        const studentIdStr = student._id.toString();
+        if (currentEnrollments.has(studentIdStr)) continue;
+        if (studentDoc.departmentId.toString() === course.departmentId.toString()) continue;
+
+        // Check if elective
+        const isElective = course.elective === true;
+        if (isElective || Math.random() > 0.7) {
+          availableStudents.push({ student, studentDoc });
+        }
+
+        if (availableStudents.length >= needed) break;
+      }
+
+      // Enroll additional students
+      const toEnroll = availableStudents.slice(0, needed);
+      for (const { student } of toEnroll) {
+        const term = createdTerms.find(t => t._id.toString() === offering.termId.toString());
+        const status = term && term.status === TermStatus.COMPLETED
+          ? (Math.random() > 0.15 ? EnrollmentStatus.COMPLETED : EnrollmentStatus.FAILED)
+          : EnrollmentStatus.ENROLLED;
+
+        enrollments.push({
+          studentId: student._id,
+          offeringId: offering._id,
+          status,
+          enrolledAt: new Date('2025-08-01')
+        });
+        enrollmentMap.get(offeringIdStr)?.add(student._id.toString());
+      }
+    }
+  }
+
+  // Log enrollment stats
+  console.log('📊 Enrollment Distribution:');
+  for (const offering of activeOfferings) {
+    const count = enrollmentMap.get(offering._id.toString())?.size || 0;
+    const course = await Course.findById(offering.courseId);
+    console.log(`   ${course?.code || 'Unknown'}: ${count} students`);
   }
 
   const createdEnrollments = await Enrollment.insertMany(enrollments);

@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
+import { roleHasPermission } from '../config/roles';
 
 export interface AuthRequest extends Request {}
 
@@ -50,26 +51,5 @@ export const checkPermission = (resource: string, action: string) => {
 };
 
 function checkUserPermission(role: string, resource: string, action: string): boolean {
-  const permissions: Record<string, string[]> = {
-    super_admin: ['*'],
-    admin: ['users:*', 'students:*', 'faculty:*', 'departments:*', 'courses:*', 'terms:*', 'offerings:*', 'sessions:*', 'enrollments:*', 'attendance:*', 'reports:view', 'audit:view'],
-    dept_head: ['students:*', 'faculty:*', 'courses:view', 'offerings:*', 'sessions:*', 'enrollments:*', 'attendance:*', 'reports:view'],
-    faculty: ['students:view', 'offerings:view', 'sessions:view', 'enrollments:view', 'attendance:mark', 'attendance:view', 'reports:view'],
-    staff: ['students:view', 'faculty:view', 'courses:view', 'offerings:view', 'reports:view'],
-    student: ['offerings:view', 'enrollments:view', 'attendance:view', 'reports:view'],
-  };
-
-  const rolePermissions = permissions[role] || [];
-
-  if (rolePermissions.includes('*')) {
-    return true;
-  }
-
-  const requiredPermission = `${resource}:${action}`;
-  return rolePermissions.some(perm => {
-    if (perm === '*') return true;
-    const [permResource, permAction] = perm.split(':');
-    if (permAction === '*') return permResource === resource;
-    return perm === requiredPermission;
-  });
+  return roleHasPermission(role, `${resource}:${action}`);
 }

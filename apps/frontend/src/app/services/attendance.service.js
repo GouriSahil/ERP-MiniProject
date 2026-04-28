@@ -24,7 +24,7 @@
         return service;
 
         function markBulk(data) {
-            return $http.post(baseUrl + '/bulk', data)
+            return $http.post(baseUrl + '/mark', data)
                 .then(function(response) {
                     return response.data;
                 })

@@ -6,7 +6,7 @@ import { saveAuditLog } from '../middleware/audit.middleware';
 import * as EnrollmentService from '../services/enrollment.service';
 import * as CoursesService from '../services/courses.service';
 import { AppError } from '../utils/errors';
-import { Enrollment, CourseOffering, Student } from '../models';
+import { Enrollment, CourseOffering, Student, Course, Term } from '../models';
 
 export class EnrollmentsController {
   // List all enrollments
@@ -538,6 +538,151 @@ export class EnrollmentsController {
           populate: ['courseId', 'termId']
         })
         .lean();
+
+      return successResponse(res, enrollments);
+    } catch (error: any) {
+      return errorResponse(res, error.message, 500);
+    }
+  }
+
+  // Self-enrollment for students
+  static async selfEnroll(req: AuthRequest, res: Response) {
+    try {
+      // Get authenticated student profile
+      const student = await Student.findOne({ userId: req.user!.userId });
+      if (!student) {
+        return notFoundResponse(res, 'Student profile');
+      }
+
+      const { offeringId } = req.body;
+      if (!offeringId) {
+        return errorResponse(res, 'offeringId is required', 400);
+      }
+
+      // Validate offering exists and get term info
+      const offering = await CourseOffering.findById(offeringId).populate('courseId').populate('termId');
+      if (!offering) {
+        return notFoundResponse(res, 'Course offering');
+      }
+
+      // Check if term allows enrollment (upcoming or active only)
+      const termStatus = (offering as any).termId?.status;
+      if (termStatus && termStatus !== 'upcoming' && termStatus !== 'active') {
+        return errorResponse(res, `Cannot enroll in courses for ${termStatus} terms`, 400);
+      }
+
+      // Use existing enrollment service with all validations
+      const enrollment = await EnrollmentService.enrollStudent(student._id.toString(), offeringId);
+
+      await saveAuditLog({
+        actorUserId: req.user!.userId,
+        actorRole: req.user!.role,
+        action: 'self_enroll',
+        targetType: 'enrollment',
+        targetId: enrollment._id.toString(),
+        status: 'success',
+        metadata: { studentId: student._id, offeringId, courseId: (offering as any).courseId?._id },
+        ipAddress: req.ip || 'unknown',
+        userAgent: req.get('user-agent') || 'unknown'
+      });
+
+      return createdResponse(res, enrollment, 'Successfully enrolled in course');
+    } catch (error: any) {
+      if (error instanceof AppError) {
+        return errorResponse(res, error.message, error.statusCode);
+      }
+      return errorResponse(res, error.message, 500);
+    }
+  }
+
+  // Get available course offerings for student self-enrollment
+  static async getAvailableOfferings(req: AuthRequest, res: Response) {
+    try {
+      const { termId, departmentId } = req.query;
+
+      // Get authenticated student
+      const student = await Student.findOne({ userId: req.user!.userId });
+      if (!student) {
+        return notFoundResponse(res, 'Student profile');
+      }
+
+      // Build filter for offerings
+      const filter: any = {};
+
+      // Only active/upcoming terms
+      const termFilter = termId ? { _id: termId } : {};
+      const validTerms = await Term.find({
+        ...termFilter,
+        status: { $in: ['upcoming', 'active'] }
+      }).distinct('_id');
+      filter.termId = { $in: validTerms };
+
+      // Filter by department if provided
+      if (departmentId) {
+        const coursesInDept = await Course.find({ departmentId }).distinct('_id');
+        filter.courseId = { $in: coursesInDept };
+      }
+
+      // Get offerings
+      let offerings = await CourseOffering.find(filter)
+        .populate('courseId')
+        .populate('termId')
+        .lean();
+
+      // Get student's existing enrollments to filter out already enrolled
+      const existingEnrollments = await Enrollment.find({
+        studentId: student._id,
+        status: { $in: ['enrolled', 'completed'] }
+      }).distinct('offeringId');
+
+      // Get enrollments count for each offering
+      const offeringsWithAvailability = await Promise.all(
+        offerings.map(async (offering: any) => {
+          const enrolledCount = await Enrollment.countDocuments({
+            offeringId: offering._id,
+            status: 'enrolled'
+          });
+
+          const isEnrolled = existingEnrollments.some(id => id.toString() === offering._id.toString());
+
+          return {
+            ...offering,
+            enrolledCount,
+            availableSeats: offering.capacity - enrolledCount,
+            isFull: enrolledCount >= offering.capacity,
+            isEnrolled
+          };
+        })
+      );
+
+      // Filter out enrolled offerings and full offerings
+      const available = offeringsWithAvailability.filter((o: any) => !o.isEnrolled && !o.isFull);
+
+      return successResponse(res, available);
+    } catch (error: any) {
+      return errorResponse(res, error.message, 500);
+    }
+  }
+
+  // Get my enrollments - for authenticated student
+  static async getMyEnrollments(req: AuthRequest, res: Response) {
+    try {
+      // Get authenticated student profile
+      const student = await Student.findOne({ userId: req.user!.userId });
+      if (!student) {
+        return notFoundResponse(res, 'Student profile');
+      }
+
+      // Get enrollments with populated data
+      const enrollments = await Enrollment.find({ studentId: student._id })
+        .populate({
+          path: 'offeringId',
+          populate: [
+            { path: 'courseId' },
+            { path: 'termId' }
+          ]
+        })
+        .sort({ enrolledAt: -1 });
 
       return successResponse(res, enrollments);
     } catch (error: any) {

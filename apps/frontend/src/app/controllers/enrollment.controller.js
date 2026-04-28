@@ -7,10 +7,10 @@
 
     EnrollmentController.$inject = [
         '$scope', '$location', '$routeParams',
-        'AuthService', 'EnrollmentService', 'StudentService', 'OfferingService'
+        'AuthService', 'EnrollmentService', 'StudentService', 'OfferingService', 'TermService'
     ];
 
-    function EnrollmentController($scope, $location, $routeParams, AuthService, EnrollmentService, StudentService, OfferingService) {
+    function EnrollmentController($scope, $location, $routeParams, AuthService, EnrollmentService, StudentService, OfferingService, TermService) {
         var vm = this;
 
         // ── Shared state ──────────────────────────────────────
@@ -65,6 +65,7 @@
         vm.navigateBack = navigateBack;
         vm.navigateTo = navigateTo;
         vm.formatDate = formatDate;
+        vm.loadMyEnrollments = loadMyEnrollments;
 
         // ── Initialization ────────────────────────────────────
         init();
@@ -75,25 +76,38 @@
                 return;
             }
 
-            // Redirect non-admins from management
-            if (!vm.canManage) {
+            var path = $location.path();
+            var isStudentView = path === '/enrollments/my';
+
+            // Students can only access /enrollments/my
+            if (vm.currentUser.role === 'student') {
+                if (!isStudentView) {
+                    $location.path('/enrollments/my');
+                    return;
+                }
+            } else if (!vm.canManage && !isStudentView) {
+                // Non-admin, non-student users redirected
                 $location.path('/dashboard');
                 return;
             }
 
-            var path = $location.path();
-
-            if (path === '/enrollments/create') {
+            if (path === '/enrollments/create' && vm.canManage) {
                 loadSelectionData();
                 vm.isLoading = false;
-            } else if (path === '/enrollments/bulk') {
+            } else if (path === '/enrollments/bulk' && vm.canManage) {
                 loadSelectionData();
                 vm.isLoading = false;
+            } else if (isStudentView) {
+                loadMyEnrollments();
+                loadTerms();
             } else if ($routeParams.id) {
                 loadEnrollmentDetail($routeParams.id);
-            } else {
+            } else if (vm.canManage) {
                 loadEnrollments();
                 loadSelectionData(); // For filters
+            } else {
+                loadMyEnrollments();
+                loadTerms();
             }
         }
 
@@ -147,7 +161,44 @@
         function changePage(newPage) {
             if (newPage < 1 || newPage > vm.pagination.totalPages) return;
             vm.pagination.page = newPage;
-            loadEnrollments();
+            if ($location.path() === '/enrollments/my') {
+                loadMyEnrollments();
+            } else {
+                loadEnrollments();
+            }
+        }
+
+        // ── My Enrollments (Student View) ────────────────────────
+
+        function loadMyEnrollments() {
+            vm.isLoading = true;
+            vm.error = null;
+
+            EnrollmentService.getMyEnrollments()
+                .then(function(response) {
+                    vm.enrollments = response.data || [];
+                    if (response.pagination) {
+                        vm.pagination.total = response.pagination.total || 0;
+                        vm.pagination.totalPages = response.pagination.totalPages || 0;
+                        vm.pagination.page = response.pagination.page || 1;
+                    }
+                    vm.isLoading = false;
+                })
+                .catch(function(error) {
+                    vm.isLoading = false;
+                    vm.error = (error && error.data && error.data.message) || 'Failed to load your enrollments';
+                });
+        }
+
+        function loadTerms() {
+            TermService.list({ limit: 100 })
+                .then(function(response) {
+                    vm.terms = response.data || [];
+                })
+                .catch(function(error) {
+                    console.error('Failed to load terms:', error);
+                    vm.terms = [];
+                });
         }
 
         // ── Detail ────────────────────────────────────────────

@@ -7,3 +7,7 @@ node_modules
 .env
 .env.local
 .env.*.local
+
+.playwright/
+.playwright-report/
+.playwright-mcp
