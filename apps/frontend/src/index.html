@@ -592,7 +592,7 @@
                     <li class="nav-item dropdown" ng-if="main.isAuthenticated()">
                         <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown">
                             <i class="fas fa-user-circle"></i>
-                            {{ main.getCurrentUser().name }}
+                            {{ main.getCurrentUser() ? main.getCurrentUser().name : 'User' }}
                         </a>
                         <div class="dropdown-menu dropdown-menu-right">
                             <a class="dropdown-item" href="#!/profile">
@@ -609,8 +609,143 @@
         </div>
     </nav>
 
-    <!-- Angular Views -->
-    <div ng-view></div>
+    <!-- Sidebar for Authenticated Users -->
+    <div class="sidebar" ng-class="{'show': main.mobileMenuOpen}" ng-if="main.isAuthenticated() && !main.isPublicAuthPage()">
+        <div class="sidebar-brand">
+            <i class="fas fa-graduation-cap" style="color: #6366f1;"></i> College ERP
+        </div>
+        <ul class="sidebar-menu">
+            <li>
+                <a href="#!/dashboard" ng-class="{'active': main.isActive('/dashboard')}">
+                    <i class="fas fa-home"></i> Dashboard
+                </a>
+            </li>
+            <li>
+                <a href="#!/departments" ng-class="{'active': main.isActive('/departments')}">
+                    <i class="fas fa-building"></i> Departments
+                </a>
+            </li>
+            <li>
+                <a href="#!/courses" ng-class="{'active': main.isActive('/courses')}">
+                    <i class="fas fa-book"></i> Courses
+                </a>
+            </li>
+            <li>
+                <a href="#!/terms" ng-class="{'active': main.isActive('/terms')}">
+                    <i class="fas fa-calendar-alt"></i> Terms
+                </a>
+            </li>
+            <li>
+                <a href="#!/course-offerings" ng-class="{'active': main.isActive('/course-offerings')}">
+                    <i class="fas fa-layer-group"></i> Course Offerings
+                </a>
+            </li>
+            <li>
+                <a href="#!/sessions" ng-class="{'active': main.isActive('/sessions')}">
+                    <i class="fas fa-calendar-check"></i> Sessions
+                </a>
+            </li>
+            <li>
+                <a href="#!/students" ng-class="{'active': main.isActive('/students')}">
+                    <i class="fas fa-user-graduate"></i> Students
+                </a>
+            </li>
+            <li>
+                <a href="#!/faculty" ng-class="{'active': main.isActive('/faculty')}">
+                    <i class="fas fa-chalkboard-teacher"></i> Faculty
+                </a>
+            </li>
+            <li>
+                <a href="#!/enrollments" ng-class="{'active': main.isActive('/enrollments')}">
+                    <i class="fas fa-clipboard-check"></i> Enrollments
+                </a>
+            </li>
+            <li>
+                <a href="#!/attendance" ng-class="{'active': main.isActive('/attendance')}">
+                    <i class="fas fa-user-check"></i> Attendance
+                </a>
+            </li>
+            <li>
+                <a href="#!/reports" ng-class="{'active': main.isActive('/reports')}">
+                    <i class="fas fa-chart-bar"></i> Reports
+                </a>
+            </li>
+            <li>
+                <a href="#!/audit-logs" ng-class="{'active': main.isActive('/audit-logs')}">
+                    <i class="fas fa-history"></i> Audit Logs
+                </a>
+            </li>
+            <li>
+                <a href="#!/profile" ng-class="{'active': main.isActive('/profile')}">
+                    <i class="fas fa-user-circle"></i> Profile
+                </a>
+            </li>
+            <li style="margin-top: 2rem;">
+                <a href="#!/settings" ng-class="{'active': main.isActive('/settings')}">
+                    <i class="fas fa-cog"></i> Settings
+                </a>
+            </li>
+            <li>
+                <a href="" ng-click="main.logout()">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </a>
+            </li>
+        </ul>
+    </div>
+
+    <!-- Main Content Wrapper for Authenticated Users -->
+    <div ng-class="{'main-content': main.isAuthenticated() && !main.isPublicAuthPage()}">
+        
+        <!-- Authenticated Top Navigation -->
+        <nav ng-if="main.isAuthenticated() && !main.isPublicAuthPage()" style="background: var(--bg-card); border-bottom: 1px solid var(--border-color); position: sticky; top: 0; z-index: 50; padding: 0.75rem 1.5rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div style="display: flex; align-items: center; gap: 1rem;">
+                    <!-- Hamburger Menu -->
+                    <button class="btn btn-outline-custom" style="padding: 0.25rem 0.5rem; border: none; background: transparent;" ng-click="main.toggleMobileMenu()">
+                        <i class="fas fa-bars" style="color: var(--text-secondary); font-size: 1.25rem;"></i>
+                    </button>
+                    <!-- Breadcrumbs Placeholder -->
+                    <div style="color: var(--text-secondary); font-size: 0.95rem; font-weight: 500;">
+                        <i class="fas fa-sitemap" style="margin-right: 0.5rem;"></i>
+                        <span style="color: var(--text-muted);">App</span> / <span style="color: var(--text-primary); text-transform: capitalize;">{{ main.getCurrentPageName() }}</span>
+                    </div>
+                </div>
+
+                <div style="display: flex; align-items: center; gap: 1.5rem;">
+                    <!-- User Dropdown (Replaces old auth layout nav items) -->
+                    <div class="user-dropdown-container" style="position: relative;">
+                        <div style="display: flex; align-items: center; gap: 0.75rem; cursor: pointer; padding: 0.5rem 1rem; background: var(--bg-card-hover); border-radius: 8px; border: 1px solid var(--border-color);" ng-click="main.toggleUserDropdown()">
+                            <i class="fas fa-user-circle text-lg" style="color: var(--text-secondary);"></i>
+                            <span style="color: var(--text-primary); font-weight: 500;">{{ main.getCurrentUser() ? main.getCurrentUser().name : 'User' }}</span>
+                            <i class="fas fa-chevron-down" style="color: var(--text-muted); font-size: 0.75rem; margin-left: 0.25rem;"></i>
+                        </div>
+                        
+                        <!-- Dropdown Menu Options -->
+                        <div ng-show="main.userDropdownOpen" style="position: absolute; top: calc(100% + 0.5rem); right: 0; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 8px; padding: 0.5rem; min-width: 150px; box-shadow: var(--shadow-lg); z-index: 100;">
+                            <a href="#!/profile" style="display: block; padding: 0.5rem 1rem; color: var(--text-secondary); text-decoration: none; border-radius: 4px;" onmouseover="this.style.background='var(--bg-card-hover)'; this.style.color='var(--text-primary)'" onmouseout="this.style.background='transparent'; this.style.color='var(--text-secondary)'">
+                                <i class="fas fa-user" style="width: 20px;"></i> Profile
+                            </a>
+                            <a href="#!/settings" style="display: block; padding: 0.5rem 1rem; color: var(--text-secondary); text-decoration: none; border-radius: 4px;" onmouseover="this.style.background='var(--bg-card-hover)'; this.style.color='var(--text-primary)'" onmouseout="this.style.background='transparent'; this.style.color='var(--text-secondary)'">
+                                <i class="fas fa-cog" style="width: 20px;"></i> Settings
+                            </a>
+                            <div style="border-top: 1px solid var(--border-color); margin: 0.25rem 0;"></div>
+                            <a href="" ng-click="main.logout()" style="display: block; padding: 0.5rem 1rem; color: var(--danger-color); text-decoration: none; border-radius: 4px;" onmouseover="this.style.background='var(--bg-card-hover)'" onmouseout="this.style.background='transparent'">
+                                <i class="fas fa-sign-out-alt" style="width: 20px;"></i> Logout
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Angular Views -->
+        <div ng-view></div>
+
+        <!-- Authenticated Footer -->
+        <footer ng-if="main.isAuthenticated() && !main.isPublicAuthPage()" style="margin-top: auto; padding: 1.5rem; text-align: center; color: var(--text-muted); border-top: 1px solid var(--border-color); font-size: 0.875rem;">
+            &copy; 2026 College ERP System. All rights reserved.
+        </footer>
+    </div>
 
     <!-- Footer -->
     <footer class="footer" ng-if="!main.isAuthPage()">
@@ -658,7 +793,9 @@
     <script src="/app/controllers/auth.controller.js"></script>
     <script src="/app/controllers/landing.controller.js"></script>
     <script src="/app/controllers/dashboard.controller.js"></script>
+    <script src="/app/controllers/navigation.controller.js"></script>
     <script src="/app/services/auth.service.js"></script>
+    <script src="/app/services/dashboard.service.js"></script>
     <script src="/app/services/user.service.js"></script>
 </body>
 </html>

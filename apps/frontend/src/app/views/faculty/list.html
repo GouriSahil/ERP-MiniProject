@@ -1,0 +1,146 @@
+<!-- Faculty List (Aurora Slate Theme) -->
+
+<div ng-if="!vm.isLoading" style="padding-top: 24px;">
+    <div class="dash-wrap">
+
+        <!-- Hero header -->
+        <div class="dash-hero">
+            <div class="dash-hero-left">
+                <div class="dash-avatar" style="background: linear-gradient(135deg, #F59E0B, #EF4444); color: #fff;">
+                    <i class="fas fa-chalkboard-teacher"></i>
+                </div>
+                <div style="min-width: 0;">
+                    <h2>Faculty Members</h2>
+                    <p>Manage and view academic staff across departments.</p>
+                </div>
+            </div>
+            <div class="dash-hero-right">
+                <a href="#!/faculty/create" class="dash-btn-primary"
+                   style="text-decoration: none; display: inline-flex; align-items: center; gap: 8px;"
+                   ng-if="vm.canManage">
+                    <i class="fas fa-plus"></i> Add Faculty
+                </a>
+            </div>
+        </div>
+
+        <!-- Search & Filter bar -->
+        <div style="margin-bottom: 24px; display: flex; gap: 12px; flex-wrap: wrap;">
+            <div style="flex: 1; min-width: 250px; position: relative;">
+                <i class="fas fa-search" style="position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: var(--dash-muted);"></i>
+                <input type="text" ng-model="vm.searchQuery" ng-change="vm.search()" ng-model-options="{ debounce: 500 }"
+                       placeholder="Search by name or email..."
+                       style="width: 100%; padding: 12px 16px 12px 48px; background: rgba(255, 255, 255, 0.05); border: 1px solid var(--dash-border); border-radius: 12px; color: var(--dash-text); outline: none; transition: border-color 0.2s;"
+                       onfocus="this.style.borderColor='var(--dash-accent)'"
+                       onblur="this.style.borderColor='var(--dash-border)'">
+            </div>
+            <select ng-model="vm.filterDept" ng-change="vm.search()"
+                    style="padding: 12px 16px; background: rgba(255, 255, 255, 0.05); border: 1px solid var(--dash-border); border-radius: 12px; color: var(--dash-text); outline: none; min-width: 200px;">
+                <option value="">All Departments</option>
+                <option ng-repeat="dept in vm.departments" value="{{ dept._id }}">{{ dept.name }}</option>
+            </select>
+        </div>
+
+        <!-- Empty State -->
+        <div class="dash-card" ng-if="vm.facultyList.length === 0" style="padding: 60px 20px; text-align: center;">
+            <div style="width: 64px; height: 64px; border-radius: 20px; background: rgba(255,255,255,0.05); display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; color: var(--dash-muted); font-size: 1.5rem;">
+                <i class="fas fa-users-slash"></i>
+            </div>
+            <h3 style="font-size: 1.1rem; font-weight: 800; color: var(--dash-text); margin: 0 0 8px;">No faculty members found</h3>
+            <p style="color: var(--dash-muted); margin: 0 0 16px;">Try adjusting your search or filters.</p>
+            <a href="#!/faculty/create" ng-if="vm.canManage"
+               style="color: var(--dash-accent-2); font-weight: 700; text-decoration: none; display: inline-flex; align-items: center; gap: 8px;">
+                <i class="fas fa-user-plus"></i> Add Faculty
+            </a>
+        </div>
+
+        <!-- Faculty Table -->
+        <div class="dash-card" ng-if="vm.facultyList.length > 0" style="padding: 0; overflow: hidden;">
+            <div style="overflow-x: auto;">
+                <table style="width: 100%; border-collapse: collapse; text-align: left;">
+                    <thead>
+                        <tr style="border-bottom: 1px solid var(--dash-border); background: rgba(255, 255, 255, 0.02);">
+                            <th style="padding: 12px 16px; color: var(--dash-dim); font-weight: 700; font-size: 0.75rem; text-transform: uppercase; cursor: pointer;" ng-click="vm.sortBy('userId.name')">
+                                Faculty Name
+                                <i class="fas" ng-if="vm.sortField === 'userId.name'"
+                                   ng-class="vm.sortDirection === 'asc' ? 'fa-sort-up' : 'fa-sort-down'"
+                                   style="margin-left: 4px; color: var(--dash-accent-2);"></i>
+                            </th>
+                            <th style="padding: 12px 16px; color: var(--dash-dim); font-weight: 700; font-size: 0.75rem; text-transform: uppercase;">Department</th>
+                            <th style="padding: 12px 16px; color: var(--dash-dim); font-weight: 700; font-size: 0.75rem; text-transform: uppercase;">Specialization</th>
+                            <th style="padding: 12px 16px; color: var(--dash-dim); font-weight: 700; font-size: 0.75rem; text-transform: uppercase;">Designation</th>
+                            <th style="padding: 12px 16px; color: var(--dash-dim); font-weight: 700; font-size: 0.75rem; text-transform: uppercase; text-align: right;">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="f in vm.facultyList"
+                            style="border-bottom: 1px solid var(--dash-border); transition: background 0.2s; cursor: pointer;"
+                            ng-click="vm.navigateTo('/faculty/' + f._id)"
+                            onmouseover="this.style.background='rgba(255,255,255,0.04)'"
+                            onmouseout="this.style.background='transparent'">
+                            <td style="padding: 16px;">
+                                <div style="display: flex; align-items: center; gap: 12px;">
+                                    <div style="width: 36px; height: 36px; border-radius: 10px; background: rgba(245, 158, 11, 0.1); border: 1px solid rgba(245, 158, 11, 0.2); display: flex; align-items: center; justify-content: center; color: #f59e0b; font-weight: 800; font-size: 0.8rem;">
+                                        {{ (f.userId.name || 'U').charAt(0) }}
+                                    </div>
+                                    <div>
+                                        <div style="font-weight: 800; color: var(--dash-text); font-size: 0.95rem;">{{ f.userId.name }}</div>
+                                        <div style="font-size: 0.75rem; color: var(--dash-muted);">{{ f.userId.email }}</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td style="padding: 16px; color: var(--dash-muted); font-size: 0.85rem;">
+                                {{ f.departmentId.name || '---' }}
+                            </td>
+                            <td style="padding: 16px;">
+                                <span class="chip" style="font-size: 0.7rem; color: var(--dash-accent-2); border-color: rgba(34, 211, 238, 0.3); background: rgba(34, 211, 238, 0.1);">{{ f.specialization || 'General' }}</span>
+                            </td>
+                            <td style="padding: 16px; color: var(--dash-text); font-size: 0.85rem; font-weight: 600;">
+                                {{ f.designation }}
+                            </td>
+                            <td style="padding: 16px; text-align: right;" ng-click="$event.stopPropagation()">
+                                <div style="display: flex; gap: 8px; justify-content: flex-end;">
+                                    <a href="#!/faculty/{{ f._id }}" class="btn-mini" style="text-decoration: none;" title="View Profile">
+                                        <i class="far fa-user"></i>
+                                    </a>
+                                    <a href="#!/faculty/{{ f._id }}/edit" class="btn-mini" style="text-decoration: none;" title="Edit" ng-if="vm.canManage">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <button class="btn-mini btn-mini-danger" ng-click="vm.confirmDelete(f._id, f.userId.name)" title="Remove" ng-if="vm.canManage">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Pagination -->
+            <div style="padding: 12px 16px; border-top: 1px solid var(--dash-border); display: flex; align-items: center; justify-content: space-between;"
+                 ng-if="vm.pagination.totalPages > 1">
+                <div style="color: var(--dash-muted); font-size: 0.85rem;">
+                    Page <span style="font-weight: 800; color: var(--dash-text);">{{ vm.pagination.page }}</span>
+                    of <span style="font-weight: 800; color: var(--dash-text);">{{ vm.pagination.totalPages }}</span>
+                </div>
+                <div style="display: flex; gap: 8px;">
+                    <button class="btn-mini" ng-click="vm.changePage(vm.pagination.page - 1)" ng-disabled="vm.pagination.page === 1">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                    <button class="btn-mini" ng-click="vm.changePage(vm.pagination.page + 1)" ng-disabled="vm.pagination.page === vm.pagination.totalPages">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Loading State -->
+<div ng-if="vm.isLoading" style="padding-top: 24px;">
+    <div class="dash-wrap">
+        <div class="dash-loading">
+            <i class="fas fa-circle-notch"></i>
+            <div style="font-weight: 800;">Loading faculty members…</div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,113 @@
+<!-- Faculty Form (Aurora Slate Theme) -->
+
+<div class="dash-wrap" style="padding-top: 24px; max-width: 800px; margin: 0 auto;">
+    
+    <!-- Hero / Header -->
+    <div class="dash-hero" style="margin-bottom: 24px;">
+        <div class="dash-hero-left">
+            <a href="#!/faculty" class="btn-mini" style="width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; text-decoration: none;">
+                <i class="fas fa-arrow-left"></i>
+            </a>
+            <div>
+                <h2>{{ vm.isEditing ? 'Edit Faculty' : 'Register Faculty' }}</h2>
+                <p>{{ vm.isEditing ? 'Update faculty profile and department assignments.' : 'Create a new faculty member and user account.' }}</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Form Card -->
+    <div class="dash-card">
+        <div class="dash-card-body">
+            <form ng-submit="vm.save()" name="facultyForm" novalidate>
+                
+                <!-- Account Section -->
+                <div style="margin-bottom: 24px;">
+                    <h3 style="font-size: 0.9rem; font-weight: 800; color: var(--dash-accent-2); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 20px; display: flex; align-items: center; gap: 8px;">
+                        <i class="fas fa-user-circle"></i> Account Information
+                    </h3>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div style="margin-bottom: 20px;">
+                                <label style="display: block; margin-bottom: 8px; color: var(--dash-dim); font-size: 0.8rem; font-weight: 700; text-transform: uppercase;">Full Name</label>
+                                <input type="text" ng-model="vm.faculty.userId.name" required name="name"
+                                       placeholder="e.g. Dr. Jane Smith"
+                                       style="width: 100%; padding: 12px 16px; background: rgba(255, 255, 255, 0.05); border: 1px solid var(--dash-border); border-radius: 12px; color: var(--dash-text); outline: none;">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div style="margin-bottom: 20px;">
+                                <label style="display: block; margin-bottom: 8px; color: var(--dash-dim); font-size: 0.8rem; font-weight: 700; text-transform: uppercase;">Email Address</label>
+                                <input type="email" ng-model="vm.faculty.userId.email" required name="email" ng-disabled="vm.isEditing"
+                                       placeholder="jane.smith@college.edu"
+                                       style="width: 100%; padding: 12px 16px; background: rgba(255, 255, 255, 0.05); border: 1px solid var(--dash-border); border-radius: 12px; color: var(--dash-text); outline: none;">
+                                <p ng-if="vm.isEditing" style="margin-top: 6px; font-size: 0.75rem; color: var(--dash-muted);">Email cannot be changed after registration.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row" ng-if="!vm.isEditing">
+                        <div class="col-md-12">
+                            <div style="margin-bottom: 20px;">
+                                <label style="display: block; margin-bottom: 8px; color: var(--dash-dim); font-size: 0.8rem; font-weight: 700; text-transform: uppercase;">Initial Password</label>
+                                <input type="password" ng-model="vm.faculty.userId.password" required name="password"
+                                       placeholder="Enter initial password (required)"
+                                       style="width: 100%; padding: 12px 16px; background: rgba(255, 255, 255, 0.05); border: 1px solid var(--dash-border); border-radius: 12px; color: var(--dash-text); outline: none;">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Professional Section -->
+                <div style="margin-bottom: 24px;">
+                    <h3 style="font-size: 0.9rem; font-weight: 800; color: var(--dash-accent-2); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 20px; display: flex; align-items: center; gap: 8px;">
+                        <i class="fas fa-briefcase"></i> Professional Details
+                    </h3>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div style="margin-bottom: 20px;">
+                                <label style="display: block; margin-bottom: 8px; color: var(--dash-dim); font-size: 0.8rem; font-weight: 700; text-transform: uppercase;">Department</label>
+                                <select ng-model="vm.faculty.departmentId" required name="dept"
+                                        style="width: 100%; padding: 12px 16px; background: rgba(255, 255, 255, 0.05); border: 1px solid var(--dash-border); border-radius: 12px; color: var(--dash-text); outline: none;">
+                                    <option value="">Select Department</option>
+                                    <option ng-repeat="dept in vm.departments" value="{{ dept._id }}">{{ dept.name }}</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div style="margin-bottom: 20px;">
+                                <label style="display: block; margin-bottom: 8px; color: var(--dash-dim); font-size: 0.8rem; font-weight: 700; text-transform: uppercase;">Designation</label>
+                                <select ng-model="vm.faculty.designation" required
+                                        style="width: 100%; padding: 12px 16px; background: rgba(255, 255, 255, 0.05); border: 1px solid var(--dash-border); border-radius: 12px; color: var(--dash-text); outline: none;">
+                                    <option value="Professor">Professor</option>
+                                    <option value="Associate Professor">Associate Professor</option>
+                                    <option value="Assistant Professor">Assistant Professor</option>
+                                    <option value="Lecturer">Lecturer</option>
+                                    <option value="Visiting Faculty">Visiting Faculty</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="margin-bottom: 20px;">
+                        <label style="display: block; margin-bottom: 8px; color: var(--dash-dim); font-size: 0.8rem; font-weight: 700; text-transform: uppercase;">Specialization</label>
+                        <input type="text" ng-model="vm.faculty.specialization"
+                               placeholder="e.g. Artificial Intelligence, Fluid Mechanics"
+                               style="width: 100%; padding: 12px 16px; background: rgba(255, 255, 255, 0.05); border: 1px solid var(--dash-border); border-radius: 12px; color: var(--dash-text); outline: none;">
+                    </div>
+                </div>
+
+                <!-- Footer Actions -->
+                <div style="display: flex; gap: 12px; justify-content: flex-end; padding-top: 12px; border-top: 1px solid var(--dash-border);">
+                    <button type="button" class="btn-mini" style="padding: 10px 24px;" ng-click="vm.navigateBack()">Cancel</button>
+                    <button type="submit" class="dash-btn-primary" style="padding: 10px 32px;" ng-disabled="vm.isSaving">
+                        <i class="fas fa-spinner fa-spin" ng-if="vm.isSaving" style="margin-right: 8px;"></i>
+                        {{ vm.isEditing ? 'Update Faculty' : 'Register Faculty' }}
+                    </button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>

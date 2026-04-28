@@ -1,0 +1,99 @@
+<!-- Bulk Enrollment View (Aurora Slate Theme) -->
+
+<div class="dash-wrap" style="padding-top: 24px;">
+    
+    <!-- Hero / Header -->
+    <div class="dash-hero" style="margin-bottom: 24px;">
+        <div class="dash-hero-left">
+            <a href="#!/enrollments" class="btn-mini" style="width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; text-decoration: none;">
+                <i class="fas fa-arrow-left"></i>
+            </a>
+            <div>
+                <h2>Bulk Enrollment</h2>
+                <p>Register multiple students for a course offering at once.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="dash-grid" ng-if="!vm.bulk.results">
+        
+        <!-- Step 1: Offering Selection -->
+        <div style="grid-column: span 4;">
+            <div class="dash-card">
+                <div class="dash-card-header">
+                    <h3 class="dash-card-title">1. Select Offering</h3>
+                </div>
+                <div class="dash-card-body">
+                    <select ng-model="vm.bulk.offeringId"
+                            style="width: 100%; padding: 12px 16px; background: rgba(255, 255, 255, 0.05); border: 1px solid var(--dash-border); border-radius: 12px; color: var(--dash-text); outline: none;">
+                        <option value="">Choose Course Offering...</option>
+                        <option ng-repeat="o in vm.offerings" value="{{ o._id }}">{{ o.courseId.code }} - {{ o.courseId.name }}</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- Step 2: Student Selection -->
+        <div style="grid-column: span 8;">
+            <div class="dash-card">
+                <div class="dash-card-header">
+                    <h3 class="dash-card-title">2. Select Students</h3>
+                    <span class="chip">{{ vm.bulk.selectedStudentIds.length }} Selected</span>
+                </div>
+                <div class="dash-card-body" style="padding: 0; max-height: 500px; overflow-y: auto;">
+                    <table style="width: 100%; border-collapse: collapse;">
+                        <thead style="position: sticky; top: 0; background: #111827; z-index: 10;">
+                            <tr style="border-bottom: 1px solid var(--dash-border);">
+                                <th style="padding: 12px 16px; width: 40px;"></th>
+                                <th style="padding: 12px 16px; color: var(--dash-dim); font-size: 0.7rem; text-transform: uppercase;">Roll Number</th>
+                                <th style="padding: 12px 16px; color: var(--dash-dim); font-size: 0.7rem; text-transform: uppercase;">Student Name</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="s in vm.students" 
+                                style="border-bottom: 1px solid var(--dash-border); cursor: pointer;"
+                                ng-click="vm.toggleStudentSelection(s._id)">
+                                <td style="padding: 12px 16px;">
+                                    <input type="checkbox" ng-checked="vm.bulk.selectedStudentIds.indexOf(s._id) !== -1" style="pointer-events: none;">
+                                </td>
+                                <td style="padding: 12px 16px; font-family: monospace; font-size: 0.85rem;">{{ s.rollNumber }}</td>
+                                <td style="padding: 12px 16px; color: var(--dash-text);">{{ s.userId.name }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="dash-card-body" style="border-top: 1px solid var(--dash-border); text-align: right;">
+                    <button class="dash-btn-primary" ng-click="vm.saveBulk()" ng-disabled="vm.isSaving || !vm.bulk.offeringId || vm.bulk.selectedStudentIds.length === 0">
+                        <i class="fas fa-spinner fa-spin" ng-if="vm.isSaving" style="margin-right: 8px;"></i>
+                        Process Enrollment
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Results View -->
+    <div class="dash-card" ng-if="vm.bulk.results">
+        <div class="dash-card-header">
+            <h3 class="dash-card-title">Enrollment Results</h3>
+        </div>
+        <div class="dash-card-body">
+            <div ng-repeat="res in vm.bulk.results" style="margin-bottom: 8px; display: flex; align-items: center; gap: 12px;">
+                <i class="fas" ng-class="res.success ? 'fa-check-circle text-success' : 'fa-times-circle text-danger'"></i>
+                <span style="flex: 1;">{{ res.studentName || res.studentId }}</span>
+                <span style="font-size: 0.8rem; color: var(--dash-muted);">{{ res.message }}</span>
+            </div>
+            <div style="margin-top: 24px;">
+                <button class="btn-mini" ng-click="vm.bulk.results = null; vm.bulk.selectedStudentIds = []">New Bulk Operation</button>
+                <a href="#!/enrollments" class="btn-mini" style="margin-left: 8px; text-decoration: none;">View Enrollment List</a>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- Helper for Controller -->
+<script>
+    // I need to add this method to the controller logic in the service tool if not already there.
+    // Actually, I'll update the controller file now to include toggleStudentSelection.
+</script>

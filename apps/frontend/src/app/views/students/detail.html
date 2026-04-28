@@ -1,0 +1,147 @@
+<!-- Student Detail (Aurora Slate Theme) -->
+
+<div ng-if="!vm.isLoading && vm.student" style="padding-top: 24px;">
+    <div class="dash-wrap">
+
+        <!-- Hero header -->
+        <div class="dash-hero">
+            <div class="dash-hero-left">
+                <a href="#!/students" class="btn-mini" style="width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; text-decoration: none;">
+                    <i class="fas fa-arrow-left"></i>
+                </a>
+                <div style="display: flex; align-items: center; gap: 16px;">
+                    <div style="width: 64px; height: 64px; border-radius: 20px; background: linear-gradient(135deg, #10B981, #3B82F6); display: flex; align-items: center; justify-content: center; color: #fff; font-size: 1.5rem; font-weight: 800; border: 4px solid rgba(255,255,255,0.05);">
+                        {{ (vm.student.userId.name || 'S').charAt(0) }}
+                    </div>
+                    <div>
+                        <h2 style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+                            {{ vm.student.userId.name }}
+                            <span class="chip" style="font-family: monospace; font-size: 0.75rem;">{{ vm.student.rollNumber }}</span>
+                        </h2>
+                        <p>{{ vm.student.departmentId.name }} · Batch {{ vm.student.batch }} · Semester {{ vm.student.semester }}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="dash-hero-right" ng-if="vm.canManage">
+                <a href="#!/students/{{ vm.student._id }}/edit" class="btn-mini" style="text-decoration: none;">
+                    <i class="fas fa-edit" style="margin-right: 6px;"></i> Edit
+                </a>
+                <button class="btn-mini btn-mini-danger" ng-click="vm.confirmDelete()">
+                    <i class="fas fa-trash-alt" style="margin-right: 6px;"></i> Remove
+                </button>
+            </div>
+        </div>
+
+        <div class="dash-grid">
+            
+            <!-- Left Column: Academic Profile -->
+            <div style="grid-column: span 8; display: flex; flex-direction: column; gap: 24px;">
+                
+                <!-- Quick Stats -->
+                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;">
+                    <div class="dash-card" style="padding: 24px; text-align: center;">
+                        <div style="color: var(--dash-dim); font-size: 0.7rem; font-weight: 700; text-transform: uppercase; margin-bottom: 8px;">Enrollments</div>
+                        <div style="font-size: 1.8rem; font-weight: 900; color: var(--dash-accent-2);">0</div>
+                    </div>
+                    <div class="dash-card" style="padding: 24px; text-align: center;">
+                        <div style="color: var(--dash-dim); font-size: 0.7rem; font-weight: 700; text-transform: uppercase; margin-bottom: 8px;">Attendance</div>
+                        <div style="font-size: 1.8rem; font-weight: 900; color: #10b981;">---</div>
+                    </div>
+                    <div class="dash-card" style="padding: 24px; text-align: center;">
+                        <div style="color: var(--dash-dim); font-size: 0.7rem; font-weight: 700; text-transform: uppercase; margin-bottom: 8px;">Credits Earned</div>
+                        <div style="font-size: 1.8rem; font-weight: 900; color: #8b5cf6;">0</div>
+                    </div>
+                </div>
+
+                <!-- Academic History -->
+                <div class="dash-card">
+                    <div class="dash-card-header">
+                        <h3 class="dash-card-title"><i class="fas fa-history"></i> Enrollment History</h3>
+                        <span class="chip">Upcoming Feature</span>
+                    </div>
+                    <div class="dash-card-body">
+                        <div class="empty" style="padding: 40px 20px;">
+                            <i class="fas fa-scroll" style="font-size: 1.5rem; margin-bottom: 12px; display: block;"></i>
+                            No enrollment records found for this student.
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Right Column: Details & Meta -->
+            <div style="grid-column: span 4; display: flex; flex-direction: column; gap: 24px;">
+                
+                <!-- Contact & Bio -->
+                <div class="dash-card">
+                    <div class="dash-card-header">
+                        <h3 class="dash-card-title"><i class="fas fa-info-circle"></i> Info</h3>
+                    </div>
+                    <div class="dash-card-body" style="padding: 0;">
+                        <div class="list">
+                            <div class="list-item" style="padding: 12px 16px;">
+                                <div class="list-main">
+                                    <div class="list-title">Email</div>
+                                    <div class="list-sub" style="word-break: break-all;">{{ vm.student.userId.email }}</div>
+                                </div>
+                            </div>
+                            <div class="list-item" style="padding: 12px 16px;">
+                                <div class="list-main">
+                                    <div class="list-title">Department</div>
+                                    <div class="list-sub">{{ vm.student.departmentId.name }}</div>
+                                </div>
+                            </div>
+                            <div class="list-item" style="padding: 12px 16px;">
+                                <div class="list-main">
+                                    <div class="list-title">Batch</div>
+                                    <div class="list-sub">{{ vm.student.batch }}</div>
+                                </div>
+                            </div>
+                            <div class="list-item" style="padding: 12px 16px;">
+                                <div class="list-main">
+                                    <div class="list-title">Current Semester</div>
+                                    <div class="list-sub">Semester {{ vm.student.semester }}</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Metadata -->
+                <div class="dash-card">
+                    <div class="dash-card-header">
+                        <h3 class="dash-card-title"><i class="fas fa-database"></i> Metadata</h3>
+                    </div>
+                    <div class="dash-card-body" style="padding: 0;">
+                        <div class="list">
+                            <div class="list-item" style="padding: 12px 16px;">
+                                <div class="list-main">
+                                    <div class="list-title">Student ID</div>
+                                    <div class="list-sub" style="font-family: monospace; font-size: 0.7rem; word-break: break-all;">{{ vm.student._id }}</div>
+                                </div>
+                            </div>
+                            <div class="list-item" style="padding: 12px 16px;">
+                                <div class="list-main">
+                                    <div class="list-title">Registered On</div>
+                                    <div class="list-sub">{{ vm.formatDate(vm.student.createdAt) }}</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<!-- Loading State -->
+<div ng-if="vm.isLoading" style="padding-top: 24px;">
+    <div class="dash-wrap">
+        <div class="dash-loading">
+            <i class="fas fa-circle-notch"></i>
+            <div style="font-weight: 800;">Loading student profile…</div>
+        </div>
+    </div>
+</div>

@@ -23,6 +23,7 @@ export class CoursesController {
       }
 
       const courses = await Course.find(filter)
+        .populate('departmentId', 'name')
         .sort({ [sortBy]: sortOrder })
         .skip((page - 1) * limit)
         .limit(limit)

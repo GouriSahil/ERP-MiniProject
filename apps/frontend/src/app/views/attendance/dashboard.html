@@ -1,0 +1,49 @@
+<!-- Student Attendance Dashboard (Aurora Slate Theme) -->
+
+<div ng-if="!vm.isLoading" style="padding-top: 24px;">
+    <div class="dash-wrap">
+        <div class="dash-hero" style="margin-bottom: 24px;">
+            <div class="dash-hero-left">
+                <div class="dash-avatar" style="background: linear-gradient(135deg, #10B981, #3B82F6); color: #fff;">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+                <div>
+                    <h2>My Attendance</h2>
+                    <p>Monitor your course participation and requirements.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="dash-grid">
+            <div style="grid-column: span 4;">
+                <div class="dash-card" style="text-align: center; padding: 40px 20px;">
+                    <div style="font-size: 0.8rem; font-weight: 700; color: var(--dash-dim); text-transform: uppercase; margin-bottom: 12px;">Overall Attendance</div>
+                    <div style="font-size: 3rem; font-weight: 900; color: #10b981;">{{ vm.stats.percentage }}%</div>
+                    <div style="font-size: 0.85rem; color: var(--dash-muted); margin-top: 8px;">{{ vm.stats.presentCount }} Present / {{ vm.stats.totalCount }} Total</div>
+                </div>
+            </div>
+            
+            <div style="grid-column: span 8;">
+                <div class="dash-card">
+                    <div class="dash-card-header">
+                        <h3 class="dash-card-title">Participation Summary</h3>
+                    </div>
+                    <div class="dash-card-body">
+                        <div style="display: flex; flex-direction: column; gap: 16px;">
+                            <div ng-repeat="course in vm.stats.courses" style="display: flex; align-items: center; gap: 16px;">
+                                <div style="flex: 1;">
+                                    <div style="font-weight: 800; color: var(--dash-text);">{{ course.name }}</div>
+                                    <div style="font-size: 0.75rem; color: var(--dash-muted);">{{ course.code }}</div>
+                                </div>
+                                <div style="width: 200px; height: 8px; background: rgba(255,255,255,0.05); border-radius: 4px; overflow: hidden;">
+                                    <div style="height: 100%; background: #10b981;" ng-style="{'width': course.percentage + '%'}"></div>
+                                </div>
+                                <div style="width: 40px; font-weight: 800; color: var(--dash-text); font-size: 0.85rem;">{{ course.percentage }}%</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

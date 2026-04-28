@@ -1,0 +1,142 @@
+<!-- Faculty Profile/Detail (Aurora Slate Theme) -->
+
+<div ng-if="!vm.isLoading && vm.faculty" style="padding-top: 24px;">
+    <div class="dash-wrap">
+
+        <!-- Hero header -->
+        <div class="dash-hero">
+            <div class="dash-hero-left">
+                <a href="#!/faculty" class="btn-mini" style="width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; text-decoration: none;">
+                    <i class="fas fa-arrow-left"></i>
+                </a>
+                <div style="display: flex; align-items: center; gap: 16px;">
+                    <div style="width: 64px; height: 64px; border-radius: 20px; background: linear-gradient(135deg, #F59E0B, #EF4444); display: flex; align-items: center; justify-content: center; color: #fff; font-size: 1.5rem; font-weight: 800; border: 4px solid rgba(255,255,255,0.05);">
+                        {{ (vm.faculty.userId.name || 'U').charAt(0) }}
+                    </div>
+                    <div>
+                        <h2 style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+                            {{ vm.faculty.userId.name }}
+                            <span class="chip" style="font-size: 0.75rem;">{{ vm.faculty.designation }}</span>
+                        </h2>
+                        <p>{{ vm.faculty.departmentId.name }} · {{ vm.faculty.userId.email }}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="dash-hero-right" ng-if="vm.canManage">
+                <a href="#!/faculty/{{ vm.faculty._id }}/edit" class="btn-mini" style="text-decoration: none;">
+                    <i class="fas fa-edit" style="margin-right: 6px;"></i> Edit
+                </a>
+                <button class="btn-mini btn-mini-danger" ng-click="vm.confirmDelete()">
+                    <i class="fas fa-trash-alt" style="margin-right: 6px;"></i> Remove
+                </button>
+            </div>
+        </div>
+
+        <div class="dash-grid">
+            
+            <!-- Left Column: Bio & Stats -->
+            <div style="grid-column: span 8; display: flex; flex-direction: column; gap: 24px;">
+                
+                <!-- Professional Profile -->
+                <div class="dash-card">
+                    <div class="dash-card-header">
+                        <h3 class="dash-card-title"><i class="fas fa-id-card"></i> Professional Profile</h3>
+                    </div>
+                    <div class="dash-card-body">
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px;">
+                            <div>
+                                <div style="color: var(--dash-dim); font-size: 0.75rem; font-weight: 700; text-transform: uppercase; margin-bottom: 6px;">Specialization</div>
+                                <div style="color: var(--dash-text); font-weight: 600;">{{ vm.faculty.specialization || 'Not specified' }}</div>
+                            </div>
+                            <div>
+                                <div style="color: var(--dash-dim); font-size: 0.75rem; font-weight: 700; text-transform: uppercase; margin-bottom: 6px;">Member Since</div>
+                                <div style="color: var(--dash-text); font-weight: 600;">{{ vm.formatDate(vm.faculty.createdAt) }}</div>
+                            </div>
+                            <div>
+                                <div style="color: var(--dash-dim); font-size: 0.75rem; font-weight: 700; text-transform: uppercase; margin-bottom: 6px;">Current Role</div>
+                                <div style="color: var(--dash-text); font-weight: 600;">{{ vm.faculty.designation }}</div>
+                            </div>
+                            <div>
+                                <div style="color: var(--dash-dim); font-size: 0.75rem; font-weight: 700; text-transform: uppercase; margin-bottom: 6px;">Status</div>
+                                <div style="color: var(--dash-accent-2); font-weight: 800; display: flex; align-items: center; gap: 6px;">
+                                    <div style="width: 8px; height: 8px; border-radius: 50%; background: var(--dash-accent-2); box-shadow: 0 0 10px var(--dash-accent-2);"></div>
+                                    Active
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Teaching Load (Placeholder for now, integrated with future offerings API) -->
+                <div class="dash-card">
+                    <div class="dash-card-header">
+                        <h3 class="dash-card-title"><i class="fas fa-graduation-cap"></i> Current Teaching Load</h3>
+                        <span class="chip">Active Term</span>
+                    </div>
+                    <div class="dash-card-body">
+                        <div class="empty" style="padding: 40px 20px;">
+                            <i class="fas fa-calendar-alt" style="font-size: 1.5rem; margin-bottom: 12px; display: block;"></i>
+                            No active course offerings assigned for the current term.
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Right Column: Meta & Contact -->
+            <div style="grid-column: span 4; display: flex; flex-direction: column; gap: 24px;">
+                
+                <!-- Quick Contact -->
+                <div class="dash-card" style="background: linear-gradient(135deg, rgba(245, 158, 11, 0.1), rgba(239, 68, 68, 0.1)); border-color: rgba(245, 158, 11, 0.2);">
+                    <div class="dash-card-header">
+                        <h3 class="dash-card-title" style="color: #f59e0b;"><i class="fas fa-envelope"></i> Contact Info</h3>
+                    </div>
+                    <div class="dash-card-body">
+                        <div style="margin-bottom: 16px;">
+                            <div style="color: var(--dash-dim); font-size: 0.7rem; font-weight: 700; text-transform: uppercase; margin-bottom: 4px;">Official Email</div>
+                            <div style="color: var(--dash-text); font-weight: 600; word-break: break-all;">{{ vm.faculty.userId.email }}</div>
+                        </div>
+                        <button class="dash-btn-primary" style="width: 100%; justify-content: center; background: rgba(245, 158, 11, 0.2); border: 1px solid rgba(245, 158, 11, 0.4); color: #f59e0b;">
+                            Send Message
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Meta Information -->
+                <div class="dash-card">
+                    <div class="dash-card-header">
+                        <h3 class="dash-card-title"><i class="fas fa-database"></i> Metadata</h3>
+                    </div>
+                    <div class="dash-card-body" style="padding: 0;">
+                        <div class="list">
+                            <div class="list-item" style="padding: 12px 16px;">
+                                <div class="list-main">
+                                    <div class="list-title">Faculty ID</div>
+                                    <div class="list-sub" style="font-family: monospace; font-size: 0.7rem; word-break: break-all;">{{ vm.faculty._id }}</div>
+                                </div>
+                            </div>
+                            <div class="list-item" style="padding: 12px 16px;">
+                                <div class="list-main">
+                                    <div class="list-title">Last Updated</div>
+                                    <div class="list-sub">{{ vm.formatDate(vm.faculty.updatedAt) }}</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<!-- Loading State -->
+<div ng-if="vm.isLoading" style="padding-top: 24px;">
+    <div class="dash-wrap">
+        <div class="dash-loading">
+            <i class="fas fa-circle-notch"></i>
+            <div style="font-weight: 800;">Loading faculty profile…</div>
+        </div>
+    </div>
+</div>

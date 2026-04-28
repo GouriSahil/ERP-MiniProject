@@ -21,9 +21,12 @@
         vm.isAuthenticated = isAuthenticated;
         vm.getCurrentUser = getCurrentUser;
         vm.isAuthPage = isAuthPage;
+        vm.isPublicAuthPage = isPublicAuthPage;
+        vm.isActive = isActive;
         vm.toggleMobileMenu = toggleMobileMenu;
         vm.toggleUserDropdown = toggleUserDropdown;
         vm.closeDropdowns = closeDropdowns;
+        vm.getCurrentPageName = getCurrentPageName;
 
         // Close dropdowns when clicking outside
         angular.element(document).on('click', function(event) {
@@ -86,8 +89,25 @@
         }
 
         function isAuthPage() {
-            var authPages = ['/login', '/register', '/dashboard', '/profile'];
-            return authPages.indexOf($location.path()) !== -1;
+            var path = $location.path() || '/';
+            return path !== '/';
+        }
+
+        function isPublicAuthPage() {
+            var path = $location.path() || '';
+            var publicAuthPages = ['/login', '/register', '/forgot-password'];
+            return publicAuthPages.indexOf(path) !== -1 || path.indexOf('/reset-password') === 0;
+        }
+
+        function isActive(pathArg) {
+            var path = $location.path() || '';
+            return path.indexOf(pathArg) === 0;
+        }
+
+        function getCurrentPageName() {
+            var path = $location.path() || '';
+            var parts = path.split('/');
+            return parts[1] ? parts[1].replace(/-/g, ' ') : 'Dashboard';
         }
     }
 })();

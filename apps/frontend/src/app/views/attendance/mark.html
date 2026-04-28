@@ -1,0 +1,108 @@
+<!-- Mark Attendance View (Aurora Slate Theme) -->
+
+<div ng-if="!vm.isLoading && vm.session" style="padding-top: 24px;">
+    <div class="dash-wrap">
+
+        <!-- Hero header -->
+        <div class="dash-hero" style="margin-bottom: 24px;">
+            <div class="dash-hero-left">
+                <a href="#!/sessions" class="btn-mini" style="width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; text-decoration: none;">
+                    <i class="fas fa-arrow-left"></i>
+                </a>
+                <div style="min-width: 0;">
+                    <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
+                        <span class="chip" style="background: rgba(16, 185, 129, 0.1); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.2);">{{ vm.session.type }}</span>
+                        <h2 style="margin: 0;">Mark Attendance</h2>
+                    </div>
+                    <p>{{ vm.session.offeringId.courseId.name }} ({{ vm.session.offeringId.courseId.code }}) · {{ vm.formatDate(vm.session.date) }} · {{ vm.session.startTime }}</p>
+                </div>
+            </div>
+            <div class="dash-hero-right">
+                <div style="display: flex; gap: 8px;">
+                    <button class="btn-mini" ng-click="vm.markAll('present')" style="color: #10b981;">Mark All Present</button>
+                    <button class="btn-mini" ng-click="vm.markAll('absent')" style="color: #ef4444;">Mark All Absent</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Marking Table -->
+        <div class="dash-card" style="padding: 0; overflow: hidden; margin-bottom: 80px;">
+            <div style="overflow-x: auto;">
+                <table style="width: 100%; border-collapse: collapse; text-align: left;">
+                    <thead>
+                        <tr style="border-bottom: 1px solid var(--dash-border); background: rgba(255, 255, 255, 0.02);">
+                            <th style="padding: 12px 16px; color: var(--dash-dim); font-weight: 700; font-size: 0.75rem; text-transform: uppercase;">Student</th>
+                            <th style="padding: 12px 16px; color: var(--dash-dim); font-weight: 700; font-size: 0.75rem; text-transform: uppercase;">Status</th>
+                            <th style="padding: 12px 16px; color: var(--dash-dim); font-weight: 700; font-size: 0.75rem; text-transform: uppercase;">Remarks</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="enrollment in vm.enrolledStudents"
+                            style="border-bottom: 1px solid var(--dash-border); transition: background 0.2s;"
+                            onmouseover="this.style.background='rgba(255,255,255,0.02)'"
+                            onmouseout="this.style.background='transparent'">
+                            <td style="padding: 16px; min-width: 250px;">
+                                <div style="font-weight: 800; color: var(--dash-text);">{{ enrollment.studentId.userId.name }}</div>
+                                <div style="font-size: 0.75rem; color: var(--dash-muted);">{{ enrollment.studentId.rollNumber }}</div>
+                            </td>
+                            <td style="padding: 16px; min-width: 300px;">
+                                <div style="display: flex; gap: 4px;">
+                                    <label style="flex: 1; margin: 0; cursor: pointer;">
+                                        <input type="radio" ng-model="vm.attendanceRecords[enrollment.studentId._id || enrollment.studentId].status" value="present" style="display: none;">
+                                        <div style="padding: 8px; border-radius: 8px; text-align: center; border: 1px solid var(--dash-border); font-size: 0.75rem; font-weight: 700; transition: all 0.2s;"
+                                             ng-style="vm.attendanceRecords[enrollment.studentId._id || enrollment.studentId].status === 'present' ? {'background': '#10b981', 'color': '#000', 'border-color': '#10b981'} : {'background': 'rgba(255,255,255,0.02)', 'color': 'var(--dash-muted)'}">
+                                            PRESENT
+                                        </div>
+                                    </label>
+                                    <label style="flex: 1; margin: 0; cursor: pointer;">
+                                        <input type="radio" ng-model="vm.attendanceRecords[enrollment.studentId._id || enrollment.studentId].status" value="absent" style="display: none;">
+                                        <div style="padding: 8px; border-radius: 8px; text-align: center; border: 1px solid var(--dash-border); font-size: 0.75rem; font-weight: 700; transition: all 0.2s;"
+                                             ng-style="vm.attendanceRecords[enrollment.studentId._id || enrollment.studentId].status === 'absent' ? {'background': '#ef4444', 'color': '#fff', 'border-color': '#ef4444'} : {'background': 'rgba(255,255,255,0.02)', 'color': 'var(--dash-muted)'}">
+                                            ABSENT
+                                        </div>
+                                    </label>
+                                    <label style="flex: 1; margin: 0; cursor: pointer;">
+                                        <input type="radio" ng-model="vm.attendanceRecords[enrollment.studentId._id || enrollment.studentId].status" value="late" style="display: none;">
+                                        <div style="padding: 8px; border-radius: 8px; text-align: center; border: 1px solid var(--dash-border); font-size: 0.75rem; font-weight: 700; transition: all 0.2s;"
+                                             ng-style="vm.attendanceRecords[enrollment.studentId._id || enrollment.studentId].status === 'late' ? {'background': '#f59e0b', 'color': '#000', 'border-color': '#f59e0b'} : {'background': 'rgba(255,255,255,0.02)', 'color': 'var(--dash-muted)'}">
+                                            LATE
+                                        </div>
+                                    </label>
+                                </div>
+                            </td>
+                            <td style="padding: 16px;">
+                                <input type="text" ng-model="vm.attendanceRecords[enrollment.studentId._id || enrollment.studentId].remarks"
+                                       placeholder="Optional note..."
+                                       style="width: 100%; padding: 8px 12px; background: rgba(255, 255, 255, 0.02); border: 1px solid var(--dash-border); border-radius: 8px; color: var(--dash-text); outline: none; font-size: 0.8rem;">
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Sticky Footer for Save -->
+        <div style="position: fixed; bottom: 0; left: 280px; right: 0; padding: 20px 40px; background: rgba(15, 20, 37, 0.95); backdrop-filter: blur(10px); border-top: 1px solid var(--dash-border); display: flex; justify-content: flex-end; z-index: 100;">
+            <div style="display: flex; gap: 16px; align-items: center;">
+                <div style="font-size: 0.85rem; color: var(--dash-muted);">
+                    Marking attendance for <span style="color: var(--dash-text); font-weight: 800;">{{ vm.enrolledStudents.length }}</span> students
+                </div>
+                <button class="dash-btn-primary" style="padding: 12px 40px;" ng-click="vm.saveAttendance()" ng-disabled="vm.isSaving">
+                    <i class="fas fa-save" style="margin-right: 8px;"></i>
+                    {{ vm.isSaving ? 'Saving...' : 'Submit Attendance' }}
+                </button>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<!-- Loading State -->
+<div ng-if="vm.isLoading" style="padding-top: 24px;">
+    <div class="dash-wrap">
+        <div class="dash-loading">
+            <i class="fas fa-circle-notch"></i>
+            <div style="font-weight: 800;">Preparing attendance sheet…</div>
+        </div>
+    </div>
+</div>

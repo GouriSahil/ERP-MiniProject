@@ -12,18 +12,27 @@ export class OfferingsController {
   static async list(req: AuthRequest, res: Response) {
     try {
       const { page, limit, search, sortBy, sortOrder } = getPaginationParams(req.query);
-      const { courseId, termId, facultyId, departmentId, status } = req.query;
+      const { courseId, termId, status, departmentId } = req.query;
 
       const filter: any = {};
       if (courseId) filter.courseId = courseId;
       if (termId) filter.termId = termId;
-      if (departmentId) filter.departmentId = departmentId;
       if (status) filter.status = status;
 
+      // If filtering by department, first find matching courses
+      if (departmentId) {
+        const { Course } = await import('../models');
+        const courses = await Course.find({ departmentId }).select('_id');
+        filter.courseId = { $in: courses.map(c => c._id) };
+      }
+
       const offerings = await CourseOffering.find(filter)
-        .populate('courseId', 'name code credits')
+        .populate({
+          path: 'courseId',
+          select: 'name code credits departmentId',
+          populate: { path: 'departmentId', select: 'name code' }
+        })
         .populate('termId', 'name year status')
-        .populate('departmentId', 'name code')
         .sort({ [sortBy]: sortOrder })
         .skip((page - 1) * limit)
         .limit(limit)
@@ -47,9 +56,12 @@ export class OfferingsController {
       const { id } = req.params;
 
       const offering = await CourseOffering.findById(id)
-        .populate('courseId', 'name code credits')
+        .populate({
+          path: 'courseId',
+          select: 'name code credits departmentId',
+          populate: { path: 'departmentId', select: 'name code' }
+        })
         .populate('termId', 'name year')
-        .populate('departmentId', 'name code')
         .lean();
 
       if (!offering) {

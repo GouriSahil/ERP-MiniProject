@@ -132,7 +132,7 @@
                             <i class="fas fa-lock"></i> Password
                         </label>
                         <div class="auth-input-group">
-                            <input type="password"
+                            <input type="{{ auth.showPassword.login ? 'text' : 'password' }}"
                                    class="auth-input"
                                    id="password"
                                    ng-model="auth.loginData.password"
@@ -140,7 +140,7 @@
                                    required
                                    ng-disabled="auth.isLoading">
                             <span class="auth-input-icon auth-input-icon-toggle" ng-click="auth.togglePasswordVisibility('login')">
-                                <i class="fas" ng-class="auth.showPassword.login ? 'fa-eye-slash' : 'fa-eye'"></i>
+                                <i class="fas" ng-class="auth.showPassword.login ? 'fa-eye' : 'fa-eye-slash'"></i>
                             </span>
                         </div>
                     </div>
@@ -151,6 +151,7 @@
                             <input type="checkbox" ng-model="auth.loginData.rememberMe">
                             <span class="auth-checkbox-label">Remember me</span>
                         </label>
+                        <a href="#!/forgot-password" class="auth-link">Forgot Password?</a>
                     </div>
 
                     <!-- Submit Button -->

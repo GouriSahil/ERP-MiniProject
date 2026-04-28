@@ -1,0 +1,134 @@
+<!-- Course Form (Aurora Slate Theme) -->
+
+<div class="dash-wrap" style="padding-top: 24px; max-width: 800px; margin: 0 auto;">
+    
+    <!-- Hero / Header -->
+    <div class="dash-hero" style="margin-bottom: 24px;">
+        <div class="dash-hero-left">
+            <a href="#!/courses" class="btn-mini" style="width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; text-decoration: none;">
+                <i class="fas fa-arrow-left"></i>
+            </a>
+            <div>
+                <h2>{{ vm.isEditing ? 'Edit Course' : 'Create Course' }}</h2>
+                <p>{{ vm.isEditing ? 'Update course information and curriculum.' : 'Add a new course to the institutional curriculum.' }}</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Form Card -->
+    <div class="dash-card">
+        <div class="dash-card-body">
+            <form ng-submit="vm.save()" name="courseForm" novalidate>
+                
+                <div class="row">
+                    <!-- Name -->
+                    <div class="col-md-8">
+                        <div style="margin-bottom: 20px;">
+                            <label style="display: block; margin-bottom: 8px; color: var(--dash-dim); font-size: 0.8rem; font-weight: 700; text-transform: uppercase;">Course Name</label>
+                            <input type="text" ng-model="vm.course.name" required name="name"
+                                   placeholder="e.g. Advanced Web Programming"
+                                   style="width: 100%; padding: 12px 16px; background: rgba(255, 255, 255, 0.05); border: 1px solid var(--dash-border); border-radius: 12px; color: var(--dash-text); outline: none; transition: all 0.2s;"
+                                   onfocus="this.style.borderColor='var(--dash-accent)'; this.style.background='rgba(255, 255, 255, 0.08)'"
+                                   onblur="this.style.borderColor='var(--dash-border)'; this.style.background='rgba(255, 255, 255, 0.05)'">
+                            <div ng-show="courseForm.$submitted && courseForm.name.$error.required" style="color: var(--dash-warning); font-size: 0.75rem; margin-top: 4px;">
+                                Course name is required.
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Code -->
+                    <div class="col-md-4">
+                        <div style="margin-bottom: 20px;">
+                            <label style="display: block; margin-bottom: 8px; color: var(--dash-dim); font-size: 0.8rem; font-weight: 700; text-transform: uppercase;">Course Code</label>
+                            <input type="text" ng-model="vm.course.code" required name="code"
+                                   placeholder="e.g. CS401"
+                                   style="width: 100%; padding: 12px 16px; background: rgba(255, 255, 255, 0.05); border: 1px solid var(--dash-border); border-radius: 12px; color: var(--dash-text); outline: none; transition: all 0.2s; font-family: monospace;"
+                                   onfocus="this.style.borderColor='var(--dash-accent)'"
+                                   onblur="this.style.borderColor='var(--dash-border)'">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <!-- Department -->
+                    <div class="col-md-6">
+                        <div style="margin-bottom: 20px;">
+                            <label style="display: block; margin-bottom: 8px; color: var(--dash-dim); font-size: 0.8rem; font-weight: 700; text-transform: uppercase;">Department</label>
+                            <select ng-model="vm.course.departmentId" required name="dept"
+                                    style="width: 100%; padding: 12px 16px; background: rgba(255, 255, 255, 0.05); border: 1px solid var(--dash-border); border-radius: 12px; color: var(--dash-text); outline: none;">
+                                <option value="">Select Department</option>
+                                <option ng-repeat="dept in vm.departments" value="{{ dept._id }}">{{ dept.name }}</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Credits -->
+                    <div class="col-md-3">
+                        <div style="margin-bottom: 20px;">
+                            <label style="display: block; margin-bottom: 8px; color: var(--dash-dim); font-size: 0.8rem; font-weight: 700; text-transform: uppercase;">Credits</label>
+                            <input type="number" ng-model="vm.course.credits" required name="credits" min="1" max="10"
+                                   style="width: 100%; padding: 12px 16px; background: rgba(255, 255, 255, 0.05); border: 1px solid var(--dash-border); border-radius: 12px; color: var(--dash-text); outline: none;">
+                        </div>
+                    </div>
+
+                    <!-- Level -->
+                    <div class="col-md-3">
+                        <div style="margin-bottom: 20px;">
+                            <label style="display: block; margin-bottom: 8px; color: var(--dash-dim); font-size: 0.8rem; font-weight: 700; text-transform: uppercase;">Level</label>
+                            <select ng-model="vm.course.level"
+                                    style="width: 100%; padding: 12px 16px; background: rgba(255, 255, 255, 0.05); border: 1px solid var(--dash-border); border-radius: 12px; color: var(--dash-text); outline: none;">
+                                <option value="beginner">Beginner</option>
+                                <option value="intermediate">Intermediate</option>
+                                <option value="advanced">Advanced</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Description -->
+                <div style="margin-bottom: 20px;">
+                    <label style="display: block; margin-bottom: 8px; color: var(--dash-dim); font-size: 0.8rem; font-weight: 700; text-transform: uppercase;">Description</label>
+                    <textarea ng-model="vm.course.description" rows="4"
+                              placeholder="Describe the course content, objectives, and outcomes..."
+                              style="width: 100%; padding: 12px 16px; background: rgba(255, 255, 255, 0.05); border: 1px solid var(--dash-border); border-radius: 12px; color: var(--dash-text); outline: none; resize: vertical;"></textarea>
+                </div>
+
+                <!-- Elective -->
+                <div style="margin-bottom: 24px; display: flex; align-items: center; gap: 10px;">
+                    <input type="checkbox" ng-model="vm.course.elective" id="elective-check"
+                           style="width: 18px; height: 18px; cursor: pointer; accent-color: var(--dash-accent);">
+                    <label for="elective-check" style="margin: 0; color: var(--dash-text); cursor: pointer; font-size: 0.95rem;">Mark as elective course</label>
+                </div>
+
+                <!-- Prerequisites -->
+                <div style="margin-bottom: 24px;">
+                    <label style="display: block; margin-bottom: 8px; color: var(--dash-dim); font-size: 0.8rem; font-weight: 700; text-transform: uppercase;">Prerequisites</label>
+                    
+                    <div ng-if="vm.allCourses.length === 0" style="padding: 16px; background: rgba(255, 255, 255, 0.02); border: 1px dashed var(--dash-border); border-radius: 12px; color: var(--dash-muted); text-align: center; font-size: 0.9rem;">
+                        No other courses available to select as prerequisites. Create more courses first.
+                    </div>
+                    
+                    <div ng-if="vm.allCourses.length > 0">
+                        <select ng-model="vm.course.prerequisites" multiple
+                                style="width: 100%; min-height: 120px; padding: 12px 16px; background: rgba(255, 255, 255, 0.05); border: 1px solid var(--dash-border); border-radius: 12px; color: var(--dash-text); outline: none;">
+                            <option ng-repeat="c in vm.allCourses" value="{{ c._id }}">{{ c.code }} - {{ c.name }}</option>
+                        </select>
+                        <p style="margin-top: 6px; font-size: 0.8rem; color: var(--dash-muted);">
+                            <i class="fas fa-info-circle"></i> This is a selection list, not a text box. Hold <strong>Ctrl/Cmd</strong> and click to select multiple prerequisite courses.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Footer Actions -->
+                <div style="display: flex; gap: 12px; justify-content: flex-end; padding-top: 12px; border-top: 1px solid var(--dash-border);">
+                    <button type="button" class="btn-mini" style="padding: 10px 24px;" ng-click="vm.navigateBack()">Cancel</button>
+                    <button type="submit" class="dash-btn-primary" style="padding: 10px 32px;" ng-disabled="vm.isSaving || courseForm.$invalid">
+                        <i class="fas fa-spinner fa-spin" ng-if="vm.isSaving" style="margin-right: 8px;"></i>
+                        {{ vm.isEditing ? 'Update Course' : 'Create Course' }}
+                    </button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>

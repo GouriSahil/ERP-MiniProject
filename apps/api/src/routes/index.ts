@@ -45,7 +45,7 @@ router.use('/attendance', authenticate, attendanceRoutes);
 router.use('/reports', authenticate, reportsRoutes);
 
 // Admin-only routes (authentication + authorization required)
-router.use('/audit', authenticate, authorize('super_admin', 'college_admin'), auditRoutes);
+router.use('/audit', authenticate, authorize('super_admin', 'admin'), auditRoutes);
 
 // Custom role management routes
 router.use('/custom-roles', authenticate, customRolesRoutes);

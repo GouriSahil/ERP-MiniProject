@@ -24,7 +24,7 @@ export const validateUserCreate = [
   body('name').trim().notEmpty().withMessage('Name is required'),
   body('email').isEmail().withMessage('Valid email is required'),
   body('password').isLength({ min: 8 }).withMessage('Password must be at least 8 characters'),
-  body('role').isIn(['super_admin', 'college_admin', 'department_head', 'faculty', 'support_staff', 'student']),
+  body('role').isIn(['super_admin', 'admin', 'dept_head', 'faculty', 'staff', 'student']),
   body('departmentId').optional().custom(isObjectId),
   handleValidationErrors
 ];
@@ -33,7 +33,7 @@ export const validateUserUpdate = [
   param('id').custom(isObjectId),
   body('name').optional().trim().notEmpty(),
   body('email').optional().isEmail(),
-  body('role').optional().isIn(['super_admin', 'college_admin', 'department_head', 'faculty', 'support_staff', 'student']),
+  body('role').optional().isIn(['super_admin', 'admin', 'dept_head', 'faculty', 'staff', 'student']),
   body('departmentId').optional().custom(isObjectId),
   handleValidationErrors
 ];

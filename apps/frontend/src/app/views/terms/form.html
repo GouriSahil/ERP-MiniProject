@@ -1,0 +1,77 @@
+<!-- Term Form (Aurora Slate Theme) -->
+
+<div class="dash-wrap" style="padding-top: 24px; max-width: 600px; margin: 0 auto;">
+    
+    <!-- Hero / Header -->
+    <div class="dash-hero" style="margin-bottom: 24px;">
+        <div class="dash-hero-left">
+            <a href="#!/terms" class="btn-mini" style="width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; text-decoration: none;">
+                <i class="fas fa-arrow-left"></i>
+            </a>
+            <div>
+                <h2>{{ vm.isEditing ? 'Edit Term' : 'Create Term' }}</h2>
+                <p>{{ vm.isEditing ? 'Update semester timeline and status.' : 'Define a new academic session or semester.' }}</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Form Card -->
+    <div class="dash-card">
+        <div class="dash-card-body">
+            <form ng-submit="vm.save()" name="termForm" novalidate>
+                
+                <!-- Name -->
+                <div style="margin-bottom: 24px;">
+                    <label style="display: block; margin-bottom: 8px; color: var(--dash-dim); font-size: 0.8rem; font-weight: 700; text-transform: uppercase;">Term Name</label>
+                    <input type="text" ng-model="vm.term.name" required name="name"
+                           placeholder="e.g. Fall 2024, Semester 1"
+                           style="width: 100%; padding: 14px 16px; background: rgba(255, 255, 255, 0.05); border: 1px solid var(--dash-border); border-radius: 12px; color: var(--dash-text); outline: none; font-size: 1.1rem; font-weight: 600;">
+                    <div ng-show="termForm.$submitted && termForm.name.$error.required" style="color: var(--dash-warning); font-size: 0.75rem; margin-top: 4px;">
+                        Term name is required.
+                    </div>
+                </div>
+
+                <!-- Dates -->
+                <div class="row">
+                    <div class="col-md-6">
+                        <div style="margin-bottom: 24px;">
+                            <label style="display: block; margin-bottom: 8px; color: var(--dash-dim); font-size: 0.8rem; font-weight: 700; text-transform: uppercase;">Start Date</label>
+                            <input type="date" ng-model="vm.term.startDate" required name="start"
+                                   style="width: 100%; padding: 12px 16px; background: rgba(255, 255, 255, 0.05); border: 1px solid var(--dash-border); border-radius: 12px; color: var(--dash-text); outline: none;">
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div style="margin-bottom: 24px;">
+                            <label style="display: block; margin-bottom: 8px; color: var(--dash-dim); font-size: 0.8rem; font-weight: 700; text-transform: uppercase;">End Date</label>
+                            <input type="date" ng-model="vm.term.endDate" required name="end"
+                                   style="width: 100%; padding: 12px 16px; background: rgba(255, 255, 255, 0.05); border: 1px solid var(--dash-border); border-radius: 12px; color: var(--dash-text); outline: none;">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Status -->
+                <div style="margin-bottom: 32px;">
+                    <label style="display: block; margin-bottom: 8px; color: var(--dash-dim); font-size: 0.8rem; font-weight: 700; text-transform: uppercase;">Term Status</label>
+                    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px;">
+                        <div ng-repeat="status in ['upcoming', 'active', 'completed', 'cancelled']"
+                             ng-click="vm.term.status = status"
+                             style="padding: 12px; border-radius: 12px; border: 1px solid var(--dash-border); cursor: pointer; text-align: center; transition: all 0.2s; text-transform: capitalize; font-weight: 700; font-size: 0.9rem;"
+                             ng-style="vm.term.status === status ? {'background': 'var(--dash-accent)', 'border-color': 'var(--dash-accent)', 'color': '#000'} : {'background': 'rgba(255,255,255,0.02)', 'color': 'var(--dash-muted)'}">
+                            {{ status }}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Footer Actions -->
+                <div style="display: flex; gap: 12px; justify-content: flex-end; padding-top: 12px; border-top: 1px solid var(--dash-border);">
+                    <button type="button" class="btn-mini" style="padding: 10px 24px;" ng-click="vm.navigateBack()">Cancel</button>
+                    <button type="submit" class="dash-btn-primary" style="padding: 10px 32px;" ng-disabled="vm.isSaving || termForm.$invalid">
+                        <i class="fas fa-spinner fa-spin" ng-if="vm.isSaving" style="margin-right: 8px;"></i>
+                        {{ vm.isEditing ? 'Update Term' : 'Create Term' }}
+                    </button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>

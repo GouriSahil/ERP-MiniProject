@@ -32,21 +32,21 @@ router.get('/:id/offerings', validateUUIDParam(), CoursesController.getOfferings
 /**
  * @route   POST /api/courses
  * @desc    Create a new course
- * @access  Private (admin, department_head)
+ * @access  Private (admin, dept_head)
  */
 router.post('/', validateCourseCreate, CoursesController.create);
 
 /**
  * @route   PUT /api/courses/:id
  * @desc    Update a course
- * @access  Private (admin, department_head)
+ * @access  Private (admin, dept_head)
  */
 router.put('/:id', validateCourseUpdate, CoursesController.update);
 
 /**
  * @route   DELETE /api/courses/:id
  * @desc    Delete a course
- * @access  Private (admin, department_head)
+ * @access  Private (admin, dept_head)
  */
 router.delete('/:id', validateUUIDParam(), CoursesController.delete);
 

@@ -16,7 +16,9 @@
             getCurrentUser: getCurrentUser,
             refreshToken: refreshToken,
             updateProfile: updateProfile,
-            changePassword: changePassword
+            changePassword: changePassword,
+            forgotPassword: forgotPassword,
+            resetPassword: resetPassword
         };
 
         return service;
@@ -127,6 +129,31 @@
                     return response.data;
                 })
                 .catch(handleError);
+        }
+
+        function forgotPassword(email) {
+            return $http.post(APP_CONFIG.API_BASE_URL + '/auth/forgot-password', { email: email })
+                .then(function(response) {
+                    return response.data;
+                })
+                .catch(handleError);
+        }
+
+        function resetPassword(token, password) {
+            return $http.post(APP_CONFIG.API_BASE_URL + '/auth/reset-password', { token: token, newPassword: password })
+                .then(function(response) {
+                    return response.data;
+                })
+                .catch(handleError);
+        }
+
+        function changePassword(currentPassword, newPassword) {
+            return $http.post(APP_CONFIG.API_BASE_URL + '/auth/change-password', {
+                currentPassword: currentPassword,
+                newPassword: newPassword
+            }).then(function(response) {
+                return response.data;
+            }).catch(handleError);
         }
 
         function handleError(error) {

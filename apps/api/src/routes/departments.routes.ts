@@ -38,7 +38,7 @@ router.get(
 // Create department (admin only)
 router.post(
   '/',
-  authorize('college_admin'),
+  authorize('admin'),
   validateDepartmentCreate,
   DepartmentsController.create
 );
@@ -46,7 +46,7 @@ router.post(
 // Update department (admin only)
 router.put(
   '/:id',
-  authorize('college_admin'),
+  authorize('admin'),
   validateUUIDParam(),
   validateDepartmentUpdate,
   DepartmentsController.update
@@ -55,7 +55,7 @@ router.put(
 // Delete department (admin only)
 router.delete(
   '/:id',
-  authorize('college_admin'),
+  authorize('admin'),
   validateUUIDParam(),
   DepartmentsController.delete
 );
