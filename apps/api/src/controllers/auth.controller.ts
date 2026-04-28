@@ -125,7 +125,7 @@ export class AuthController {
           departmentId: user.departmentId,
           status: user.status
         },
-        process.env.JWT_SECRET || 'your-secret-key',
+        process.env.JWT_SECRET || 'your-super-secret-jwt-key-change-this-in-production',
         { expiresIn: '1h', issuer: 'erp-api', audience: 'erp-frontend', jwtid: tokenId }
       );
 
@@ -136,7 +136,7 @@ export class AuthController {
           role: user.role,
           departmentId: user.departmentId
         },
-        process.env.JWT_SECRET || 'your-secret-key',
+        process.env.JWT_SECRET || 'your-super-secret-jwt-key-change-this-in-production',
         { expiresIn: '30d', issuer: 'erp-api', audience: 'erp-frontend', jwtid: tokenId }
       );
 
@@ -514,7 +514,7 @@ export class AuthController {
       // Verify the refresh token
       const decoded = jwt.verify(
         refreshToken,
-        process.env.JWT_SECRET || 'your-secret-key',
+        process.env.JWT_SECRET || 'your-super-secret-jwt-key-change-this-in-production',
         { issuer: 'erp-api', audience: 'erp-frontend' }
       ) as any;
 
@@ -527,7 +527,7 @@ export class AuthController {
           role: decoded.role,
           departmentId: decoded.departmentId
         },
-        process.env.JWT_SECRET || 'your-secret-key',
+        process.env.JWT_SECRET || 'your-super-secret-jwt-key-change-this-in-production',
         { expiresIn: '1h', issuer: 'erp-api', audience: 'erp-frontend' }
       );
 
